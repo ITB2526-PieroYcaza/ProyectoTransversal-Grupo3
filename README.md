@@ -3,6 +3,7 @@
 <a name="indice"></a>
 # Índice
 
+  * [1. Plano general de las instalaciones INNOCATETECH:](#1-plano-general-de-las-instalaciones-innocatetech)
     * [1.1. Plano sala del rack:](#11-plano-sala-del-rack)
     * [1.1.1. Estructuración de los Racks:](#111-estructuracion-de-los-racks)
       * [1.1.2. Componentes Técnicos Comunes por Rack:](#112-componentes-tecnicos-comunes-por-rack)
@@ -27,7 +28,7 @@
     * [2.7. Seguridad lógica](#27-seguridad-logica)
       * [2.7.1. Seguridad Lógica Pasiva:](#271-seguridad-logica-pasiva)
       * [2.7.2. Seguridad Lógica Activa:](#272-seguridad-logica-activa)
-  * [2.8. Prevención de riesgos laborales:](#28-prevencion-de-riesgos-laborales)
+    * [2.8. Prevención de riesgos laborales:](#28-prevencion-de-riesgos-laborales)
       * [2.8.1. Riesgos Eléctricos:](#281-riesgos-electricos)
       * [2.8.2. Riesgos Ergonómicos:](#282-riesgos-ergonomicos)
       * [2.8.3. Riesgos por Ruido:](#283-riesgos-por-ruido)
@@ -61,7 +62,13 @@
 <div align="justify">
 
 ` GRUPO 3 PROYECTO TRANSVERSAL ``ASIXc1D`<br><br>
-* Plano general de las instalaciones INNOCATETECH:
+</div>
+
+<a name="1-plano-general-de-las-instalaciones-innocatetech"></a>
+## <a href="#1-plano-general-de-las-instalaciones-innocatetech">1. Plano general de las instalaciones INNOCATETECH:</a>
+[↑ Volver al índice](#indice)
+
+<div align='justify'>
 
 <strong>El CPD se ubica en la planta baja</strong>, en una <strong>zona central.</strong> El núcleo del <strong>CPD está completamente cerrado por una estructura acristalada</strong> técnica de alta resistencia en este proyecto utilizamos vidrio laminado de seguridad con <strong>tratamiento acústico y térmico. </strong><br><br>
 <strong>Esta cristalera permite:</strong><br><br>
@@ -412,7 +419,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="28-prevencion-de-riesgos-laborales"></a>
-## <a href="#28-prevencion-de-riesgos-laborales">2.8. Prevención de riesgos laborales:</a>
+### <a href="#28-prevencion-de-riesgos-laborales">2.8. Prevención de riesgos laborales:</a>
 [↑ Volver al índice](#indice)
 
 
@@ -1002,7 +1009,7 @@ Habilitamos y configuramos <strong>SFTP:</strong><br><br>
 </p>
 
 <div align="justify">
-Las siguientes configuraciones permite el uso de SFTP tanto de usuarios registrados como anónimos:<br><br>
+Utilizamos las siguientes configuraciones del archivo sftp.conf para encriptar con nuestras claves y que funcione por el puerto 2222:<br><br>
 </div>
 
 <p align="center">
@@ -1010,7 +1017,7 @@ Las siguientes configuraciones permite el uso de SFTP tanto de usuarios registra
 </p>
 
 <div align="justify">
-Habilitamos el módulo de sftp: (/etc/profptd/modules.conf)<br><br>
+Habilitamos el módulo de sftp: (/etc/proftpd/modules.conf)<br><br>
 </div>
 
 <p align="center">
