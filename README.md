@@ -74,7 +74,7 @@
 </div>
 
 <a name="1-1-plano-sala-del-rack"></a>
-### 1.1. Plano sala del rack:
+### <font color="#0b57d0">1.1. Plano sala del rack:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -90,7 +90,7 @@ Hemos asignado cada servidor a una función específica para garantizar la indep
 </div>
 
 <a name="1-1-1-estructuracion-de-los-racks"></a>
-### 1.1.1. Estructuración de los Racks:
+### <font color="#0b57d0">1.1.1. Estructuración de los Racks:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -100,7 +100,7 @@ Todos los racks seguirán un estándar de distribución homogéneo basado en la 
 </div>
 
 <a name="1-1-2-componentes-tecnicos-comunes-por-rack"></a>
-#### 1.1.2. Componentes Técnicos Comunes por Rack:
+#### <font color="#0b57d0">1.1.2. Componentes Técnicos Comunes por Rack:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -118,7 +118,7 @@ A excepción de los servidores específicos, cada rack contará con los siguient
 </div>
 
 <a name="1-2-sistema-de-climatizacion-del-cpd"></a>
-### 1.2. Sistema de climatización del CPD:
+### <font color="#0b57d0">1.2. Sistema de climatización del CPD:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -139,7 +139,7 @@ En un <strong>CPD convencional abierto,</strong> el aire frío se mezcla rápida
 
 
 <a name="1-3-medidas-para-dificultar-la-identificacion-de-la-sala"></a>
-### 1.3. Medidas para dificultar la identificación de la sala:
+### <font color="#0b57d0">1.3. Medidas para dificultar la identificación de la sala:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -148,7 +148,7 @@ Para proteger la i<strong>nfraestructura crítica de InnovateTech,</strong> es f
 </div>
 
 <a name="1-3-1-sealizacion-restrictiva"></a>
-#### 1.3.1. Señalización Restrictiva:
+#### <font color="#0b57d0">1.3.1. Señalización Restrictiva:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -167,7 +167,7 @@ Como normal general en los planos públicos o de evacuación de la empresa, la s
 </div>
 
 <a name="1-3-2-seguridad-de-rutas-y-suministros"></a>
-#### 1.3.2. Seguridad de Rutas y Suministros:
+#### <font color="#0b57d0">1.3.2. Seguridad de Rutas y Suministros:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -177,7 +177,7 @@ En el directorio del edificio o del ascensor, <strong>no figurará ninguna refer
 </div>
 
 <a name="1-3-3-camuflaje-arquitectonico-y-estetico"></a>
-#### 1.3.3. Camuflaje Arquitectónico y Estético:
+#### <font color="#0b57d0">1.3.3. Camuflaje Arquitectónico y Estético:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -193,7 +193,7 @@ Para reforzar esta discreción, la <strong>perfilería de la cristalera será id
 
 
 <a name="1-4-distribucion-y-gestion-del-cableado"></a>
-### 1.4. distribución y gestión del cableado:
+### <font color="#0b57d0">1.4. distribución y gestión del cableado:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -218,7 +218,7 @@ La gestión se dividirá en dos niveles físicos totalmente segregados para evit
 </div>
 
 <a name="1-5-terra-tecnic-suelo-tecnico-elevado"></a>
-### 1.5. Terra Tècnic (Suelo Técnico Elevado):
+### <font color="#0b57d0">1.5. Terra Tècnic (Suelo Técnico Elevado):</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -231,7 +231,7 @@ Se instalará un sistema de pavimento elevado a <strong>50 cm</strong> de altura
 </div>
 
 <a name="1-5-1-sostre-tecnic-falso-techo-registrable"></a>
-#### 1.5.1. Sostre Tècnic (Falso Techo Registrable):
+#### <font color="#0b57d0">1.5.1. Sostre Tècnic (Falso Techo Registrable):</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -247,7 +247,7 @@ El techo se situará a una altura libre de <strong>2,80 metros</strong>.<br><br>
 </div>
 
 <a name="1-5-2-estanqueidad-con-la-cristalera"></a>
-#### 1.5.2. Estanqueidad con la Cristalera:
+#### <font color="#0b57d0">1.5.2. Estanqueidad con la Cristalera:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -256,7 +256,7 @@ Un punto crítico de este diseño es que tanto el suelo como el techo técnico e
 </div>
 
 <a name="2-infraestructura-electrica"></a>
-## 2.	Infraestructura elèctrica:
+## <font color="#0b57d0">2.	Infraestructura elèctrica:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -265,7 +265,7 @@ La infraestructura eléctrica del CPD estará diseñada para garantizar la conti
 </div>
 
 <a name="2-1-sistemas-de-alimentacion-redundante"></a>
-### 2.1 Sistemas de alimentación redundante:
+### <font color="#0b57d0">2.1 Sistemas de alimentación redundante:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -281,7 +281,7 @@ Además, la instalación dispondrá de:<br><br>
 </div>
 
 <a name="2-2-sistema-sai--ups"></a>
-### 2.2. Sistema SAI / UPS:
+### <font color="#0b57d0">2.2. Sistema SAI / UPS:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -291,7 +291,7 @@ El SAI protegerá frente a cortes de corriente, microcortes eléctricos, variaci
 </div>
 
 <a name="2-3-consumo-electrico-estimado"></a>
-### 2.3. Consumo eléctrico estimado:
+### <font color="#0b57d0">2.3. Consumo eléctrico estimado:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -316,7 +316,7 @@ Hemos calculado los valores de consumo de forma aproximada utilizando consumos m
 </div>
 
 <a name="2-4-distribucion-electrica-en-racks"></a>
-### 2.4. Distribución eléctrica en racks:
+### <font color="#0b57d0">2.4. Distribución eléctrica en racks:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -333,7 +333,7 @@ Además, la organización interna de los racks contará con guías verticales y 
 </div>
 
 <a name="2-5-eficiencia-energetica"></a>
-### 2.5. Eficiencia energética:
+### <font color="#0b57d0">2.5. Eficiencia energética:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -349,7 +349,7 @@ Estas medidas nos permitirán reducir el consumo eléctrico total del CPD y mejo
 </div>
 
 <a name="2-6-seguridad-fisica"></a>
-### 2.6. Seguridad Física
+### <font color="#0b57d0">2.6. Seguridad Física</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -358,7 +358,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-6-1-medidas-pasivas"></a>
-#### 2.6.1. Medidas Pasivas:
+#### <font color="#0b57d0">2.6.1. Medidas Pasivas:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -370,7 +370,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-6-2-medidas-activas"></a>
-#### 2.6.2. Medidas activas:
+#### <font color="#0b57d0">2.6.2. Medidas activas:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -381,13 +381,13 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-7-seguridad-logica"></a>
-### 2.7. Seguridad lógica
+### <font color="#0b57d0">2.7. Seguridad lógica</font>
 [↑ Volver al índice](#indice)
 
 
 
 <a name="2-7-1-seguridad-logica-pasiva"></a>
-#### 2.7.1. Seguridad Lógica Pasiva:
+#### <font color="#0b57d0">2.7.1. Seguridad Lógica Pasiva:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -400,7 +400,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-7-2-seguridad-logica-activa"></a>
-#### 2.7.2. Seguridad Lógica Activa:
+#### <font color="#0b57d0">2.7.2. Seguridad Lógica Activa:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -412,13 +412,13 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-8-prevencion-de-riesgos-laborales"></a>
-## 2.8. Prevención de riesgos laborales:
+## <font color="#0b57d0">2.8. Prevención de riesgos laborales:</font>
 [↑ Volver al índice](#indice)
 
 
 
 <a name="2-8-1-riesgos-electricos"></a>
-#### 2.8.1. Riesgos Eléctricos:
+#### <font color="#0b57d0">2.8.1. Riesgos Eléctricos:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -432,7 +432,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-8-2-riesgos-ergonomicos"></a>
-#### 2.8.2. Riesgos Ergonómicos:
+#### <font color="#0b57d0">2.8.2. Riesgos Ergonómicos:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -445,7 +445,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-8-3-riesgos-por-ruido"></a>
-#### 2.8.3. Riesgos por Ruido:
+#### <font color="#0b57d0">2.8.3. Riesgos por Ruido:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -457,7 +457,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-8-4-riesgos-termicos"></a>
-#### 2.8.4. Riesgos Térmicos:
+#### <font color="#0b57d0">2.8.4. Riesgos Térmicos:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -469,7 +469,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-8-5-riesgos-de-incendio"></a>
-#### 2.8.5. Riesgos de Incendio:
+#### <font color="#0b57d0">2.8.5. Riesgos de Incendio:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -483,7 +483,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-8-6-riesgos-de-caidas"></a>
-#### 2.8.6. Riesgos de Caídas:
+#### <font color="#0b57d0">2.8.6. Riesgos de Caídas:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -496,7 +496,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-8-7-riesgos-por-radiaciones-electromagneticas"></a>
-#### 2.8.7. Riesgos por Radiaciones Electromagnéticas:
+#### <font color="#0b57d0">2.8.7. Riesgos por Radiaciones Electromagnéticas:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -507,7 +507,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="2-8-8-medidas-organizativas-generales"></a>
-#### 2.8.8. Medidas Organizativas Generales:
+#### <font color="#0b57d0">2.8.8. Medidas Organizativas Generales:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -521,7 +521,7 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 </div>
 
 <a name="implementacion-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker"></a>
-## Implementación del CPD en la nube AWS con los servicios utilizados. Iker
+## <font color="#0b57d0">Implementación del CPD en la nube AWS con los servicios utilizados. Iker</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -550,7 +550,7 @@ Implementació al núvol AWS (5 p)<br><br>
 </div>
 
 <a name="2-10-implementacion-de-cpd-a-la-nube-aws-con-los-servicios-utilizados"></a>
-## 2.10. Implementación de CPD a la nube AWS con los servicios utilizados
+## <font color="#0b57d0">2.10. Implementación de CPD a la nube AWS con los servicios utilizados</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -578,7 +578,7 @@ Creamos un grupo de seguridad para el servidor Web-SFTP, como es un servidor que
 
 
 <a name="3-ansible---creacio-de-servidors-logs--ldap-iker"></a>
-## 3. Ansible - Creació de servidors (Logs | LDAP) .Iker
+## <font color="#0b57d0">3. Ansible - Creació de servidors (Logs | LDAP) .Iker</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -680,19 +680,19 @@ ghp_MOCK_TOKEN_REMOVED_BY_SAFETY_SCRIPT<br><br>
 </div>
 
 <a name="4-implantacio-dels-serveis-d-audio-i-video-ivan"></a>
-## 4. Implantació dels serveis d'àudio i vídeo (Ivan)
+## <font color="#0b57d0">4. Implantació dels serveis d'àudio i vídeo (Ivan)</font>
 [↑ Volver al índice](#indice)
 
 
 
 <a name="5-servidor-mysql-xavi-piero"></a>
-## 5. Servidor MySQL (xavi-piero)
+## <font color="#0b57d0">5. Servidor MySQL (xavi-piero)</font>
 [↑ Volver al índice](#indice)
 
 
 
 <a name="5-1-bbdds"></a>
-### 5.1 BBDDs
+### <font color="#0b57d0">5.1 BBDDs</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -705,7 +705,7 @@ ghp_MOCK_TOKEN_REMOVED_BY_SAFETY_SCRIPT<br><br>
 </div>
 
 <a name="5-2-script-bash---gestio-d-usuaris"></a>
-### 5.2 Script bash - Gestió d’usuaris:
+### <font color="#0b57d0">5.2 Script bash - Gestió d’usuaris:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -714,7 +714,7 @@ Es un script automatizado para crear, modificar y eliminar usuarios de MySQL:<br
 </div>
 
 <a name="codi-link-github"></a>
-#### codi (link github)
+#### <font color="#0b57d0">codi (link github)</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -729,7 +729,7 @@ Es un script automatizado para crear, modificar y eliminar usuarios de MySQL:<br
 
 
 <a name="5-3-creacion-de-la-base-de-datos-de-la-web-piero"></a>
-### 5.3 Creación de la base de datos de la Web: (piero)
+### <font color="#0b57d0">5.3 Creación de la base de datos de la Web: (piero)</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -784,7 +784,7 @@ La implementación se divide en dos fases: primero la creación de la estructura
 
 
 <a name="5-3-triggers-y-eventos-periodicos"></a>
-### 5.3 Triggers y eventos periódicos:
+### <font color="#0b57d0">5.3 Triggers y eventos periódicos:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -863,13 +863,13 @@ El evento periódico realiza un backup automático diario a las 02:00 AM exporta
 
 
 <a name="6-servidor-web---sftp-xavi"></a>
-## 6. Servidor Web - SFTP (xavi)
+## <font color="#0b57d0">6. Servidor Web - SFTP (xavi)</font>
 [↑ Volver al índice](#indice)
 
 
 
 <a name="6-1-nginx"></a>
-### 6.1 Nginx:
+### <font color="#0b57d0">6.1 Nginx:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -884,7 +884,7 @@ Verificamos la instalación:<br><br>
 
 
 <a name="6-1-1-creacion-de-certificados-ssl"></a>
-#### 6.1.1. Creación de certificados SSL:
+#### <font color="#0b57d0">6.1.1. Creación de certificados SSL:</font>
 [↑ Volver al índice](#indice)
 
 
@@ -896,7 +896,7 @@ Verificamos la instalación:<br><br>
 
 
 <a name="6-1-2-configuracion-de-la-pagina"></a>
-#### 6.1.2. Configuración de la Página:
+#### <font color="#0b57d0">6.1.2. Configuración de la Página:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -939,7 +939,7 @@ Y vemos los archivos en la ruta:<br><br>
 
 
 <a name="6-1-3-configuracion-php"></a>
-#### 6.1.3. Configuración PHP
+#### <font color="#0b57d0">6.1.3. Configuración PHP</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -950,7 +950,7 @@ config.php:<br><br>
 </div>
 
 <a name="6-2-sftp"></a>
-### 6.2 SFTP
+### <font color="#0b57d0">6.2 SFTP</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -965,7 +965,7 @@ Instalamos proFTPd:<br><br>
 
 
 <a name="6-2-1-configuracion-del-servicio"></a>
-#### 6.2.1 Configuración del servicio:
+#### <font color="#0b57d0">6.2.1 Configuración del servicio:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -1028,7 +1028,7 @@ Abrimos el puerto 2222 configurado al sftp.conf<br><br>
 
 
 <a name="6-2-2-creacion-de-usuarios"></a>
-#### 6.2.2. Creación de usuarios:
+#### <font color="#0b57d0">6.2.2. Creación de usuarios:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -1049,7 +1049,7 @@ Creamos usuarios para todos los miembros del grupo:<br><br>
 
 
 <a name="6-2-3-pruebas"></a>
-#### 6.2.3. Pruebas:
+#### <font color="#0b57d0">6.2.3. Pruebas:</font>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -1062,7 +1062,7 @@ Primero verificamos los permisos de la estructura de directorios del FTP:<br><br
 </p>
 
 <div align="justify">
-<font color="#0000ff"><strong>PRUEBA DE CONEXIÓN SFTP desde el server mysql:</strong></font><br><br>
+<font color="#0000ff"><strong>PRUEBA DE CONEXIÓN SFTP / FTP desde el server mysql:</strong></font><br><br>
 Conexión con usuario:<br><br>
 </div>
 
@@ -1071,7 +1071,7 @@ Conexión con usuario:<br><br>
 </p>
 
 <div align="justify">
-Conexión anónima FTP:<br><br>
+Conexión anónima FTP (prueba de lectura (ls y get) y escritura (put) fallido):<br><br>
 </div>
 
 <p align="center">
