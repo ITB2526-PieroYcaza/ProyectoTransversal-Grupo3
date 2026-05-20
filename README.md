@@ -1,8 +1,65 @@
 # pro-asixc1d-g3
 
- GRUPO 3 PROYECTO TRANSVERSAL ASIXc1D
+# Índice
 
-### 
+    * [1.1. Plano sala del rack:](#11-plano-sala-del-rack)
+    * [1.1.1. Estructuración de los Racks:](#111-estructuracin-de-los-racks)
+      * [1.1.2. Componentes Técnicos Comunes por Rack:](#112-componentes-tcnicos-comunes-por-rack)
+    * [1.2. Sistema de climatización del CPD:](#12-sistema-de-climatizacin-del-cpd)
+    * [1.3. Medidas para dificultar la identificación de la sala:](#13-medidas-para-dificultar-la-identificacin-de-la-sala)
+      * [1.3.1. Señalización Restrictiva:](#131-sealizacin-restrictiva)
+      * [1.3.2. Seguridad de Rutas y Suministros:](#132-seguridad-de-rutas-y-suministros)
+      * [1.3.3. Camuflaje Arquitectónico y Estético:](#133-camuflaje-arquitectnico-y-esttico)
+    * [1.4. distribución y gestión del cableado:](#14-distribucin-y-gestin-del-cableado)
+    * [1.5. Terra Tècnic (Suelo Técnico Elevado):](#15-terra-tcnic-suelo-tcnico-elevado)
+      * [1.5.1. Sostre Tècnic (Falso Techo Registrable):](#151-sostre-tcnic-falso-techo-registrable)
+      * [1.5.2. Estanqueidad con la Cristalera:](#152-estanqueidad-con-la-cristalera)
+  * [2.	Infraestructura elèctrica:](#2-infraestructura-elctrica)
+    * [2.1 Sistemas de alimentación redundante:](#21-sistemas-de-alimentacin-redundante)
+    * [2.2. Sistema SAI / UPS:](#22-sistema-sai-ups)
+    * [2.3. Consumo eléctrico estimado:](#23-consumo-elctrico-estimado)
+    * [2.4. Distribución eléctrica en racks:](#24-distribucin-elctrica-en-racks)
+    * [2.5. Eficiencia energética:](#25-eficiencia-energtica)
+    * [2.6. Seguridad Física](#26-seguridad-fsica)
+      * [2.6.1. Medidas Pasivas:](#261-medidas-pasivas)
+      * [2.6.2. Medidas activas:](#262-medidas-activas)
+    * [2.7. Seguridad lógica](#27-seguridad-lgica)
+      * [2.7.1. Seguridad Lógica Pasiva:](#271-seguridad-lgica-pasiva)
+      * [2.7.2. Seguridad Lógica Activa:](#272-seguridad-lgica-activa)
+  * [2.8. Prevención de riesgos laborales:](#28-prevencin-de-riesgos-laborales)
+      * [2.8.1. Riesgos Eléctricos:](#281-riesgos-elctricos)
+      * [2.8.2. Riesgos Ergonómicos:](#282-riesgos-ergonmicos)
+      * [2.8.3. Riesgos por Ruido:](#283-riesgos-por-ruido)
+      * [2.8.4. Riesgos Térmicos:](#284-riesgos-trmicos)
+      * [2.8.5. Riesgos de Incendio:](#285-riesgos-de-incendio)
+      * [2.8.6. Riesgos de Caídas:](#286-riesgos-de-cadas)
+      * [2.8.7. Riesgos por Radiaciones Electromagnéticas:](#287-riesgos-por-radiaciones-electromagnticas)
+      * [2.8.8. Medidas Organizativas Generales:](#288-medidas-organizativas-generales)
+  * [Implementación del CPD en la nube AWS con los servicios utilizados. Iker](#implementacin-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker)
+  * [2.10. Implementación de CPD a la nube AWS con los servicios utilizados](#210-implementacin-de-cpd-a-la-nube-aws-con-los-servicios-utilizados)
+  * [3. Ansible - Creació de servidors (Logs | LDAP) .Iker](#3-ansible---creaci-de-servidors-logs-ldap-iker)
+  * [4. Implantació dels serveis d'àudio i vídeo (Ivan)](#4-implantaci-dels-serveis-dudio-i-vdeo-ivan)
+  * [5. Servidor MySQL (xavi-piero)](#5-servidor-mysql-xavi-piero)
+    * [5.1 BBDDs](#51-bbdds)
+    * [5.2 Script bash - Gestió d’usuaris:](#52-script-bash---gesti-dusuaris)
+      * [codi (link github)](#codi-link-github)
+    * [5.3 Creación de la base de datos (:](#53-creacin-de-la-base-de-datos-)
+    * [5.3 Triggers y eventos periódicos:](#53-triggers-y-eventos-peridicos)
+  * [6. Servidor Web - SFTP (xavi)](#6-servidor-web---sftp-xavi)
+    * [6.1 Nginx:](#61-nginx)
+      * [6.1.1. Creación de certificados SSL:](#611-creacin-de-certificados-ssl)
+      * [6.1.2. Configuración de la Página:](#612-configuracin-de-la-pgina)
+      * [6.1.3. Configuración PHP](#613-configuracin-php)
+    * [6.2 SFTP](#62-sftp)
+      * [6.2.1 Configuración del servicio:](#621-configuracin-del-servicio)
+      * [6.2.2. Creación de usuarios:](#622-creacin-de-usuarios)
+      * [6.2.3. Pruebas:](#623-pruebas)
+
+---
+
+<div align="justify">
+
+ GRUPO 3 PROYECTO TRANSVERSAL ASIXc1D
 
 * Plano general de las instalaciones INNOCATETECH:
 
@@ -16,9 +73,12 @@ Esta cristalera permite:
 
 * Discreción y Estética: El cristal puede ser electrocromático (se vuelve opaco con un interruptor) para ocultar la sala durante visitas no autorizadas, manteniendo la máxima discreción.
 
-### 
+</div>
 
 ### 1.1. Plano sala del rack:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Hemos optado por una arquitectura de cinco servidores físicos distribuidos en cuatro racks para maximizar la seguridad y el rendimiento. Este esquema no solo asegura el aislamiento de procesos críticos, sino que facilita un crecimiento vertical y ágil ante el posible incremento de las futuras demandas.
 
@@ -30,15 +90,23 @@ Hemos asignado cada servidor a una función específica para garantizar la indep
 * Rack 4: Procesamiento de Audio y Vídeo Servidor independiente dedicado a las capacidades de procesamiento, transcodificación y distribución para las plataformas de streaming de audio y contenido de vídeo de InnovateTech. Al estar separado del Active Directory, se garantiza que el alto consumo de ancho de banda y CPU no afecte la autenticación de la empresa.
 * Rack 5: Base de Datos (DB Server) El motor de datos neurálgico de la organización. Está configurado con discos NVMe de ultra alta velocidad y redundancia para minimizar los tiempos de respuesta de las consultas y garantizar la alta disponibilidad de la información.
 
-### 
+</div>
 
 ### 1.1.1. Estructuración de los Racks:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Para garantizar la alta disponibilidad, la eficiencia en el cableado y el mantenimiento ágil, cada uno de los 5 racks independientes se estructurará internamente utilizando armarios de 42U de altura, 800 mm de ancho y 1100 mm de profundidad (permitiendo espacio lateral para la gestión de cableado vertical).
 
 Todos los racks seguirán un estándar de distribución homogéneo basado en la arquitectura Top of Rack (ToR) para datos y Bottom of Rack (BoR) para energía.
 
+</div>
+
 #### 1.1.2. Componentes Técnicos Comunes por Rack:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 A excepción de los servidores específicos, cada rack contará con los siguientes elementos de infraestructura interna:
 
@@ -51,13 +119,18 @@ A excepción de los servidores específicos, cada rack contará con los siguient
 
 * Gestión de Cableado y Accesorios: Para garantizar un flujo de aire óptimo y un mantenimiento limpio, se instalarán dos organizadores de cable horizontales de 1U con pasacables de escobilla situados estratégicamente entre el switch y los patch panels. Adicionalmente, cada rack incluirá una bandeja fija ventilada de 1U para dar soporte a herramientas o dispositivos que no dispongan de un formato nativo rackeable, así como un kit de monitorización ambiental compuesto por sondas de temperatura y humedad conectadas directamente a la PDU o al SAI para alertar sobre cualquier anomalía térmica interna.
 
+</div>
 
-![Imagen 1](images/img_1.png)
+<p align="center">
+  <img src="images/img_1.png" alt="Imagen 1" />
+</p>
 
 
-### 
 
 ### 1.2. Sistema de climatización del CPD:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 En un CPD convencional abierto, el aire frío se mezcla rápidamente con el aire caliente ambiental, obligando a las unidades de aire acondicionado a trabajar a máxima potencia en la mayoría de casos. Por eso nosotros hemos optado por las cristaleras ya que estas rompen este ciclo creando un recinto estanco:
 
@@ -67,15 +140,27 @@ En un CPD convencional abierto, el aire frío se mezcla rápidamente con el aire
 
 * Humedad Controlada: Se mantiene entre el 45% y 50% para evitar fallos por electricidad estática o corrosión.
 
+</div>
 
-![Imagen 2](images/img_2.png)
+<p align="center">
+  <img src="images/img_2.png" alt="Imagen 2" />
+</p>
+
 
 
 ### 1.3. Medidas para dificultar la identificación de la sala:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Para proteger la infraestructura crítica de InnovateTech, es fundamental aplicar el principio de seguridad por oscuridad. El objetivo es que el CPD pase desapercibido para cualquier persona ajena al departamento de IT, minimizando el riesgo de sabotaje o ataques dirigidos.
 
+</div>
+
 #### 1.3.1. Señalización Restrictiva:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Por precaución a cualquier tipo de incidente ajeno a nuestro departamento de IT, nunca deberemos de usar carteles que digan "CPD", "Data Center" o "Servidores", con el  objetivo de conseguir discreción y que pase desapercibido por usuarios externos.
 
@@ -83,33 +168,49 @@ La placa de la puerta, señalizará solamente con un cartel que diga:
 
 "PROHIBIDO EL PASO A PERSONAS NO AUTORIZADAS".
 
+</div>
 
-![Imagen 3](images/img_3.png)
+<p align="center">
+  <img src="images/img_3.png" alt="Imagen 3" />
+</p>
 
-
+<div align="justify">
 Como normal general en los planos públicos o de evacuación de la empresa, la sala se identificará únicamente como "Zona Técnica" o "Localización de Riesgo Especial", sin especificar su contenido crítico.
 
+</div>
+
 #### 1.3.2. Seguridad de Rutas y Suministros:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Las bandejas de cables y tuberías de refrigeración transcurrirá siempre por falsos techos cerrados, nunca de forma vista en pasillos comunes.
 
 En el directorio del edificio o del ascensor, no figurará ninguna referencia a la ubicación de la infraestructura tecnológica.
 
-#### 
+</div>
 
 #### 1.3.3. Camuflaje Arquitectónico y Estético:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Dado que el CPD se ha diseñado como una sala acristalada, se implementará un sistema de vidrio electrocrómico inteligente, el cual permite que el cristal se vuelva opaco (en tono blanco o negro) mediante un interruptor. Esta tecnología garantiza que, ante la presencia de personal externo, la sala se perciba simplemente como una pared decorativa o una sala de juntas vacía.
 
 Para reforzar esta discreción, la perfilería de la cristalera será idéntica a la utilizada en el resto de las oficinas, evitando que destaque como un elemento de alta seguridad. Asimismo, el CPD se ubica estratégicamente en el núcleo del edificio, eliminando cualquier ventana al exterior para prevenir la visibilidad desde la calle o la exposición ante drones y fotografía externa.
 
+</div>
 
-![Imagen 4](images/img_4.png)
+<p align="center">
+  <img src="images/img_4.png" alt="Imagen 4" />
+</p>
 
 
-### 
 
 ### 1.4. distribución y gestión del cableado:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Para la distribución y gestión del cableado en el CPD de InnovateTech, seguiremos un modelo de alta eficiencia basado en la normativa ANSI/TIA-942, asegurando que el despliegue sea escalable, ordenado y no interfiera con el sistema de climatización de la zona acristalada.
 
@@ -133,9 +234,12 @@ La gestión se dividirá en dos niveles físicos totalmente segregados para evit
 * Latiguillos a Medida: Se emplearán cables de la longitud exacta para evitar excedentes enrollados que perjudiquen la estética y la ventilación.
 * Etiquetado Industrial: Cada extremo de cada cable estará identificado con etiquetas permanentes que indiquen origen, destino y servicio (ej. SRV-WEB-01 to SW-CORE-01).
 
-### 
+</div>
 
 ### 1.5. Terra Tècnic (Suelo Técnico Elevado):
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Se instalará un sistema de pavimento elevado a 50 cm de altura respecto al suelo real del edificio.
 
@@ -143,7 +247,12 @@ Se instalará un sistema de pavimento elevado a 50 cm de altura respecto al suel
 * Su función térmica dentro del espacio vacío inferior (plénum) actúa como canal de impulsión del aire frío proveniente de la unidad CRAC. El aire sale exclusivamente a través de baldosas perforadas estratégicamente situadas frente a la entrada de los servidores.
 * Para la gestión de Energía, a este nivel se utilizará para canalizar el cableado eléctrico y las tomas de tierra, manteniéndolos ocultos y separados de los datos.
 
+</div>
+
 #### 1.5.1. Sostre Tècnic (Falso Techo Registrable):
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 El techo se situará a una altura libre de 2,80 metros.
 
@@ -154,17 +263,30 @@ El techo se situará a una altura libre de 2,80 metros.
 * Las boquillas de descarga del gas extintor FM-200.
 * Los sensores de temperatura y humedad conectados al sistema de monitorización.
 
+</div>
+
 #### 1.5.2. Estanqueidad con la Cristalera:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Un punto crítico de este diseño es que tanto el suelo como el techo técnico estarán sellados herméticamente en sus perímetros contra la cristalera. Esto asegura que la presión positiva y el efecto estanco se mantengan dentro de la zona de racks, evitando fugas de aire hacia el resto de la oficina.
 
-## 
+</div>
 
 ## 2.	Infraestructura elèctrica:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 La infraestructura eléctrica del CPD estará diseñada para garantizar la continuidad del servicio incluso ante fallos eléctricos, evitando pérdidas de datos y caídas de servicios críticos. Para ello, implementaremos una arquitectura eléctrica redundante y segura que permita mantener los servidores y sistemas de red operativos en todo momento.
 
+</div>
+
 ### 2.1 Sistemas de alimentación redundante:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Todos los racks dispondrán de alimentación redundante mediante dos líneas eléctricas independientes conectadas a diferentes PDUs (Power Distribution Units). Esto permitirá que, en caso de fallo de una línea eléctrica, los equipos continúen funcionando utilizando la línea secundaria sin interrupción del servicio.
 
@@ -177,15 +299,27 @@ Además, la instalación dispondrá de:
 * Sistema de puesta a tierra reglamentario.
 * Protección frente a sobretensiones y picos eléctricos.
 
+</div>
+
 ### 2.2. Sistema SAI / UPS:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Para proteger la infraestructura frente a cortes eléctricos, instalaremos un sistema de alimentación ininterrumpida (SAI/UPS) online de doble conversión. Este sistema permitirá mantener operativos los servicios críticos durante un tiempo determinado mientras se restablece el suministro eléctrico o se realiza un apagado controlado de los servidores.
 
 El SAI protegerá frente a cortes de corriente, microcortes eléctricos, variaciones de tensión, picos eléctricos, fluctuaciones de frecuencia.
 
+</div>
+
 ### 2.3. Consumo eléctrico estimado:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Hemos realizado una estimación aproximada del consumo energético total de la infraestructura IT teniendo en cuenta los equipos instalados dentro del CPD.
+
+</div>
 
 | EQUIPAMIENTO  | CONSUMO APROXIMADO |
 | --- | --- |
@@ -196,15 +330,20 @@ Hemos realizado una estimación aproximada del consumo energético total de la i
 | Climatización auxiliar | 500 W |
 | Total estimado | 3750 W |
 
+<div align='justify'>
+
 Teniendo en cuenta este consumo, proponemos la utilización de un SAI de aproximadamente 5000 VA, proporcionando autonomía suficiente para mantener la infraestructura operativa entre 20 y 30 minutos.
 
 Este tiempo nos permitirá mantener los servicios activos temporalmente, evitar pérdidas de información, realizar backups o apagados controlados, también nos permitirá proteger la integridad de la base de datos y sistemas que sean críticos.
 
 Hemos calculado los valores de consumo de forma aproximada utilizando consumos medios habituales de servidores rack empresariales, electrónica de red y sistemas auxiliares del CPD, añadiendo además un margen de seguridad para soportar posibles picos de carga y futuras ampliaciones de la infraestructura.
 
-### 
+</div>
 
 ### 2.4. Distribución eléctrica en racks:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Cada rack dispondrá de:
 
@@ -218,7 +357,12 @@ La distribución eléctrica seguirá el modelo descrito en la gestión de cablea
 
 Además, la organización interna de los racks contará con guías verticales y horizontales para mantener el cableado ordenado y evitar obstrucciones en el flujo de aire generado por el sistema de climatización.
 
+</div>
+
 ### 2.5. Eficiencia energética:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Con el objetivo de reducir el impacto medioambiental y optimizar el consumo eléctrico, el CPD implementará medidas de eficiencia energética:
 
@@ -230,41 +374,75 @@ Con el objetivo de reducir el impacto medioambiental y optimizar el consumo elé
 
 Estas medidas nos permitirán reducir el consumo eléctrico total del CPD y mejorar la sostenibilidad de la infraestructura tecnológica.
 
-## 
+</div>
 
 ### 2.6. Seguridad Física
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Para la parte de la seguridad física, hemos implementado las siguientes medidas:
 
+</div>
+
 #### 2.6.1. Medidas Pasivas:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Traslado de nuestros servidores a una ubicación segura, alejada de zonas de riesgo, donde solo tiene acceso el personal autorizado (los administradores).
 * Control ambiental de la temperatura y humedad de la sala.
 * La sala está ubicada en una segunda planta, donde la información a nivel físico estará protegida de robos o vandalismo.
 
+</div>
+
 #### 2.6.2. Medidas activas:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Para garantizar que no pueda acceder cualquiera, hemos implementado un control de acceso con tarjetas de proximidad.
 * Además, contamos con cámaras de videovigilancia que monitorean el perímetro las 24 horas del día.
 
+</div>
+
 ### 2.7. Seguridad lógica
+[↑ Volver al índice](#índice)
+
+
 
 #### 2.7.1. Seguridad Lógica Pasiva:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Una de las medidas preventivas realizadas a nivel de equipos es el cifrado de datos con herramientas avanzadas para lograr una mayor seguridad en nuestros sistemas.
 * Implementamos la verificación de usuarios mediante contraseñas y autenticación en dos pasos, ayudándonos a verificar de manera eficiente que los empleados se identifican correctamente.
 * Para la división de permisos y evitar que todos tengan acceso a la misma información, hemos agregado roles y permisos según el cargo del personal.
 * Esto ayudará a que solo las personas autorizadas puedan acceder a información específica, evitando mezclas entre departamentos.
 
+</div>
+
 #### 2.7.2. Seguridad Lógica Activa:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Para evitar visitas no autorizadas del exterior, hemos añadido un sistema de detección de intrusos que bloqueará ataques que puedan afectar a nuestro funcionamiento.
 * También implementamos antivirus y antimalware, algunos de los cuales serán Bitdefender, GravityZone o Business Security.
 * Contaremos con una empresa externa contratada que se encargará de monitorear y auditar las actividades de los dispositivos de la empresa en busca de vulnerabilidades o para localizar anomalías dentro de los sistemas.
 
+</div>
+
 ## 2.8. Prevención de riesgos laborales:
+[↑ Volver al índice](#índice)
+
+
 
 #### 2.8.1. Riesgos Eléctricos:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Instalación con toma de tierra reglamentaria.
 * Protecciones diferenciales y magnetotérmicas en todos los cuadros eléctricos.
@@ -272,26 +450,46 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 * Prohibición de acceder a los cuadros eléctricos sin los EPI adecuados (guantes aislantes).
 * Procedimiento de bloqueo y etiquetado LOTO antes de realizar tareas de mantenimiento.
 
+</div>
+
 #### 2.8.2. Riesgos Ergonómicos:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Altura regulable de los racks para evitar posturas forzadas.
 * Uso de soportes para manipular equipos pesados (servidores, SAI/UPS).
 * Formación en manipulación manual de cargas (RD 487/1997).
 * Iluminación adecuada en los pasillos fríos/calientes para reducir la fatiga visual.
 
+</div>
+
 #### 2.8.3. Riesgos por Ruido:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Medición del nivel de ruido de los sistemas de refrigeración (límite: 85 dB).
 * Protección auditiva obligatoria si la permanencia es prolongada.
 * Limitación del tiempo de exposición sin EPI.
 
+</div>
+
 #### 2.8.4. Riesgos Térmicos:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Control de temperatura entre 18°C y 27°C (recomendación ASHRAE).
 * Señalización de zonas de frío intenso (cold aisle / pasillo frío).
 * Ropa adecuada para el personal que trabaja en zonas de climatización forzada.
 
+</div>
+
 #### 2.8.5. Riesgos de Incendio:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Sistemas de detección precoz de humo (VESDA o similar).
 * Extinción automática con gas inerte (FM-200 o Novec 1230); no se debe usar agua ni CO₂ en la zona de servidores.
@@ -299,21 +497,34 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 * Puertas cortafuegos RF-120 en los accesos.
 * Simulacros periódicos de evacuación.
 
-## 
+</div>
 
 #### 2.8.6. Riesgos de Caídas:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Suelo técnico con superficie antideslizante.
 * Tapas del suelo técnico correctamente fijadas cuando no se estén realizando trabajos.
 * Señalización de desniveles u obstáculos.
 * Iluminación de emergencia autónoma en todos los pasillos.
 
+</div>
+
 #### 2.8.7. Riesgos por Radiaciones Electromagnéticas:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Distancia de seguridad a los equipos de gran emisión (antenas, switches de gran potencia).
 * Evaluación periódica de los niveles de exposición.
 
+</div>
+
 #### 2.8.8. Medidas Organizativas Generales:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 * Acceso restringido: solo personal autorizado con formación en PRL.
 * Registro de entrada/salida del personal al CPD.
@@ -321,43 +532,20 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 * Equipos de trabajo en parejas (nunca trabajar solo en el CPD).
 * Plan de emergencia y teléfonos de emergencia visibles.
 
-## 
+</div>
 
-## 
+## Implementación del CPD en la nube AWS con los servicios utilizados. Iker
+[↑ Volver al índice](#índice)
 
-## Implementació del CPD al núvol AWS amb els serveis utilitzats. Iker 
+<div align='justify'>
 
-(mínim de 4 - el
+(mínimo de 4 - los servicios de audio, vídeo y bases de datos se valoran en los otros bloques). ○ Los servicios a montar (no se pueden utilizar AMIs del marketplace con software instalado) son: 
 
-serveis d'àudio, vídeo i bases de dades es valoren en els altres blocs).
-
-○ Els serveis a muntar (no es poden utilitzar AMI’s del marketplace amb
-
-software instal.lat) són:
-
-■ Servei web
-
-■ Servei de transferència de fitxers segur (sftp). S’autenticarà amb els
-
-usuaris de directori actiu.
-
-■ Servei de centralització de logs que reculli els logs de tots els equips.
-
-■ Servei de directori actiu per a guardar els usuaris.
-
-○ Cada servei haurà d’estar instal·lat en un servidor diferent (a excepció del
-
-servei web i sftp).
-
-○ Dues de les màquines (com a mínim) han d’estar configurades amb Ansible
-
-(incloent tota la configuració feta al servidor).
-
-○ Les màquines s'han d’administrar amb un usuari específic (no es podrà
-
-utilitzar l’usuari per defecte del servidor) i l’accés es farà amb clau
-
-pública/privada (sense utilitzar contrasenya).
+* Servicio web 
+* Servicio de transferencia de ficheros seguro (sftp). Se autenticará con los usuarios de directorio activo. 
+* Servicio de centralización de logs que recoja los logs de todos los equipos. 
+* Servicio de directorio activo para guardar los usuarios. 
+* Cada servicio deberá estar instalado en un servidor diferente (a excepción del servicio web y sftp). ○ Dos de las máquinas (como mínimo) deben estar configuradas con Ansible (incluyendo toda la configuración realizada en el servidor). ○ Las máquinas se deben administrar con un usuario específico (no se podrá utilizar el usuario por defecto del servidor) y el acceso se realizará con clave pública/privada (sin utilizar contraseña).
 
 * Servidor Web y servidor SFTP juntos. 
 
@@ -379,17 +567,25 @@ Implementació al núvol AWS (5 p)
 
 ○ Usuaris administració (0,5p)
 
-## 
+</div>
 
 ## 2.10. Implementación de CPD a la nube AWS con los servicios utilizados
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Primero de todo, lanzaremos la primera instancia, que será el servidor Web-SFTP, y desde ahí mismo lanzaremos las otras dos instancias, que serán el servidor Directorio Activo (LDAP) y el servidor de logs.
 
+</div>
 
-![Imagen 5](images/img_5.png)
+<p align="center">
+  <img src="images/img_5.png" alt="Imagen 5" />
+</p>
 
-
+<div align="justify">
 Creamos un grupo de seguridad para el servidor Web-SFTP, como es un servidor que solo necesita los puertos 22, 443 y 80 únicamente. Los configuramos y añadimos a nuestra instancia:
+
+</div>
 
 | Servidor | Serveis | IP Pública | IP Privada |
 | --- | --- | --- | --- |
@@ -400,108 +596,172 @@ Creamos un grupo de seguridad para el servidor Web-SFTP, como es un servidor que
 | Servidor BD | Mysql | 34.226.127.76 | 172.31.30.119/20  |
 | Repositorio github: https://github.com/ITB2526-PieroYcaza/ProyectoTransversal-Grupo3.git |  |  |  |
 
-## 
+
 
 ## 3. Ansible - Creació de servidors (Logs | LDAP) .Iker
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Entramos sin necesidad de contraseña a nuestro usuario que usaremos para el servidor Web-SFTP.
 
+</div>
 
-![Imagen 6](images/img_6.png)
+<p align="center">
+  <img src="images/img_6.png" alt="Imagen 6" />
+</p>
 
-
+<div align="justify">
 Ahora guardamos temporalmente las credenciales de AWS para que Ansible pueda crear las máquinas, necesita mis claves temporales que se tendran que ir renovando.
 
+</div>
 
-![Imagen 7](images/img_7.png)
+<p align="center">
+  <img src="images/img_7.png" alt="Imagen 7" />
+</p>
 
-
+<div align="justify">
 Playbook para crear los servidores de log y Directorio Activo:
 
+</div>
 
-![Imagen 8](images/img_8.png)
+<p align="center">
+  <img src="images/img_8.png" alt="Imagen 8" />
+</p>
 
-
+<div align="justify">
 Lanzamos el playbook de Ansible y creamos los dos servidores automatizados.
 
+</div>
 
-![Imagen 9](images/img_9.png)
+<p align="center">
+  <img src="images/img_9.png" alt="Imagen 9" />
+</p>
 
-
+<div align="justify">
 Ahora configuramos los servidores de logs y directorio activo mediante Ansible. 
 
 Primero de todo, desde mi servidor web, dentro del fichero .ssh, creamos un fichero llamado ServidorWeb.pem, que dentro irá la llave de la clave .pem original que uso para conectarme a mi servidor. Así podemos entrar a configurar a los otros servidores sin necesidad de contraseña. Le damos también los permisos adecuados. 
 
+</div>
 
-![Imagen 10](images/img_10.png)
+<p align="center">
+  <img src="images/img_10.png" alt="Imagen 10" />
+</p>
 
 
 
-![Imagen 11](images/img_11.png)
+<p align="center">
+  <img src="images/img_11.png" alt="Imagen 11" />
+</p>
 
-
+<div align="justify">
 El siguiente paso es crear un fichero en donde irán las IPs privadas de los dos servidores que configuraremos vía Ansible:
 
+</div>
 
-![Imagen 12](images/img_12.png)
+<p align="center">
+  <img src="images/img_12.png" alt="Imagen 12" />
+</p>
 
-
+<div align="justify">
 Luego, en el segundo fichero, indicamos cómo se comporta el Ansible, la primera linea host_key_checking = False. Como al conectarnos por ssh por primera vez nos pide si queremos conectarnos, al poner “false” hacemos que ansible entre sin preguntar nada, evitando que se quede esperando en la terminal a que escribamos “yes”.
 
 Con el inventario = inventory: Le indicamos al Ansible que busque las IPs de los servidores en el archivo llamado inventory que creamos antes. 
 
+</div>
 
-![Imagen 13](images/img_13.png)
+<p align="center">
+  <img src="images/img_13.png" alt="Imagen 13" />
+</p>
 
-
+<div align="justify">
 Comprobamos si se puede acceder por ping, que se conecta por SSH, asegurándonos de que podamos controlar los otros dos servidores. Los servidores nos devuelven el mensaje “ping”: “pong”. 
 
+</div>
 
-![Imagen 14](images/img_14.png)
+<p align="center">
+  <img src="images/img_14.png" alt="Imagen 14" />
+</p>
 
-
+<div align="justify">
 Ahora reescribimos el fichero inventory para indicarle más precisamente las máquinas en donde Ansible instalará los servicios correspondientes. 
 
 Creamos grupos separados para cada máquina [directorio_activo] y [servidor_logs] para que Ansible sepa dónde instalar cada servicio. Luego creamos otro grupo [remoto:children] que engloba los grupos anteriores para cuando tengamos que hacer algo igual en las dos máquinas, lo metemos dentro de ese grupo. Y por último, en [remotos:var] le definimos el usuario que tienen las máquinas ahora mismo, que es Ubuntu, y la clave privada (ServidorWeb.pem).
 
+</div>
 
-![Imagen 15](images/img_15.png)
-
-
-
-![Imagen 16](images/img_16.png)
-
+<p align="center">
+  <img src="images/img_15.png" alt="Imagen 15" />
+</p>
 
 
-![Imagen 17](images/img_17.png)
+
+<p align="center">
+  <img src="images/img_16.png" alt="Imagen 16" />
+</p>
 
 
-## 
+
+<p align="center">
+  <img src="images/img_17.png" alt="Imagen 17" />
+</p>
+
+<div align="justify">
+
+
+</div>
 
 ## 4. Implantació dels serveis d'àudio i vídeo (Ivan)
+[↑ Volver al índice](#índice)
 
-## 5. Servidor MySQL (xavi)
+
+
+## 5. Servidor MySQL (xavi-piero)
+[↑ Volver al índice](#índice)
+
+
 
 ### 5.1 BBDDs
+[↑ Volver al índice](#índice)
 
-* InnovateTech: Cobrirà totes les necessitats de la pàgina web (usuaris, productes, serveis, etc).
-* LDAP: Base de dades connectada al servei LDAP del servidor respectiu. Emmagatzema els usuaris de la empresa i informació sobre aquestos.
-* ICECAST: Base de dades connectada al servidor ICECAST de audio i video, emmagatzemant totes les dades necessàries per el funcionament del servei. 
-* Audit: Base de dades connectada al servidor Elastic. Aquesta emmagatzemarà tots els logs registrats per el servidor de logs.
+<div align='justify'>
+
+* InnovateTech: Cubrirá todas las necesidades de la página web (usuarios, productos, servicios, etc).
+* LDAP: Base de datos conectada al servicio LDAP del servidor respectivo. Almacena los usuarios de la empresa e información sobre estos.
+* ICECAST: Base de datos conectada al servidor ICECAST de audio y video, almacenando todos los datos necesarios para el funcionamiento del servicio.
+* Audit: Base de datos conectada al servidor Elastic. Este almacenará todos los logs registrados por el servidor de logs.
+
+</div>
 
 ### 5.2 Script bash - Gestió d’usuaris:
+[↑ Volver al índice](#índice)
 
-Aquest és un script automatitzat per crear, modificar i eliminar usuaris al nostre MySQL:
+<div align='justify'>
+
+Es un script automatizado para crear, modificar y eliminar usuarios de MySQL:
+
+</div>
 
 #### codi (link github)
+[↑ Volver al índice](#índice)
 
-Prova del funcionament + creació de usuari admin 
+<div align='justify'>
 
-## 
-![Imagen 18](images/img_18.png)
+Prueba del funcionamiento + creación de usuario admin 
+
+</div>
+
+<p align="center">
+  <img src="images/img_18.png" alt="Imagen 18" />
+</p>
 
 
-### 5.3 Creación de la base de datos:
+
+### 5.3 Creación de la base de datos (:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Para dar soporte a los servicios de InnovateTech (gestión de personal, streaming de audio y vídeo, videollamadas y mediciones de ancho de banda), se implementa una base de datos relacional sobre un servidor EC2 dedicado con MySQL.
 
@@ -511,35 +771,54 @@ La implementación se divide en dos fases: primero la creación de la estructura
 
 * Dentro del servidor con el servicio MySQL se crea un directorio que almacenará el fichero Innovatetech_DB.sql.
 
+</div>
 
-![Imagen 19](images/img_19.png)
+<p align="center">
+  <img src="images/img_19.png" alt="Imagen 19" />
+</p>
 
-
+<div align="justify">
 * Dentro del directorio se crea el nano del fichero de la base de datos, el contenido del fichero se encuentra en el git del proyecto.
 
+</div>
 
-![Imagen 20](images/img_20.png)
+<p align="center">
+  <img src="images/img_20.png" alt="Imagen 20" />
+</p>
 
-
+<div align="justify">
 * Posteriormente, ejecutamos el comando que permitirá ejecutar el fichero y crear la base de datos.
 
+</div>
 
-![Imagen 21](images/img_21.png)
+<p align="center">
+  <img src="images/img_21.png" alt="Imagen 21" />
+</p>
 
-
+<div align="justify">
 * Verificamos haciendo un SHOW TABLES.
 
+</div>
 
-![Imagen 22](images/img_22.png)
+<p align="center">
+  <img src="images/img_22.png" alt="Imagen 22" />
+</p>
 
-
+<div align="justify">
 * Por último se reinicia el servicio
 
+</div>
 
-![Imagen 23](images/img_23.png)
+<p align="center">
+  <img src="images/img_23.png" alt="Imagen 23" />
+</p>
+
 
 
 ### 5.3 Triggers y eventos periódicos:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
 
 Una vez creada la estructura de la base de datos, se implementa la lógica de seguridad y automatización mediante triggers y un evento periódico.
 
@@ -549,179 +828,298 @@ El evento periódico realiza un backup automático diario a las 02:00 AM exporta
 
 * Primero se crea el fichero Triggers_y_Eventos.sql, el contenido del mismo está en este enlace del git.
 
+</div>
 
-![Imagen 24](images/img_24.png)
+<p align="center">
+  <img src="images/img_24.png" alt="Imagen 24" />
+</p>
 
-
+<div align="justify">
 * Seguidamente, se el comando que permitirá ejecutarlo.
 
+</div>
 
-![Imagen 25](images/img_25.png)
+<p align="center">
+  <img src="images/img_25.png" alt="Imagen 25" />
+</p>
 
-
+<div align="justify">
 * Se hacen las verificaciones de los triggers.
 
+</div>
 
-![Imagen 26](images/img_26.png)
+<p align="center">
+  <img src="images/img_26.png" alt="Imagen 26" />
+</p>
 
 
 
-![Imagen 27](images/img_27.png)
+<p align="center">
+  <img src="images/img_27.png" alt="Imagen 27" />
+</p>
 
-
+<div align="justify">
 * Se hacen las verificaciones de los eventos.
 
+</div>
 
-![Imagen 28](images/img_28.png)
+<p align="center">
+  <img src="images/img_28.png" alt="Imagen 28" />
+</p>
 
-
+<div align="justify">
 * Para la realización de los backups es necesario que creemos el directorio en el /var/ y se ajusta la propiadad hacia mysql como propietario y grupo
 
+</div>
 
-![Imagen 29](images/img_29.png)
+<p align="center">
+  <img src="images/img_29.png" alt="Imagen 29" />
+</p>
 
-
+<div align="justify">
 * Y para que persista tras reinicios, se añade al fichero lo siguiente “event_scheduler = ON”
 
+</div>
 
-![Imagen 30](images/img_30.png)
+<p align="center">
+  <img src="images/img_30.png" alt="Imagen 30" />
+</p>
 
-
+<div align="justify">
 * Finalmente se reinicia el servicio.
 
+</div>
 
-![Imagen 31](images/img_31.png)
+<p align="center">
+  <img src="images/img_31.png" alt="Imagen 31" />
+</p>
 
 
-## 
 
 ## 6. Servidor Web - SFTP (xavi)
+[↑ Volver al índice](#índice)
+
+
 
 ### 6.1 Nginx:
+[↑ Volver al índice](#índice)
 
-Verifiquem la instal·lació:
+<div align='justify'>
 
+Verificamos la instalación:
 
-![Imagen 32](images/img_32.png)
+</div>
 
-
-#### 6.1.1. Creació de certificats SSL:
-
-
-![Imagen 33](images/img_33.png)
-
-
-#### 6.1.2. Configuració de la Pàgina:
-
-Instal·lem i verifiquem la versió de php:
-
-
-![Imagen 34](images/img_34.png)
+<p align="center">
+  <img src="images/img_32.png" alt="Imagen 32" />
+</p>
 
 
 
-![Imagen 35](images/img_35.png)
+#### 6.1.1. Creación de certificados SSL:
+[↑ Volver al índice](#índice)
 
 
-Fem les configuracions necessàries per el funcionament de la pàgina amb les següents funcions:
 
-* Compatibilitat amb PHP
-* Funcionament HTTPS
-* Redirecció 80->443
-* Ús de certificats autosignats
-* Encriptat amb TLSv1.2-3
+<p align="center">
+  <img src="images/img_33.png" alt="Imagen 33" />
+</p>
 
 
-![Imagen 36](images/img_36.png)
+
+#### 6.1.2. Configuración de la Página:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
+
+Instalamos y verificamos la versión de php:
+
+</div>
+
+<p align="center">
+  <img src="images/img_34.png" alt="Imagen 34" />
+</p>
 
 
-I veiem els arxius a la ruta 
+
+<p align="center">
+  <img src="images/img_35.png" alt="Imagen 35" />
+</p>
+
+<div align="justify">
+Hacemos las configuraciones necesarias para el funcionamiento de la página con las siguientes funciones:
+
+* Compatibilidad con PHP
+* Funcionamiento HTTPS
+* Redirección 80->443
+* Uso de certificados autofirmados
+* Encriptado con TLSv1.2-3
+
+</div>
+
+<p align="center">
+  <img src="images/img_36.png" alt="Imagen 36" />
+</p>
+
+<div align="justify">
+Y vemos los archivos en la ruta:
+
+</div>
+
+<p align="center">
+  <img src="images/img_37.png" alt="Imagen 37" />
+</p>
 
 
-![Imagen 37](images/img_37.png)
 
+#### 6.1.3. Configuración PHP
+[↑ Volver al índice](#índice)
 
-#### 6.1.3. Configuració PHP
+<div align='justify'>
 
-Ara necessitem conectar el php de la pàgina amb el BD i el LDAP del nostre projecte:
+Ahora necesitamos conectar el php de la pagina con la BD y el LDAP de nuestro projecto:
 
 config.php:
 
 enganchar imagen cuando se configure server LDAP
 
+</div>
+
 ### 6.2 SFTP
+[↑ Volver al índice](#índice)
 
-Instal·lem proFTPd:
+<div align='justify'>
 
+Instalamos proFTPd:
 
-![Imagen 38](images/img_38.png)
+</div>
 
-
-#### 	6.2.1 Configuració del servei:
-
-Mode Standalone:
-
-
-![Imagen 39](images/img_39.png)
-
-
-Configuració per inici de sessió amb usuaris ftp
-
-
-![Imagen 40](images/img_40.png)
-
-
-Login Anónim:
-
-
-![Imagen 41](images/img_41.png)
-
-
-Habilitem i configurem SFTP:
-
-
-![Imagen 42](images/img_42.png)
-
-
-Les següents configuracions permeten ús de SFTP tant de usuaris registrats com anónims:
-
-
-![Imagen 43](images/img_43.png)
-
-
-Habilitem el módul de sftp: (/etc/profptd/modules.conf)
-
-
-![Imagen 44](images/img_44.png)
-
-
-Obrim el port 2222 configurat al sftp.conf
-
-
-![Imagen 45](images/img_45.png)
-
-
-#### 6.2.2. Creació d’usuaris:
-
-Creem usuaris per tots els membres del grup:
-
-
-![Imagen 46](images/img_46.png)
+<p align="center">
+  <img src="images/img_38.png" alt="Imagen 38" />
+</p>
 
 
 
-![Imagen 47](images/img_47.png)
+#### 6.2.1 Configuración del servicio:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
+
+Modo Standalone:
+
+</div>
+
+<p align="center">
+  <img src="images/img_39.png" alt="Imagen 39" />
+</p>
+
+<div align="justify">
+Configuración para inicio de sesión con usuarios ftp
+
+</div>
+
+<p align="center">
+  <img src="images/img_40.png" alt="Imagen 40" />
+</p>
+
+<div align="justify">
+Login Anónimo:
+
+</div>
+
+<p align="center">
+  <img src="images/img_41.png" alt="Imagen 41" />
+</p>
+
+<div align="justify">
+Habilitamos y configuramos SFTP:
+
+</div>
+
+<p align="center">
+  <img src="images/img_42.png" alt="Imagen 42" />
+</p>
+
+<div align="justify">
+Las siguientes configuraciones permite el uso de SFTP tanto de usuarios registrados como anónimos:
+
+</div>
+
+<p align="center">
+  <img src="images/img_43.png" alt="Imagen 43" />
+</p>
+
+<div align="justify">
+Habilitamos el módulo de sftp: (/etc/profptd/modules.conf)
+
+</div>
+
+<p align="center">
+  <img src="images/img_44.png" alt="Imagen 44" />
+</p>
+
+<div align="justify">
+Abrimos el puerto 2222 configurado al sftp.conf
+
+</div>
+
+<p align="center">
+  <img src="images/img_45.png" alt="Imagen 45" />
+</p>
 
 
-#### 	6.2.3. Proves:
 
-Primer de tot, verifiquem els permisos de la estructura de directoris del FTP:
+#### 6.2.2. Creación de usuarios:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
+
+Creamos usuarios para todos los miembros del grupo:
+
+</div>
+
+<p align="center">
+  <img src="images/img_46.png" alt="Imagen 46" />
+</p>
 
 
-![Imagen 48](images/img_48.png)
+
+<p align="center">
+  <img src="images/img_47.png" alt="Imagen 47" />
+</p>
 
 
-PROVA DE CONNEXIÓ SFTP desde el server mysql:
 
-arreglar sftp i provar
+#### 6.2.3. Pruebas:
+[↑ Volver al índice](#índice)
+
+<div align='justify'>
+
+Primero verificamos los permisos de la estructura de directorios del FTP:
+
+</div>
+
+<p align="center">
+  <img src="images/img_48.png" alt="Imagen 48" />
+</p>
+
+<div align="justify">
+PRUEBA DE CONEXIÓN SFTP desde el server mysql:
+
+Conexión con usuario:
+
+</div>
+
+<p align="center">
+  <img src="images/img_49.png" alt="Imagen 49" />
+</p>
+
+<div align="justify">
+Conexión anónima FTP:
+
+</div>
+
+<p align="center">
+  <img src="images/img_50.png" alt="Imagen 50" />
+</p>
 
