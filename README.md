@@ -37,8 +37,8 @@
       * [2.8.6. Riesgos de Caídas:](#286-riesgos-de-caidas)
       * [2.8.7. Riesgos por Radiaciones Electromagnéticas:](#287-riesgos-por-radiaciones-electromagneticas)
       * [2.8.8. Medidas Organizativas Generales:](#288-medidas-organizativas-generales)
-  * [Implementación del CPD en la nube AWS con los servicios utilizados. Iker](#implementacion-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker)
-  * [2.10. Implementación de CPD a la nube AWS con los servicios utilizados](#210-implementacion-de-cpd-a-la-nube-aws-con-los-servicios-utilizados)
+    * [2.9. Implementación del CPD en la nube AWS con los servicios utilizados. Iker](#29-implementacion-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker)
+    * [2.10. Implementación de CPD a la nube AWS con los servicios utilizados](#210-implementacion-de-cpd-a-la-nube-aws-con-los-servicios-utilizados)
   * [3. Ansible - Creació de servidors (Logs | LDAP) .Iker](#3-ansible---creacio-de-servidors-logs--ldap-iker)
   * [4. Implantació dels serveis d'àudio i vídeo (Ivan)](#4-implantacio-dels-serveis-d-audio-i-video-ivan)
   * [5. Servidor MySQL (xavi-piero)](#5-servidor-mysql-xavi-piero)
@@ -527,8 +527,8 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
-<a name="implementacion-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker"></a>
-## <a href="#implementacion-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker">Implementación del CPD en la nube AWS con los servicios utilizados. Iker</a>
+<a name="29-implementacion-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker"></a>
+### <a href="#29-implementacion-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker">2.9. Implementación del CPD en la nube AWS con los servicios utilizados. Iker</a>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -557,7 +557,7 @@ Implementació al núvol AWS (5 p)<br><br>
 </div>
 
 <a name="210-implementacion-de-cpd-a-la-nube-aws-con-los-servicios-utilizados"></a>
-## <a href="#210-implementacion-de-cpd-a-la-nube-aws-con-los-servicios-utilizados">2.10. Implementación de CPD a la nube AWS con los servicios utilizados</a>
+### <a href="#210-implementacion-de-cpd-a-la-nube-aws-con-los-servicios-utilizados">2.10. Implementación de CPD a la nube AWS con los servicios utilizados</a>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
