@@ -1,59 +1,60 @@
 # pro-asixc1d-g3
 
+<a name="indice"></a>
 # Índice
 
-    * [1.1. Plano sala del rack:](#11-plano-sala-del-rack)
-    * [1.1.1. Estructuración de los Racks:](#111-estructuracin-de-los-racks)
-      * [1.1.2. Componentes Técnicos Comunes por Rack:](#112-componentes-tcnicos-comunes-por-rack)
-    * [1.2. Sistema de climatización del CPD:](#12-sistema-de-climatizacin-del-cpd)
-    * [1.3. Medidas para dificultar la identificación de la sala:](#13-medidas-para-dificultar-la-identificacin-de-la-sala)
-      * [1.3.1. Señalización Restrictiva:](#131-sealizacin-restrictiva)
-      * [1.3.2. Seguridad de Rutas y Suministros:](#132-seguridad-de-rutas-y-suministros)
-      * [1.3.3. Camuflaje Arquitectónico y Estético:](#133-camuflaje-arquitectnico-y-esttico)
-    * [1.4. distribución y gestión del cableado:](#14-distribucin-y-gestin-del-cableado)
-    * [1.5. Terra Tècnic (Suelo Técnico Elevado):](#15-terra-tcnic-suelo-tcnico-elevado)
-      * [1.5.1. Sostre Tècnic (Falso Techo Registrable):](#151-sostre-tcnic-falso-techo-registrable)
-      * [1.5.2. Estanqueidad con la Cristalera:](#152-estanqueidad-con-la-cristalera)
-  * [2.	Infraestructura elèctrica:](#2-infraestructura-elctrica)
-    * [2.1 Sistemas de alimentación redundante:](#21-sistemas-de-alimentacin-redundante)
-    * [2.2. Sistema SAI / UPS:](#22-sistema-sai-ups)
-    * [2.3. Consumo eléctrico estimado:](#23-consumo-elctrico-estimado)
-    * [2.4. Distribución eléctrica en racks:](#24-distribucin-elctrica-en-racks)
-    * [2.5. Eficiencia energética:](#25-eficiencia-energtica)
-    * [2.6. Seguridad Física](#26-seguridad-fsica)
-      * [2.6.1. Medidas Pasivas:](#261-medidas-pasivas)
-      * [2.6.2. Medidas activas:](#262-medidas-activas)
-    * [2.7. Seguridad lógica](#27-seguridad-lgica)
-      * [2.7.1. Seguridad Lógica Pasiva:](#271-seguridad-lgica-pasiva)
-      * [2.7.2. Seguridad Lógica Activa:](#272-seguridad-lgica-activa)
-  * [2.8. Prevención de riesgos laborales:](#28-prevencin-de-riesgos-laborales)
-      * [2.8.1. Riesgos Eléctricos:](#281-riesgos-elctricos)
-      * [2.8.2. Riesgos Ergonómicos:](#282-riesgos-ergonmicos)
-      * [2.8.3. Riesgos por Ruido:](#283-riesgos-por-ruido)
-      * [2.8.4. Riesgos Térmicos:](#284-riesgos-trmicos)
-      * [2.8.5. Riesgos de Incendio:](#285-riesgos-de-incendio)
-      * [2.8.6. Riesgos de Caídas:](#286-riesgos-de-cadas)
-      * [2.8.7. Riesgos por Radiaciones Electromagnéticas:](#287-riesgos-por-radiaciones-electromagnticas)
-      * [2.8.8. Medidas Organizativas Generales:](#288-medidas-organizativas-generales)
-  * [Implementación del CPD en la nube AWS con los servicios utilizados. Iker](#implementacin-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker)
-  * [2.10. Implementación de CPD a la nube AWS con los servicios utilizados](#210-implementacin-de-cpd-a-la-nube-aws-con-los-servicios-utilizados)
-  * [3. Ansible - Creació de servidors (Logs | LDAP) .Iker](#3-ansible---creaci-de-servidors-logs-ldap-iker)
-  * [4. Implantació dels serveis d'àudio i vídeo (Ivan)](#4-implantaci-dels-serveis-dudio-i-vdeo-ivan)
+    * [1.1. Plano sala del rack:](#1-1-plano-sala-del-rack)
+    * [1.1.1. Estructuración de los Racks:](#1-1-1-estructuracion-de-los-racks)
+      * [1.1.2. Componentes Técnicos Comunes por Rack:](#1-1-2-componentes-tecnicos-comunes-por-rack)
+    * [1.2. Sistema de climatización del CPD:](#1-2-sistema-de-climatizacion-del-cpd)
+    * [1.3. Medidas para dificultar la identificación de la sala:](#1-3-medidas-para-dificultar-la-identificacion-de-la-sala)
+      * [1.3.1. Señalización Restrictiva:](#1-3-1-sealizacion-restrictiva)
+      * [1.3.2. Seguridad de Rutas y Suministros:](#1-3-2-seguridad-de-rutas-y-suministros)
+      * [1.3.3. Camuflaje Arquitectónico y Estético:](#1-3-3-camuflaje-arquitectonico-y-estetico)
+    * [1.4. distribución y gestión del cableado:](#1-4-distribucion-y-gestion-del-cableado)
+    * [1.5. Terra Tècnic (Suelo Técnico Elevado):](#1-5-terra-tecnic-suelo-tecnico-elevado)
+      * [1.5.1. Sostre Tècnic (Falso Techo Registrable):](#1-5-1-sostre-tecnic-falso-techo-registrable)
+      * [1.5.2. Estanqueidad con la Cristalera:](#1-5-2-estanqueidad-con-la-cristalera)
+  * [2.	Infraestructura elèctrica:](#2-infraestructura-electrica)
+    * [2.1 Sistemas de alimentación redundante:](#2-1-sistemas-de-alimentacion-redundante)
+    * [2.2. Sistema SAI / UPS:](#2-2-sistema-sai--ups)
+    * [2.3. Consumo eléctrico estimado:](#2-3-consumo-electrico-estimado)
+    * [2.4. Distribución eléctrica en racks:](#2-4-distribucion-electrica-en-racks)
+    * [2.5. Eficiencia energética:](#2-5-eficiencia-energetica)
+    * [2.6. Seguridad Física](#2-6-seguridad-fisica)
+      * [2.6.1. Medidas Pasivas:](#2-6-1-medidas-pasivas)
+      * [2.6.2. Medidas activas:](#2-6-2-medidas-activas)
+    * [2.7. Seguridad lógica](#2-7-seguridad-logica)
+      * [2.7.1. Seguridad Lógica Pasiva:](#2-7-1-seguridad-logica-pasiva)
+      * [2.7.2. Seguridad Lógica Activa:](#2-7-2-seguridad-logica-activa)
+  * [2.8. Prevención de riesgos laborales:](#2-8-prevencion-de-riesgos-laborales)
+      * [2.8.1. Riesgos Eléctricos:](#2-8-1-riesgos-electricos)
+      * [2.8.2. Riesgos Ergonómicos:](#2-8-2-riesgos-ergonomicos)
+      * [2.8.3. Riesgos por Ruido:](#2-8-3-riesgos-por-ruido)
+      * [2.8.4. Riesgos Térmicos:](#2-8-4-riesgos-termicos)
+      * [2.8.5. Riesgos de Incendio:](#2-8-5-riesgos-de-incendio)
+      * [2.8.6. Riesgos de Caídas:](#2-8-6-riesgos-de-caidas)
+      * [2.8.7. Riesgos por Radiaciones Electromagnéticas:](#2-8-7-riesgos-por-radiaciones-electromagneticas)
+      * [2.8.8. Medidas Organizativas Generales:](#2-8-8-medidas-organizativas-generales)
+  * [Implementación del CPD en la nube AWS con los servicios utilizados. Iker](#implementacion-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker)
+  * [2.10. Implementación de CPD a la nube AWS con los servicios utilizados](#2-10-implementacion-de-cpd-a-la-nube-aws-con-los-servicios-utilizados)
+  * [3. Ansible - Creació de servidors (Logs | LDAP) .Iker](#3-ansible---creacio-de-servidors-logs--ldap-iker)
+  * [4. Implantació dels serveis d'àudio i vídeo (Ivan)](#4-implantacio-dels-serveis-d-audio-i-video-ivan)
   * [5. Servidor MySQL (xavi-piero)](#5-servidor-mysql-xavi-piero)
-    * [5.1 BBDDs](#51-bbdds)
-    * [5.2 Script bash - Gestió d’usuaris:](#52-script-bash---gesti-dusuaris)
+    * [5.1 BBDDs](#5-1-bbdds)
+    * [5.2 Script bash - Gestió d’usuaris:](#5-2-script-bash---gestio-d-usuaris)
       * [codi (link github)](#codi-link-github)
-    * [5.3 Creación de la base de datos (:](#53-creacin-de-la-base-de-datos-)
-    * [5.3 Triggers y eventos periódicos:](#53-triggers-y-eventos-peridicos)
+    * [5.3 Creación de la base de datos de la Web: (piero)](#5-3-creacion-de-la-base-de-datos-de-la-web-piero)
+    * [5.3 Triggers y eventos periódicos:](#5-3-triggers-y-eventos-periodicos)
   * [6. Servidor Web - SFTP (xavi)](#6-servidor-web---sftp-xavi)
-    * [6.1 Nginx:](#61-nginx)
-      * [6.1.1. Creación de certificados SSL:](#611-creacin-de-certificados-ssl)
-      * [6.1.2. Configuración de la Página:](#612-configuracin-de-la-pgina)
-      * [6.1.3. Configuración PHP](#613-configuracin-php)
-    * [6.2 SFTP](#62-sftp)
-      * [6.2.1 Configuración del servicio:](#621-configuracin-del-servicio)
-      * [6.2.2. Creación de usuarios:](#622-creacin-de-usuarios)
-      * [6.2.3. Pruebas:](#623-pruebas)
+    * [6.1 Nginx:](#6-1-nginx)
+      * [6.1.1. Creación de certificados SSL:](#6-1-1-creacion-de-certificados-ssl)
+      * [6.1.2. Configuración de la Página:](#6-1-2-configuracion-de-la-pagina)
+      * [6.1.3. Configuración PHP](#6-1-3-configuracion-php)
+    * [6.2 SFTP](#6-2-sftp)
+      * [6.2.1 Configuración del servicio:](#6-2-1-configuracion-del-servicio)
+      * [6.2.2. Creación de usuarios:](#6-2-2-creacion-de-usuarios)
+      * [6.2.3. Pruebas:](#6-2-3-pruebas)
 
 ---
 
@@ -75,8 +76,9 @@ Esta cristalera permite:
 
 </div>
 
+<a name="1-1-plano-sala-del-rack"></a>
 ### 1.1. Plano sala del rack:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -92,8 +94,9 @@ Hemos asignado cada servidor a una función específica para garantizar la indep
 
 </div>
 
+<a name="1-1-1-estructuracion-de-los-racks"></a>
 ### 1.1.1. Estructuración de los Racks:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -103,8 +106,9 @@ Todos los racks seguirán un estándar de distribución homogéneo basado en la 
 
 </div>
 
+<a name="1-1-2-componentes-tecnicos-comunes-por-rack"></a>
 #### 1.1.2. Componentes Técnicos Comunes por Rack:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -121,14 +125,9 @@ A excepción de los servidores específicos, cada rack contará con los siguient
 
 </div>
 
-<p align="center">
-  <img src="images/img_1.png" alt="Imagen 1" />
-</p>
-
-
-
+<a name="1-2-sistema-de-climatizacion-del-cpd"></a>
 ### 1.2. Sistema de climatización del CPD:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -143,13 +142,14 @@ En un CPD convencional abierto, el aire frío se mezcla rápidamente con el aire
 </div>
 
 <p align="center">
-  <img src="images/img_2.png" alt="Imagen 2" />
+  <img src="images/img_1.png" alt="Imagen 1" />
 </p>
 
 
 
+<a name="1-3-medidas-para-dificultar-la-identificacion-de-la-sala"></a>
 ### 1.3. Medidas para dificultar la identificación de la sala:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -157,8 +157,9 @@ Para proteger la infraestructura crítica de InnovateTech, es fundamental aplica
 
 </div>
 
+<a name="1-3-1-sealizacion-restrictiva"></a>
 #### 1.3.1. Señalización Restrictiva:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -171,7 +172,7 @@ La placa de la puerta, señalizará solamente con un cartel que diga:
 </div>
 
 <p align="center">
-  <img src="images/img_3.png" alt="Imagen 3" />
+  <img src="images/img_2.png" alt="Imagen 2" />
 </p>
 
 <div align="justify">
@@ -179,8 +180,9 @@ Como normal general en los planos públicos o de evacuación de la empresa, la s
 
 </div>
 
+<a name="1-3-2-seguridad-de-rutas-y-suministros"></a>
 #### 1.3.2. Seguridad de Rutas y Suministros:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -190,8 +192,9 @@ En el directorio del edificio o del ascensor, no figurará ninguna referencia a 
 
 </div>
 
+<a name="1-3-3-camuflaje-arquitectonico-y-estetico"></a>
 #### 1.3.3. Camuflaje Arquitectónico y Estético:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -202,13 +205,14 @@ Para reforzar esta discreción, la perfilería de la cristalera será idéntica 
 </div>
 
 <p align="center">
-  <img src="images/img_4.png" alt="Imagen 4" />
+  <img src="images/img_3.png" alt="Imagen 3" />
 </p>
 
 
 
+<a name="1-4-distribucion-y-gestion-del-cableado"></a>
 ### 1.4. distribución y gestión del cableado:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -236,8 +240,9 @@ La gestión se dividirá en dos niveles físicos totalmente segregados para evit
 
 </div>
 
+<a name="1-5-terra-tecnic-suelo-tecnico-elevado"></a>
 ### 1.5. Terra Tècnic (Suelo Técnico Elevado):
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -249,8 +254,9 @@ Se instalará un sistema de pavimento elevado a 50 cm de altura respecto al suel
 
 </div>
 
+<a name="1-5-1-sostre-tecnic-falso-techo-registrable"></a>
 #### 1.5.1. Sostre Tècnic (Falso Techo Registrable):
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -265,8 +271,9 @@ El techo se situará a una altura libre de 2,80 metros.
 
 </div>
 
+<a name="1-5-2-estanqueidad-con-la-cristalera"></a>
 #### 1.5.2. Estanqueidad con la Cristalera:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -274,8 +281,9 @@ Un punto crítico de este diseño es que tanto el suelo como el techo técnico e
 
 </div>
 
+<a name="2-infraestructura-electrica"></a>
 ## 2.	Infraestructura elèctrica:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -283,8 +291,9 @@ La infraestructura eléctrica del CPD estará diseñada para garantizar la conti
 
 </div>
 
+<a name="2-1-sistemas-de-alimentacion-redundante"></a>
 ### 2.1 Sistemas de alimentación redundante:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -301,8 +310,9 @@ Además, la instalación dispondrá de:
 
 </div>
 
+<a name="2-2-sistema-sai--ups"></a>
 ### 2.2. Sistema SAI / UPS:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -312,8 +322,9 @@ El SAI protegerá frente a cortes de corriente, microcortes eléctricos, variaci
 
 </div>
 
+<a name="2-3-consumo-electrico-estimado"></a>
 ### 2.3. Consumo eléctrico estimado:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -340,8 +351,9 @@ Hemos calculado los valores de consumo de forma aproximada utilizando consumos m
 
 </div>
 
+<a name="2-4-distribucion-electrica-en-racks"></a>
 ### 2.4. Distribución eléctrica en racks:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -359,8 +371,9 @@ Además, la organización interna de los racks contará con guías verticales y 
 
 </div>
 
+<a name="2-5-eficiencia-energetica"></a>
 ### 2.5. Eficiencia energética:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -376,8 +389,9 @@ Estas medidas nos permitirán reducir el consumo eléctrico total del CPD y mejo
 
 </div>
 
+<a name="2-6-seguridad-fisica"></a>
 ### 2.6. Seguridad Física
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -385,8 +399,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-6-1-medidas-pasivas"></a>
 #### 2.6.1. Medidas Pasivas:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -396,8 +411,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-6-2-medidas-activas"></a>
 #### 2.6.2. Medidas activas:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -406,13 +422,15 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-7-seguridad-logica"></a>
 ### 2.7. Seguridad lógica
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 
 
+<a name="2-7-1-seguridad-logica-pasiva"></a>
 #### 2.7.1. Seguridad Lógica Pasiva:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -423,8 +441,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-7-2-seguridad-logica-activa"></a>
 #### 2.7.2. Seguridad Lógica Activa:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -434,13 +453,15 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-8-prevencion-de-riesgos-laborales"></a>
 ## 2.8. Prevención de riesgos laborales:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 
 
+<a name="2-8-1-riesgos-electricos"></a>
 #### 2.8.1. Riesgos Eléctricos:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -452,8 +473,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-8-2-riesgos-ergonomicos"></a>
 #### 2.8.2. Riesgos Ergonómicos:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -464,8 +486,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-8-3-riesgos-por-ruido"></a>
 #### 2.8.3. Riesgos por Ruido:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -475,8 +498,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-8-4-riesgos-termicos"></a>
 #### 2.8.4. Riesgos Térmicos:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -486,8 +510,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-8-5-riesgos-de-incendio"></a>
 #### 2.8.5. Riesgos de Incendio:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -499,8 +524,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-8-6-riesgos-de-caidas"></a>
 #### 2.8.6. Riesgos de Caídas:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -511,8 +537,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-8-7-riesgos-por-radiaciones-electromagneticas"></a>
 #### 2.8.7. Riesgos por Radiaciones Electromagnéticas:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -521,8 +548,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="2-8-8-medidas-organizativas-generales"></a>
 #### 2.8.8. Medidas Organizativas Generales:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -534,8 +562,9 @@ Para la parte de la seguridad física, hemos implementado las siguientes medidas
 
 </div>
 
+<a name="implementacion-del-cpd-en-la-nube-aws-con-los-servicios-utilizados-iker"></a>
 ## Implementación del CPD en la nube AWS con los servicios utilizados. Iker
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -569,8 +598,9 @@ Implementació al núvol AWS (5 p)
 
 </div>
 
+<a name="2-10-implementacion-de-cpd-a-la-nube-aws-con-los-servicios-utilizados"></a>
 ## 2.10. Implementación de CPD a la nube AWS con los servicios utilizados
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -579,7 +609,7 @@ Primero de todo, lanzaremos la primera instancia, que será el servidor Web-SFTP
 </div>
 
 <p align="center">
-  <img src="images/img_5.png" alt="Imagen 5" />
+  <img src="images/img_4.png" alt="Imagen 4" />
 </p>
 
 <div align="justify">
@@ -587,10 +617,10 @@ Creamos un grupo de seguridad para el servidor Web-SFTP, como es un servidor que
 
 </div>
 
-| Servidor | Serveis | IP Pública | IP Privada |
+| Servidor | Servicios | IP Pública | IP Privada |
 | --- | --- | --- | --- |
 | Servidor-Web | Nginx, SFTP | 54.197.85.133 | 172.31.26.247/20 |
-| Servidor audio, video i videotrucada | Icecast (audio-video), jitsi-meet (video-trucada). | 34.202.38.124 | 172.31.22.20/20 |
+| Servidor audio, video i videollamada | Icecast (audio-video), jitsi-meet (video-videollamada). | 34.202.38.124 | 172.31.22.20/20 |
 | Servidor-Logs | Elastic, Kibana, AuditBeat | 34.229.219.83 | 172.31.29.157/20 |
 | Servidor-Directori Actiu | LDAP | 44.223.1.104 | 172.31.22.126/20 |
 | Servidor BD | Mysql | 34.226.127.76 | 172.31.30.119/20  |
@@ -598,8 +628,9 @@ Creamos un grupo de seguridad para el servidor Web-SFTP, como es un servidor que
 
 
 
+<a name="3-ansible---creacio-de-servidors-logs--ldap-iker"></a>
 ## 3. Ansible - Creació de servidors (Logs | LDAP) .Iker
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -608,7 +639,7 @@ Entramos sin necesidad de contraseña a nuestro usuario que usaremos para el ser
 </div>
 
 <p align="center">
-  <img src="images/img_6.png" alt="Imagen 6" />
+  <img src="images/img_5.png" alt="Imagen 5" />
 </p>
 
 <div align="justify">
@@ -617,7 +648,7 @@ Ahora guardamos temporalmente las credenciales de AWS para que Ansible pueda cre
 </div>
 
 <p align="center">
-  <img src="images/img_7.png" alt="Imagen 7" />
+  <img src="images/img_6.png" alt="Imagen 6" />
 </p>
 
 <div align="justify">
@@ -626,7 +657,7 @@ Playbook para crear los servidores de log y Directorio Activo:
 </div>
 
 <p align="center">
-  <img src="images/img_8.png" alt="Imagen 8" />
+  <img src="images/img_7.png" alt="Imagen 7" />
 </p>
 
 <div align="justify">
@@ -635,7 +666,7 @@ Lanzamos el playbook de Ansible y creamos los dos servidores automatizados.
 </div>
 
 <p align="center">
-  <img src="images/img_9.png" alt="Imagen 9" />
+  <img src="images/img_8.png" alt="Imagen 8" />
 </p>
 
 <div align="justify">
@@ -646,13 +677,13 @@ Primero de todo, desde mi servidor web, dentro del fichero .ssh, creamos un fich
 </div>
 
 <p align="center">
-  <img src="images/img_10.png" alt="Imagen 10" />
+  <img src="images/img_9.png" alt="Imagen 9" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_11.png" alt="Imagen 11" />
+  <img src="images/img_10.png" alt="Imagen 10" />
 </p>
 
 <div align="justify">
@@ -661,7 +692,7 @@ El siguiente paso es crear un fichero en donde irán las IPs privadas de los dos
 </div>
 
 <p align="center">
-  <img src="images/img_12.png" alt="Imagen 12" />
+  <img src="images/img_11.png" alt="Imagen 11" />
 </p>
 
 <div align="justify">
@@ -672,7 +703,7 @@ Con el inventario = inventory: Le indicamos al Ansible que busque las IPs de los
 </div>
 
 <p align="center">
-  <img src="images/img_13.png" alt="Imagen 13" />
+  <img src="images/img_12.png" alt="Imagen 12" />
 </p>
 
 <div align="justify">
@@ -681,7 +712,7 @@ Comprobamos si se puede acceder por ping, que se conecta por SSH, asegurándonos
 </div>
 
 <p align="center">
-  <img src="images/img_14.png" alt="Imagen 14" />
+  <img src="images/img_13.png" alt="Imagen 13" />
 </p>
 
 <div align="justify">
@@ -690,6 +721,12 @@ Ahora reescribimos el fichero inventory para indicarle más precisamente las má
 Creamos grupos separados para cada máquina [directorio_activo] y [servidor_logs] para que Ansible sepa dónde instalar cada servicio. Luego creamos otro grupo [remoto:children] que engloba los grupos anteriores para cuando tengamos que hacer algo igual en las dos máquinas, lo metemos dentro de ese grupo. Y por último, en [remotos:var] le definimos el usuario que tienen las máquinas ahora mismo, que es Ubuntu, y la clave privada (ServidorWeb.pem).
 
 </div>
+
+<p align="center">
+  <img src="images/img_14.png" alt="Imagen 14" />
+</p>
+
+
 
 <p align="center">
   <img src="images/img_15.png" alt="Imagen 15" />
@@ -701,29 +738,26 @@ Creamos grupos separados para cada máquina [directorio_activo] y [servidor_logs
   <img src="images/img_16.png" alt="Imagen 16" />
 </p>
 
-
-
-<p align="center">
-  <img src="images/img_17.png" alt="Imagen 17" />
-</p>
-
 <div align="justify">
-
+ghp_MOCK_TOKEN_REMOVED_BY_SAFETY_SCRIPT
 
 </div>
 
+<a name="4-implantacio-dels-serveis-d-audio-i-video-ivan"></a>
 ## 4. Implantació dels serveis d'àudio i vídeo (Ivan)
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 
 
+<a name="5-servidor-mysql-xavi-piero"></a>
 ## 5. Servidor MySQL (xavi-piero)
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 
 
+<a name="5-1-bbdds"></a>
 ### 5.1 BBDDs
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -734,8 +768,9 @@ Creamos grupos separados para cada máquina [directorio_activo] y [servidor_logs
 
 </div>
 
+<a name="5-2-script-bash---gestio-d-usuaris"></a>
 ### 5.2 Script bash - Gestió d’usuaris:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -743,8 +778,9 @@ Es un script automatizado para crear, modificar y eliminar usuarios de MySQL:
 
 </div>
 
+<a name="codi-link-github"></a>
 #### codi (link github)
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -753,13 +789,14 @@ Prueba del funcionamiento + creación de usuario admin
 </div>
 
 <p align="center">
-  <img src="images/img_18.png" alt="Imagen 18" />
+  <img src="images/img_17.png" alt="Imagen 17" />
 </p>
 
 
 
-### 5.3 Creación de la base de datos (:
-[↑ Volver al índice](#índice)
+<a name="5-3-creacion-de-la-base-de-datos-de-la-web-piero"></a>
+### 5.3 Creación de la base de datos de la Web: (piero)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -774,7 +811,7 @@ La implementación se divide en dos fases: primero la creación de la estructura
 </div>
 
 <p align="center">
-  <img src="images/img_19.png" alt="Imagen 19" />
+  <img src="images/img_18.png" alt="Imagen 18" />
 </p>
 
 <div align="justify">
@@ -783,7 +820,7 @@ La implementación se divide en dos fases: primero la creación de la estructura
 </div>
 
 <p align="center">
-  <img src="images/img_20.png" alt="Imagen 20" />
+  <img src="images/img_19.png" alt="Imagen 19" />
 </p>
 
 <div align="justify">
@@ -792,7 +829,7 @@ La implementación se divide en dos fases: primero la creación de la estructura
 </div>
 
 <p align="center">
-  <img src="images/img_21.png" alt="Imagen 21" />
+  <img src="images/img_20.png" alt="Imagen 20" />
 </p>
 
 <div align="justify">
@@ -801,7 +838,7 @@ La implementación se divide en dos fases: primero la creación de la estructura
 </div>
 
 <p align="center">
-  <img src="images/img_22.png" alt="Imagen 22" />
+  <img src="images/img_21.png" alt="Imagen 21" />
 </p>
 
 <div align="justify">
@@ -810,13 +847,14 @@ La implementación se divide en dos fases: primero la creación de la estructura
 </div>
 
 <p align="center">
-  <img src="images/img_23.png" alt="Imagen 23" />
+  <img src="images/img_22.png" alt="Imagen 22" />
 </p>
 
 
 
+<a name="5-3-triggers-y-eventos-periodicos"></a>
 ### 5.3 Triggers y eventos periódicos:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -831,7 +869,7 @@ El evento periódico realiza un backup automático diario a las 02:00 AM exporta
 </div>
 
 <p align="center">
-  <img src="images/img_24.png" alt="Imagen 24" />
+  <img src="images/img_23.png" alt="Imagen 23" />
 </p>
 
 <div align="justify">
@@ -840,7 +878,7 @@ El evento periódico realiza un backup automático diario a las 02:00 AM exporta
 </div>
 
 <p align="center">
-  <img src="images/img_25.png" alt="Imagen 25" />
+  <img src="images/img_24.png" alt="Imagen 24" />
 </p>
 
 <div align="justify">
@@ -849,13 +887,13 @@ El evento periódico realiza un backup automático diario a las 02:00 AM exporta
 </div>
 
 <p align="center">
-  <img src="images/img_26.png" alt="Imagen 26" />
+  <img src="images/img_25.png" alt="Imagen 25" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_27.png" alt="Imagen 27" />
+  <img src="images/img_26.png" alt="Imagen 26" />
 </p>
 
 <div align="justify">
@@ -864,7 +902,7 @@ El evento periódico realiza un backup automático diario a las 02:00 AM exporta
 </div>
 
 <p align="center">
-  <img src="images/img_28.png" alt="Imagen 28" />
+  <img src="images/img_27.png" alt="Imagen 27" />
 </p>
 
 <div align="justify">
@@ -873,7 +911,7 @@ El evento periódico realiza un backup automático diario a las 02:00 AM exporta
 </div>
 
 <p align="center">
-  <img src="images/img_29.png" alt="Imagen 29" />
+  <img src="images/img_28.png" alt="Imagen 28" />
 </p>
 
 <div align="justify">
@@ -882,11 +920,33 @@ El evento periódico realiza un backup automático diario a las 02:00 AM exporta
 </div>
 
 <p align="center">
-  <img src="images/img_30.png" alt="Imagen 30" />
+  <img src="images/img_29.png" alt="Imagen 29" />
 </p>
 
 <div align="justify">
 * Finalmente se reinicia el servicio.
+
+</div>
+
+<p align="center">
+  <img src="images/img_30.png" alt="Imagen 30" />
+</p>
+
+
+
+<a name="6-servidor-web---sftp-xavi"></a>
+## 6. Servidor Web - SFTP (xavi)
+[↑ Volver al índice](#indice)
+
+
+
+<a name="6-1-nginx"></a>
+### 6.1 Nginx:
+[↑ Volver al índice](#indice)
+
+<div align='justify'>
+
+Verificamos la instalación:
 
 </div>
 
@@ -896,19 +956,11 @@ El evento periódico realiza un backup automático diario a las 02:00 AM exporta
 
 
 
-## 6. Servidor Web - SFTP (xavi)
-[↑ Volver al índice](#índice)
+<a name="6-1-1-creacion-de-certificados-ssl"></a>
+#### 6.1.1. Creación de certificados SSL:
+[↑ Volver al índice](#indice)
 
 
-
-### 6.1 Nginx:
-[↑ Volver al índice](#índice)
-
-<div align='justify'>
-
-Verificamos la instalación:
-
-</div>
 
 <p align="center">
   <img src="images/img_32.png" alt="Imagen 32" />
@@ -916,19 +968,9 @@ Verificamos la instalación:
 
 
 
-#### 6.1.1. Creación de certificados SSL:
-[↑ Volver al índice](#índice)
-
-
-
-<p align="center">
-  <img src="images/img_33.png" alt="Imagen 33" />
-</p>
-
-
-
+<a name="6-1-2-configuracion-de-la-pagina"></a>
 #### 6.1.2. Configuración de la Página:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -937,13 +979,13 @@ Instalamos y verificamos la versión de php:
 </div>
 
 <p align="center">
-  <img src="images/img_34.png" alt="Imagen 34" />
+  <img src="images/img_33.png" alt="Imagen 33" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_35.png" alt="Imagen 35" />
+  <img src="images/img_34.png" alt="Imagen 34" />
 </p>
 
 <div align="justify">
@@ -958,7 +1000,7 @@ Hacemos las configuraciones necesarias para el funcionamiento de la página con 
 </div>
 
 <p align="center">
-  <img src="images/img_36.png" alt="Imagen 36" />
+  <img src="images/img_35.png" alt="Imagen 35" />
 </p>
 
 <div align="justify">
@@ -967,13 +1009,14 @@ Y vemos los archivos en la ruta:
 </div>
 
 <p align="center">
-  <img src="images/img_37.png" alt="Imagen 37" />
+  <img src="images/img_36.png" alt="Imagen 36" />
 </p>
 
 
 
+<a name="6-1-3-configuracion-php"></a>
 #### 6.1.3. Configuración PHP
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -985,8 +1028,9 @@ enganchar imagen cuando se configure server LDAP
 
 </div>
 
+<a name="6-2-sftp"></a>
 ### 6.2 SFTP
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -995,13 +1039,14 @@ Instalamos proFTPd:
 </div>
 
 <p align="center">
-  <img src="images/img_38.png" alt="Imagen 38" />
+  <img src="images/img_37.png" alt="Imagen 37" />
 </p>
 
 
 
+<a name="6-2-1-configuracion-del-servicio"></a>
 #### 6.2.1 Configuración del servicio:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -1010,7 +1055,7 @@ Modo Standalone:
 </div>
 
 <p align="center">
-  <img src="images/img_39.png" alt="Imagen 39" />
+  <img src="images/img_38.png" alt="Imagen 38" />
 </p>
 
 <div align="justify">
@@ -1019,7 +1064,7 @@ Configuración para inicio de sesión con usuarios ftp
 </div>
 
 <p align="center">
-  <img src="images/img_40.png" alt="Imagen 40" />
+  <img src="images/img_39.png" alt="Imagen 39" />
 </p>
 
 <div align="justify">
@@ -1028,7 +1073,7 @@ Login Anónimo:
 </div>
 
 <p align="center">
-  <img src="images/img_41.png" alt="Imagen 41" />
+  <img src="images/img_40.png" alt="Imagen 40" />
 </p>
 
 <div align="justify">
@@ -1037,7 +1082,7 @@ Habilitamos y configuramos SFTP:
 </div>
 
 <p align="center">
-  <img src="images/img_42.png" alt="Imagen 42" />
+  <img src="images/img_41.png" alt="Imagen 41" />
 </p>
 
 <div align="justify">
@@ -1046,7 +1091,7 @@ Las siguientes configuraciones permite el uso de SFTP tanto de usuarios registra
 </div>
 
 <p align="center">
-  <img src="images/img_43.png" alt="Imagen 43" />
+  <img src="images/img_42.png" alt="Imagen 42" />
 </p>
 
 <div align="justify">
@@ -1055,11 +1100,27 @@ Habilitamos el módulo de sftp: (/etc/profptd/modules.conf)
 </div>
 
 <p align="center">
-  <img src="images/img_44.png" alt="Imagen 44" />
+  <img src="images/img_43.png" alt="Imagen 43" />
 </p>
 
 <div align="justify">
 Abrimos el puerto 2222 configurado al sftp.conf
+
+</div>
+
+<p align="center">
+  <img src="images/img_44.png" alt="Imagen 44" />
+</p>
+
+
+
+<a name="6-2-2-creacion-de-usuarios"></a>
+#### 6.2.2. Creación de usuarios:
+[↑ Volver al índice](#indice)
+
+<div align='justify'>
+
+Creamos usuarios para todos los miembros del grupo:
 
 </div>
 
@@ -1069,29 +1130,15 @@ Abrimos el puerto 2222 configurado al sftp.conf
 
 
 
-#### 6.2.2. Creación de usuarios:
-[↑ Volver al índice](#índice)
-
-<div align='justify'>
-
-Creamos usuarios para todos los miembros del grupo:
-
-</div>
-
 <p align="center">
   <img src="images/img_46.png" alt="Imagen 46" />
 </p>
 
 
 
-<p align="center">
-  <img src="images/img_47.png" alt="Imagen 47" />
-</p>
-
-
-
+<a name="6-2-3-pruebas"></a>
 #### 6.2.3. Pruebas:
-[↑ Volver al índice](#índice)
+[↑ Volver al índice](#indice)
 
 <div align='justify'>
 
@@ -1100,7 +1147,7 @@ Primero verificamos los permisos de la estructura de directorios del FTP:
 </div>
 
 <p align="center">
-  <img src="images/img_48.png" alt="Imagen 48" />
+  <img src="images/img_47.png" alt="Imagen 47" />
 </p>
 
 <div align="justify">
@@ -1111,7 +1158,7 @@ Conexión con usuario:
 </div>
 
 <p align="center">
-  <img src="images/img_49.png" alt="Imagen 49" />
+  <img src="images/img_48.png" alt="Imagen 48" />
 </p>
 
 <div align="justify">
@@ -1120,6 +1167,6 @@ Conexión anónima FTP:
 </div>
 
 <p align="center">
-  <img src="images/img_50.png" alt="Imagen 50" />
+  <img src="images/img_49.png" alt="Imagen 49" />
 </p>
 
