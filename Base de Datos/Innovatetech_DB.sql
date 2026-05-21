@@ -1,200 +1,261 @@
--- ============================================================
---  InnovateTech — Base de datos
---  MySQL
---  Creación completa de tablas, índices y datos de prueba
--- ============================================================
+-- ============================================================================
+-- SCRIPT DE CREACIÓ DE LA BASE DE DADES I TAULES (InnovateTech)
+-- Basat en l'estructura oficial de producció del servidor
+-- ============================================================================
 
-CREATE DATABASE IF NOT EXISTS innovatetech_db
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
+DROP DATABASE IF EXISTS innovate_tech_db;
+CREATE DATABASE innovate_tech_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE innovate_tech_db;
 
-USE innovatetech_db;
+-- ----------------------------------------------------------------------------
+-- 1. TAULES MESTRES I D'ESTRUCTURA ORGANITZATIVA
+-- ----------------------------------------------------------------------------
 
--- ------------------------------------------------------------
--- 1. DEPARTAMENTOS
--- ------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS departamentos (
-  id_dep    INT          NOT NULL AUTO_INCREMENT,
-  nombre    VARCHAR(100) NOT NULL,
-  telefono  VARCHAR(20),
-  PRIMARY KEY (id_dep),
-  UNIQUE KEY uq_dep_nombre (nombre)
-) ENGINE=InnoDB;
+CREATE TABLE `rols_ldap` (
+  `gid` int NOT NULL,
+  `nom_rol` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`gid`),
+  UNIQUE KEY `nom_rol` (`nom_rol`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ------------------------------------------------------------
--- 2. EMPLEADOS
--- ------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS empleados (
-  dni       VARCHAR(10)  NOT NULL,
-  nombre    VARCHAR(80)  NOT NULL,
-  apellidos VARCHAR(120) NOT NULL,
-  direccion VARCHAR(200),
-  telefono  VARCHAR(20),
-  id_dep    INT          NOT NULL,
-  ldap_uid  VARCHAR(60)  NULL COMMENT 'Rellenar cuando OpenLDAP este configurado',
-  PRIMARY KEY (dni),
-  UNIQUE KEY uq_ldap_uid (ldap_uid),
-  CONSTRAINT fk_emp_dep FOREIGN KEY (id_dep) REFERENCES departamentos(id_dep)
-) ENGINE=InnoDB;
+CREATE TABLE `departaments` (
+  `id_departament` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `telefon` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_departament`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ------------------------------------------------------------
--- 3. GRUPOS_CALIDAD  (configuracion de streaming por grupo)
--- ------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS grupos_calidad (
-  id_grupo          INT         NOT NULL AUTO_INCREMENT,
-  nombre_grupo      VARCHAR(60) NOT NULL,
-  calidad           ENUM('alta','media','baja') NOT NULL DEFAULT 'media',
-  max_bitrate_video INT         NOT NULL DEFAULT 2000  COMMENT 'kbps',
-  max_bitrate_audio INT         NOT NULL DEFAULT 128   COMMENT 'kbps',
-  max_min_mes       INT         NOT NULL DEFAULT 600   COMMENT 'minutos mensuales permitidos',
-  max_llamadas_dia  INT         NOT NULL DEFAULT 20,
-  PRIMARY KEY (id_grupo)
-) ENGINE=InnoDB;
+CREATE TABLE `grup_nivell` (
+  `id_nivell` int NOT NULL AUTO_INCREMENT,
+  `descripcio` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `salari_base` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id_nivell`),
+  CONSTRAINT `grup_nivell_chk_1` CHECK ((`salari_base` > 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ------------------------------------------------------------
--- 4. USUARIOS_SISTEMA  (empleados + clientes externos)
--- ------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS usuarios_sistema (
-  id_usuario      INT          NOT NULL AUTO_INCREMENT,
-  nombre_completo VARCHAR(200) NOT NULL,
-  email           VARCHAR(150) NOT NULL,
-  extension       VARCHAR(20),
-  estado          ENUM('activo','bloqueado') NOT NULL DEFAULT 'activo',
-  tipo            ENUM('trabajador','cliente_externo') NOT NULL DEFAULT 'trabajador',
-  id_grupo        INT          NOT NULL DEFAULT 1,
-  ldap_uid        VARCHAR(60)  NULL COMMENT 'Rellenar cuando OpenLDAP este configurado',
-  bloqueo_fin     DATETIME     NULL COMMENT 'NULL = indefinido si estado=bloqueado',
-  PRIMARY KEY (id_usuario),
-  UNIQUE KEY uq_email (email),
-  UNIQUE KEY uq_ldap  (ldap_uid),
-  CONSTRAINT fk_usr_grupo FOREIGN KEY (id_grupo) REFERENCES grupos_calidad(id_grupo)
-) ENGINE=InnoDB;
+CREATE TABLE `empleats` (
+  `dni` varchar(9) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cognoms` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `adreça` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `telefon` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_departament` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_nivell` int NOT NULL,
+  PRIMARY KEY (`dni`),
+  KEY `fk_empleats_dept` (`id_departament`),
+  KEY `fk_empleats_nivell` (`id_nivell`),
+  CONSTRAINT `fk_empleats_dept` FOREIGN KEY (`id_departament`) REFERENCES `departaments` (`id_departament`),
+  CONSTRAINT `fk_empleats_nivell` FOREIGN KEY (`id_nivell`) REFERENCES `grup_nivell` (`id_nivell`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ------------------------------------------------------------
--- 5. LLAMADAS
--- ------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS llamadas (
-  id_llamada      INT      NOT NULL AUTO_INCREMENT,
-  id_originador   INT      NOT NULL,
-  id_destinatario INT      NOT NULL,
-  inicio          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  fin             DATETIME NULL,
-  duracion_min    INT      GENERATED ALWAYS AS
-                    (TIMESTAMPDIFF(MINUTE, inicio, fin)) STORED,
-  id_calidad      INT      NOT NULL,
-  puntuacion      TINYINT  NULL CHECK (puntuacion BETWEEN 1 AND 5),
-  comentario      TEXT     NULL,
-  PRIMARY KEY (id_llamada),
-  CONSTRAINT fk_lla_orig FOREIGN KEY (id_originador)   REFERENCES usuarios_sistema(id_usuario),
-  CONSTRAINT fk_lla_dest FOREIGN KEY (id_destinatario) REFERENCES usuarios_sistema(id_usuario),
-  CONSTRAINT fk_lla_cal  FOREIGN KEY (id_calidad)      REFERENCES grupos_calidad(id_grupo),
-  INDEX idx_lla_orig   (id_originador),
-  INDEX idx_lla_dest   (id_destinatario),
-  INDEX idx_lla_inicio (inicio)
-) ENGINE=InnoDB;
+CREATE TABLE `nominas` (
+  `id_nomina` int NOT NULL AUTO_INCREMENT,
+  `dni` varchar(9) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mes` int NOT NULL,
+  `any` int NOT NULL,
+  `import_total` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id_nomina`),
+  KEY `fk_nominas_empleat` (`dni`),
+  CONSTRAINT `fk_nominas_empleat` FOREIGN KEY (`dni`) REFERENCES `empleats` (`dni`),
+  CONSTRAINT `nominas_chk_1` CHECK ((`mes` between 1 and 12)),
+  CONSTRAINT `nominas_chk_2` CHECK ((`any` >= 2020)),
+  CONSTRAINT `nominas_chk_3` CHECK ((`import_total` > 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ------------------------------------------------------------
--- 6. VIDEOS
--- ------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS videos (
-  id_video          INT          NOT NULL AUTO_INCREMENT,
-  titulo            VARCHAR(200) NOT NULL,
-  descripcion       TEXT,
-  categoria         VARCHAR(80),
-  duracion_seg      INT          NULL,
-  fecha_publicacion DATE         NOT NULL DEFAULT (CURRENT_DATE),
-  url_streaming     VARCHAR(500) NOT NULL,
-  codec             VARCHAR(20)  NOT NULL DEFAULT 'H.264',
-  formato           VARCHAR(10)  NOT NULL DEFAULT 'MP4',
-  PRIMARY KEY (id_video),
-  FULLTEXT KEY ft_video (titulo, descripcion, categoria)
-) ENGINE=InnoDB;
+-- ----------------------------------------------------------------------------
+-- 2. TAULES DE NEGOCI I COMERÇ
+-- ----------------------------------------------------------------------------
 
--- ------------------------------------------------------------
--- 7. MEDICIONES_ANCHO_BANDA
--- ------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS mediciones_ancho_banda (
-  id_medicion  INT          NOT NULL AUTO_INCREMENT,
-  fecha_hora   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  id_operario  INT          NOT NULL,
-  bajada_mbps  DECIMAL(8,2) NOT NULL,
-  subida_mbps  DECIMAL(8,2) NOT NULL,
-  latencia_ms  DECIMAL(8,2) NOT NULL,
-  resultado    ENUM('aceptable','no_aceptable') NOT NULL,
-  notas        TEXT         NULL,
-  PRIMARY KEY (id_medicion),
-  CONSTRAINT fk_med_op FOREIGN KEY (id_operario) REFERENCES usuarios_sistema(id_usuario),
-  INDEX idx_med_fecha (fecha_hora)
-) ENGINE=InnoDB;
+CREATE TABLE `clients` (
+  `id_client` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cognoms` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `empresa` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `correu_electronic` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `telefon` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `adreça` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_client`),
+  UNIQUE KEY `correu_electronic` (`correu_electronic`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ------------------------------------------------------------
--- 8. AVISOS_AUDITORIA  (log de triggers)
--- ------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS avisos_auditoria (
-  id_aviso       INT          NOT NULL AUTO_INCREMENT,
-  usuario_db     VARCHAR(100) NOT NULL DEFAULT (CURRENT_USER()),
-  tabla_afectada VARCHAR(80)  NOT NULL,
-  operacion      VARCHAR(20)  NOT NULL,
-  fecha_hora     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  detalles       TEXT         NULL,
-  PRIMARY KEY (id_aviso),
-  INDEX idx_av_fecha (fecha_hora)
-) ENGINE=InnoDB;
+CREATE TABLE `productes` (
+  `id_producte` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcio` text COLLATE utf8mb4_unicode_ci,
+  `preu` decimal(10,2) NOT NULL,
+  `stock` int NOT NULL,
+  PRIMARY KEY (`id_producte`),
+  CONSTRAINT `productes_chk_1` CHECK ((`preu` > 0)),
+  CONSTRAINT `productes_chk_2` CHECK ((`stock` >= 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ------------------------------------------------------------
--- 9. CONTROL_BACKUPS
--- ------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS control_backups (
-  id_backup        INT          NOT NULL AUTO_INCREMENT,
-  fecha_hora       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  tablas_incluidas TEXT         NOT NULL,
-  resultado        ENUM('ok','error') NOT NULL DEFAULT 'ok',
-  ruta_fichero     VARCHAR(500) NULL,
-  notas            TEXT         NULL,
-  PRIMARY KEY (id_backup)
-) ENGINE=InnoDB;
+CREATE TABLE `comandes` (
+  `id_comanda` int NOT NULL AUTO_INCREMENT,
+  `id_client` int NOT NULL,
+  `data_comanda` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `estat` enum('pendent','enviat','entregat','cancelat') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pendent',
+  PRIMARY KEY (`id_comanda`),
+  KEY `fk_comandes_client` (`id_client`),
+  CONSTRAINT `fk_comandes_client` FOREIGN KEY (`id_client`) REFERENCES `clients` (`id_client`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ============================================================
---  DATOS DE PRUEBA
--- ============================================================
+CREATE TABLE `cistell` (
+  `id_comanda` int NOT NULL,
+  `id_producte` int NOT NULL,
+  `quantitat` int NOT NULL,
+  `preu_unitari` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id_comanda`,`id_producte`),
+  KEY `fk_cistell_producte` (`id_producte`),
+  CONSTRAINT `fk_cistell_comanda` FOREIGN KEY (`id_comanda`) REFERENCES `comandes` (`id_comanda`) ON DELETE CASCADE,
+  CONSTRAINT `fk_cistell_producte` FOREIGN KEY (`id_producte`) REFERENCES `productes` (`id_producte`),
+  CONSTRAINT `cistell_chk_1` CHECK ((`quantitat` > 0)),
+  CONSTRAINT `cistell_chk_2` CHECK ((`preu_unitari` > 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO departamentos (nombre, telefono) VALUES
-  ('Ventas',          '93 100 0001'),
-  ('Soporte tecnico', '93 100 0002'),
-  ('Administracion',  '93 100 0003'),
-  ('Logistica',       '93 100 0004');
+-- ----------------------------------------------------------------------------
+-- 3. TAULES DE COMUNICACIÓ (JITSI / ICECAST)
+-- ----------------------------------------------------------------------------
 
-INSERT INTO grupos_calidad (nombre_grupo, calidad, max_bitrate_video, max_bitrate_audio, max_min_mes, max_llamadas_dia) VALUES
-  ('Grupo Alta',  'alta',  4000, 320, 1200, 50),
-  ('Grupo Media', 'media', 2000, 128,  600, 20),
-  ('Grupo Baja',  'baja',   500,  64,  300, 10);
+CREATE TABLE `configuracio_qualitat` (
+  `id_qualitat` int NOT NULL AUTO_INCREMENT,
+  `nom_perfil` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resolucio` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bitrate_max` int NOT NULL,
+  `limitacio_banda` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_qualitat`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO empleados (dni, nombre, apellidos, direccion, telefono, id_dep, ldap_uid) VALUES
-  ('12345678A', 'Anna',  'Garcia Lopez',   'Calle Mayor 1, Barcelona',     '600 111 001', 1, NULL),
-  ('23456789B', 'Marc',  'Puig Serrano',   'Avda. Diagonal 2, Barcelona',  '600 111 002', 2, NULL),
-  ('34567890C', 'Laura', 'Martinez Vidal', 'Calle Nueva 3, Barcelona',     '600 111 003', 3, NULL),
-  ('45678901D', 'Jorge', 'Ferrer Mas',     'Paseo de Gracia 4, Barcelona', '600 111 004', 4, NULL),
-  ('56789012E', 'Marta', 'Soler Pons',     'Calle Gran 5, Barcelona',      '600 111 005', 1, NULL),
-  ('67890123F', 'Pedro', 'Roca Sala',      'Rambla 6, Barcelona',          '600 111 006', 2, NULL);
+CREATE TABLE `usuaris_sistema` (
+  `id_usuari` int NOT NULL AUTO_INCREMENT,
+  `nom_complet` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `correu_electronic` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `extensio_trucades` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `estat` enum('actiu','bloquejat') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actiu',
+  `tipus_usuari` enum('intern','extern') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gid_rol` int NOT NULL,
+  `id_qualitat` int NOT NULL,
+  `dni_empleat` varchar(9) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `url_videotrucada` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_usuari`),
+  UNIQUE KEY `correu_electronic` (`correu_electronic`),
+  UNIQUE KEY `extensio_trucades` (`extensio_trucades`),
+  KEY `fk_usuaris_rol` (`gid_rol`),
+  KEY `fk_usuaris_qualitat` (`id_qualitat`),
+  KEY `fk_usuaris_empleat` (`dni_empleat`),
+  CONSTRAINT `fk_usuaris_empleat` FOREIGN KEY (`dni_empleat`) REFERENCES `empleats` (`dni`) ON DELETE SET NULL,
+  CONSTRAINT `fk_usuaris_qualitat` FOREIGN KEY (`id_qualitat`) REFERENCES `configuracio_qualitat` (`id_qualitat`),
+  CONSTRAINT `fk_usuaris_rol` FOREIGN KEY (`gid_rol`) REFERENCES `rols_ldap` (`gid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO usuarios_sistema (nombre_completo, email, extension, estado, tipo, id_grupo, ldap_uid) VALUES
-  ('Anna Garcia Lopez',   'anna.garcia@innovatetech.com',    '101', 'activo',    'trabajador',      1, NULL),
-  ('Marc Puig Serrano',   'marc.puig@innovatetech.com',      '102', 'activo',    'trabajador',      2, NULL),
-  ('Laura Martinez Vidal','laura.martinez@innovatetech.com', '103', 'activo',    'trabajador',      2, NULL),
-  ('Jorge Ferrer Mas',    'jorge.ferrer@innovatetech.com',   '104', 'activo',    'trabajador',      3, NULL),
-  ('Cliente Externo 1',   'cliente1@external.com',           NULL,  'activo',    'cliente_externo', 2, NULL),
-  ('Cliente Externo 2',   'cliente2@external.com',           NULL,  'bloqueado', 'cliente_externo', 3, NULL);
+CREATE TABLE `servidors_videoconferencia` (
+  `id_servidor` int NOT NULL AUTO_INCREMENT,
+  `ip_publica` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip_privada` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `port` int NOT NULL,
+  `protocol` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_servidor`),
+  CONSTRAINT `servidors_videoconferencia_chk_1` CHECK ((`port` > 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO videos (titulo, descripcion, categoria, duracion_seg, url_streaming, codec, formato) VALUES
-  ('Formacion onboarding', 'Video de bienvenida para nuevos empleados', 'Formacion', 1200, 'rtmp://stream.innovatetech.com/live/onboarding', 'H.264', 'MP4'),
-  ('Manual ERP interno',   'Guia de uso del sistema ERP',               'Tutorial',  3600, 'rtmp://stream.innovatetech.com/live/erp',        'H.264', 'MP4'),
-  ('Reunion Q1 2025',      'Resumen de resultados del primer trimestre', 'Reunion',    900, 'rtmp://stream.innovatetech.com/live/q1-2025',    'H.264', 'MP4');
+CREATE TABLE `registre_trucades` (
+  `id_trucada` int NOT NULL AUTO_INCREMENT,
+  `id_usuari_origen` int NOT NULL,
+  `id_usuari_desti` int NOT NULL,
+  `data_hora_inici` datetime NOT NULL,
+  `data_hora_fi` datetime NOT NULL,
+  `durada_segons` int NOT NULL,
+  `id_qualitat_usada` int NOT NULL,
+  `puntuacio_servei` int DEFAULT NULL,
+  `comentari_servei` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id_trucada`),
+  KEY `fk_trucades_origen` (`id_usuari_origen`),
+  KEY `fk_trucades_desti` (`id_usuari_desti`),
+  KEY `fk_trucades_qualitat` (`id_qualitat_usada`),
+  CONSTRAINT `fk_trucades_desti` FOREIGN KEY (`id_usuari_desti`) REFERENCES `usuaris_sistema` (`id_usuari`),
+  CONSTRAINT `fk_trucades_origen` FOREIGN KEY (`id_usuari_origen`) REFERENCES `usuaris_sistema` (`id_usuari`),
+  CONSTRAINT `fk_trucades_qualitat` FOREIGN KEY (`id_qualitat_usada`) REFERENCES `configuracio_qualitat` (`id_qualitat`),
+  CONSTRAINT `chk_dates_trucada` CHECK ((`data_hora_fi` >= `data_hora_inici`)),
+  CONSTRAINT `registre_trucades_chk_1` CHECK ((`durada_segons` >= 0)),
+  CONSTRAINT `registre_trucades_chk_2` CHECK ((`puntuacio_servei` between 1 and 5))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO llamadas (id_originador, id_destinatario, inicio, fin, id_calidad, puntuacion, comentario) VALUES
-  (1, 2, '2025-05-01 10:00:00', '2025-05-01 10:25:00', 1, 5, 'Muy buena calidad'),
-  (2, 3, '2025-05-02 11:00:00', '2025-05-02 11:10:00', 2, 4, NULL),
-  (1, 5, '2025-05-03 09:00:00', '2025-05-03 09:45:00', 2, 3, 'Algunas interrupciones');
+CREATE TABLE `cataleg_videos` (
+  `id_video` int NOT NULL AUTO_INCREMENT,
+  `titol` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcio` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `categoria` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `durada_segons` int NOT NULL,
+  `data_publicacio` date NOT NULL,
+  `enllaç_streaming` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_video`),
+  CONSTRAINT `cataleg_videos_chk_1` CHECK ((`durada_segons` > 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO mediciones_ancho_banda (id_operario, bajada_mbps, subida_mbps, latencia_ms, resultado, notas) VALUES
-  (1, 95.40, 45.20, 12.5, 'aceptable',    'Prueba manana, red estable'),
-  (2, 12.10,  5.80, 85.3, 'no_aceptable', 'Prueba tarde, congestion detectada');
+-- ----------------------------------------------------------------------------
+-- 4. SEGURETAT, MANTENIMENT I MONITORATGE
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE `mesures_amplada_banda` (
+  `id_mesura` int NOT NULL AUTO_INCREMENT,
+  `data_hora` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id_usuari_mesurat` int NOT NULL,
+  `velocitat_baixada_mbps` decimal(6,2) NOT NULL,
+  `velocitat_pujada_mbps` decimal(6,2) NOT NULL,
+  `latencia_ms` int NOT NULL,
+  `resultat` enum('acceptable','no acceptable') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dni_operari` varchar(9) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `observacions` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id_mesura`),
+  KEY `fk_mesures_usuari` (`id_usuari_mesurat`),
+  KEY `fk_mesures_operari` (`dni_operari`),
+  CONSTRAINT `fk_mesures_operari` FOREIGN KEY (`dni_operari`) REFERENCES `empleats` (`dni`),
+  CONSTRAINT `fk_mesures_usuari` FOREIGN KEY (`id_usuari_mesurat`) REFERENCES `usuaris_sistema` (`id_usuari`),
+  CONSTRAINT `mesures_amplada_banda_chk_1` CHECK ((`velocitat_baixada_mbps` >= 0)),
+  CONSTRAINT `mesures_amplada_banda_chk_2` CHECK ((`velocitat_pujada_mbps` >= 0)),
+  CONSTRAINT `mesures_amplada_banda_chk_3` CHECK ((`latencia_ms` >= 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `taula_avisos` (
+  `id_avis` int NOT NULL AUTO_INCREMENT,
+  `usuari_mysql` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `taula_afectada` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `operacio_intentada` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `data_hora` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `descripcio_error` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_avis`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `quotes_trucades` (
+  `id_quota` int NOT NULL AUTO_INCREMENT,
+  `id_usuari` int NOT NULL,
+  `minuts_mensuals_max` int NOT NULL DEFAULT '600',
+  `trucades_diaries_max` int NOT NULL DEFAULT '50',
+  `minuts_consumits_mes` int NOT NULL DEFAULT '0',
+  `trucades_consumides_avui` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_quota`),
+  UNIQUE KEY `id_usuari` (`id_usuari`),
+  CONSTRAINT `fk_quotes_usuari` FOREIGN KEY (`id_usuari`) REFERENCES `usuaris_sistema` (`id_usuari`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `control_backups` (
+  `id_backup` int NOT NULL AUTO_INCREMENT,
+  `data_hora` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `taules_incloses` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resultat` enum('correcte','error') COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_backup`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+-- 5. INSERCIÓ DE VALORS MESTRES OBLIGATORIS
+-- ----------------------------------------------------------------------------
+
+INSERT INTO `rols_ldap` (`gid`, `nom_rol`) VALUES 
+(3001, 'admin'),
+(3002, 'vendes'),
+(3003, 'administracio'),
+(3004, 'treballador');
+
+INSERT INTO `configuracio_qualitat` (`nom_perfil`, `resolucio`, `bitrate_max`, `limitacio_banda`) VALUES
+('alta', '1080p', 4000, 0),
+('mitja', '720p', 2000, 0),
+('baixa', '480p', 800, 1);
