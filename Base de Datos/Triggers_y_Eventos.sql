@@ -1,7 +1,5 @@
 -- ============================================================
 --  InnovateTech — Triggers y Eventos
---  MySQL
---  Ejecutar DESPUÉS de schema.sql
 -- ============================================================
 
 USE innovatetech_db;
