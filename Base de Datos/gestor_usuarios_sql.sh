@@ -163,21 +163,26 @@ if [[ "$ASIGNAR_PERMISOS" =~ ^[Ss]$ ]]; then
     read -p "Nombre de la base de datos (use * para todas): " DB_NAME
     DB_NAME=${DB_NAME:-*}
 
+    read -p "Nombre de la tabla (deja vacío para todas): " TABLE_NAME
+    TABLE_NAME=${TABLE_NAME:-*}
+
     echo -e "\nSeleccione el tipo de privilegios:"
     echo -e "1) ${VERDE}TODOS los privilegios${NC} (ALL PRIVILEGES)"
     echo -e "2) ${AZUL}Solo Lectura${NC} (SELECT)"
     echo -e "3) ${AMARILLO}Lectura y Escritura${NC} (SELECT, INSERT, UPDATE, DELETE)"
-    read -p "Opción (1-3) [1]: " OPCION_PERMISOS
+    echo -e "4) ${AMARILLO}Lectura y Escritura sin borrado${NC} (SELECT, INSERT, UPDATE)"
+    read -p "Opción (1-4) [1]: " OPCION_PERMISOS
     OPCION_PERMISOS=${OPCION_PERMISOS:-1}
 
     case $OPCION_PERMISOS in
         2) PRIVILEGIOS="SELECT" ;;
         3) PRIVILEGIOS="SELECT, INSERT, UPDATE, DELETE" ;;
+        4) PRIVILEGIOS="SELECT, INSERT, UPDATE" ;;
         1|*) PRIVILEGIOS="ALL PRIVILEGES" ;;
     esac
 
     echo -e "\n${AZUL}[*] Aplicando permisos...${NC}"
-    SQL_GRANT="GRANT ${PRIVILEGIOS} ON ${DB_NAME}.* TO '${NUEVO_USUARIO}'@'${HOST_USUARIO}'; FLUSH PRIVILEGES;"
+    SQL_GRANT="GRANT ${PRIVILEGIOS} ON ${DB_NAME}.${TABLE_NAME} TO '${NUEVO_USUARIO}'@'${HOST_USUARIO}'; FLUSH PRIVILEGES;"
     mysql -u"$MYSQL_ADMIN" -p"$MYSQL_ADMIN_PASS" -e "$SQL_GRANT" 2>/dev/null
 
     if [ $? -eq 0 ]; then
@@ -190,4 +195,3 @@ fi
 echo -e "\n${VERDE}==================================================${NC}"
 echo -e "${VERDE}          ¡Proceso finalizado con éxito!          ${NC}"
 echo -e "${VERDE}==================================================${NC}\n"
---
