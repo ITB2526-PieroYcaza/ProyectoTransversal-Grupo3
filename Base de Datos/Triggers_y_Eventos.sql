@@ -5,83 +5,9 @@ USE innovate_tech_db;
 
 SET GLOBAL event_scheduler = ON;
 
--- ----------------------------------------------------------------------------
--- 1. SISTEMA DE TRIGGERS D'AUDITORIA GENERAL (TAULA_AVISOS)
--- Registra automàticament qualsevol INSERT, UPDATE o DELETE a les taules crítiques
--- ----------------------------------------------------------------------------
-
--- A) AUDITORIA PER A 'registre_trucades'
-DROP TRIGGER IF EXISTS trg_audit_insert_trucades;
-DELIMITER //
-CREATE TRIGGER trg_audit_insert_trucades
-AFTER INSERT ON `registre_trucades`
-FOR EACH ROW
-BEGIN
-    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-    VALUES (USER(), 'registre_trucades', 'INSERT', CONCAT('S\'ha registrat una nova trucada amb ID: ', NEW.id_trucada, ' entre els usuaris ', NEW.id_usuari_origen, ' i ', NEW.id_usuari_desti));
-END //
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS trg_audit_update_trucades;
-DELIMITER //
-CREATE TRIGGER trg_audit_update_trucades
-AFTER UPDATE ON `registre_trucades`
-FOR EACH ROW
-BEGIN
-    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-    VALUES (USER(), 'registre_trucades', 'UPDATE', CONCAT('S\'ha modificat la trucada ID: ', OLD.id_trucada, '. Durada anterior: ', OLD.durada_segons, 's, Nova durada: ', NEW.durada_segons, 's.'));
-END //
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS trg_audit_delete_trucades;
-DELIMITER //
-CREATE TRIGGER trg_audit_delete_trucades
-AFTER DELETE ON `registre_trucades`
-FOR EACH ROW
-BEGIN
-    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-    VALUES (USER(), 'registre_trucades', 'DELETE', CONCAT('ALERTA: S\'ha eliminat el registre de trucada ID: ', OLD.id_trucada, ' de l\'usuari origen ', OLD.id_usuari_origen));
-END //
-DELIMITER ;
-
-
--- B) AUDITORIA PER A 'usuaris_sistema'
-DROP TRIGGER IF EXISTS trg_audit_insert_usuaris;
-DELIMITER //
-CREATE TRIGGER trg_audit_insert_usuaris
-AFTER INSERT ON `usuaris_sistema`
-FOR EACH ROW
-BEGIN
-    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-    VALUES (USER(), 'usuaris_sistema', 'INSERT', CONCAT('Nou usuari creat: ', NEW.nom_complet, ' (Correu: ', NEW.correu_electronic, ') amb Rol GID: ', NEW.gid_rol));
-END //
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS trg_audit_update_usuaris;
-DELIMITER //
-CREATE TRIGGER trg_audit_update_usuaris
-AFTER UPDATE ON `usuaris_sistema`
-FOR EACH ROW
-BEGIN
-    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-    VALUES (USER(), 'usuaris_sistema', 'UPDATE', CONCAT('Usuari ID ', OLD.id_usuari, ' modificat. Estat anterior: ', OLD.estat, ', Nou estat: ', NEW.estat));
-END //
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS trg_audit_delete_usuaris;
-DELIMITER //
-CREATE TRIGGER trg_audit_delete_usuaris
-AFTER DELETE ON `usuaris_sistema`
-FOR EACH ROW
-BEGIN
-    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-    VALUES (USER(), 'usuaris_sistema', 'DELETE', CONCAT('ALERTA: S\'ha suprimit l\'usuari ', OLD.nom_complet, ' amb correu ', OLD.correu_electronic));
-END //
-DELIMITER ;
-
 
 -- ----------------------------------------------------------------------------
--- 2. TRIGGER: CONTROL AUTOMÀTIC I ACUMULACIÓ DE QUOTES DIÀRIES I MENSUALS
+-- 1. TRIGGER: CONTROL AUTOMÀTIC I ACUMULACIÓ DE QUOTES DIÀRIES I MENSUALS
 -- ----------------------------------------------------------------------------
 DROP TRIGGER IF EXISTS trg_incrementar_quota_diaria;
 DELIMITER //
@@ -98,7 +24,7 @@ DELIMITER ;
 
 
 -- ----------------------------------------------------------------------------
--- 3. TRIGGER: BLOQUEIG AUTOMÀTIC D'USUARIS PER EXCÉS DE CONSUM DIARI
+-- 2. TRIGGER: BLOQUEIG AUTOMÀTIC D'USUARIS PER EXCÉS DE CONSUM DIARI
 -- ----------------------------------------------------------------------------
 DROP TRIGGER IF EXISTS trg_bloqueig_exces_trucades;
 DELIMITER //
@@ -129,7 +55,7 @@ DELIMITER ;
 
 
 -- ----------------------------------------------------------------------------
--- 4. EVENT: CÒPIA DE SEGURETAT DIÀRIA DEL SISTEMA (02:00 AM)
+-- 3. EVENT: CÒPIA DE SEGURETAT DIÀRIA DEL SISTEMA (02:00 AM)
 -- ----------------------------------------------------------------------------
 DROP EVENT IF EXISTS evt_backup_diari_sistema;
 DELIMITER //
