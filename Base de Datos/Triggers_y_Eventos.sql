@@ -1,7 +1,7 @@
 -- ============================================================================
 -- SCRIPT D'AUTOMATITZACIÓ I AUDITORIA DE LA BASE DE DADES (InnovateTech)
 -- ============================================================================
-USE integrate_tech_db;
+USE innovate_tech_db;
 
 SET GLOBAL event_scheduler = ON;
 
