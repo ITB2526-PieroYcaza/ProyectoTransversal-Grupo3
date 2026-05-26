@@ -1,0 +1,318 @@
+-- ============================================================================
+-- SCRIPT DE AUDITORÍA GLOBAL - INNOVATE TECH
+-- Destino: Registro de todas las operaciones DML en 'taula_avisos'
+-- ============================================================================
+
+USE innovate_tech_db;
+
+-- ----------------------------------------------------------------------------
+-- LIMPIEZA DE TRIGGERS EXISTENTES EN LAS TABLAS
+-- ----------------------------------------------------------------------------
+-- Cataleg Videos
+DROP TRIGGER IF EXISTS trg_audit_ins_cataleg_videos; DROP TRIGGER IF EXISTS trg_audit_upd_cataleg_videos; DROP TRIGGER IF EXISTS trg_audit_del_cataleg_videos;
+-- Cistell
+DROP TRIGGER IF EXISTS trg_audit_ins_cistell; DROP TRIGGER IF EXISTS trg_audit_upd_cistell; DROP TRIGGER IF EXISTS trg_audit_del_cistell;
+-- Clients
+DROP TRIGGER IF EXISTS trg_audit_ins_clients; DROP TRIGGER IF EXISTS trg_audit_upd_clients; DROP TRIGGER IF EXISTS trg_audit_del_clients;
+-- Comandes
+DROP TRIGGER IF EXISTS trg_audit_ins_comandes; DROP TRIGGER IF EXISTS trg_audit_upd_comandes; DROP TRIGGER IF EXISTS trg_audit_del_comandes;
+-- Config Qualitat
+DROP TRIGGER IF EXISTS trg_audit_ins_config_qualitat; DROP TRIGGER IF EXISTS trg_audit_upd_config_qualitat; DROP TRIGGER IF EXISTS trg_audit_del_config_qualitat;
+-- Control Backups
+DROP TRIGGER IF EXISTS trg_audit_ins_control_backups; DROP TRIGGER IF EXISTS trg_audit_upd_control_backups; DROP TRIGGER IF EXISTS trg_audit_del_control_backups;
+-- Departaments
+DROP TRIGGER IF EXISTS trg_audit_ins_departaments; DROP TRIGGER IF EXISTS trg_audit_upd_departaments; DROP TRIGGER IF EXISTS trg_audit_del_departaments;
+-- Empleats
+DROP TRIGGER IF EXISTS trg_audit_ins_empleats; DROP TRIGGER IF EXISTS trg_audit_upd_empleats; DROP TRIGGER IF EXISTS trg_audit_del_empleats;
+-- Grup Nivell
+DROP TRIGGER IF EXISTS trg_audit_ins_grup_nivell; DROP TRIGGER IF EXISTS trg_audit_upd_grup_nivell; DROP TRIGGER IF EXISTS trg_audit_del_grup_nivell;
+-- Mesures Amplada Banda
+DROP TRIGGER IF EXISTS trg_audit_ins_mesures_banda; DROP TRIGGER IF EXISTS trg_audit_upd_mesures_banda; DROP TRIGGER IF EXISTS trg_audit_del_mesures_banda;
+-- Nominas
+DROP TRIGGER IF EXISTS trg_audit_ins_nominas; DROP TRIGGER IF EXISTS trg_audit_upd_nominas; DROP TRIGGER IF EXISTS trg_audit_del_nominas;
+-- Quotes Trucades
+DROP TRIGGER IF EXISTS trg_audit_ins_quotes; DROP TRIGGER IF EXISTS trg_audit_upd_quotes; DROP TRIGGER IF EXISTS trg_audit_del_quotes;
+-- Registre Trucades
+DROP TRIGGER IF EXISTS trg_audit_ins_registre_trucades; DROP TRIGGER IF EXISTS trg_audit_upd_registre_trucades; DROP TRIGGER IF EXISTS trg_audit_del_registre_trucades;
+-- Rols LDAP
+DROP TRIGGER IF EXISTS trg_audit_ins_rols_ldap; DROP TRIGGER IF EXISTS trg_audit_upd_rols_ldap; DROP TRIGGER IF EXISTS trg_audit_del_rols_ldap;
+-- Servidors Videoconferencia
+DROP TRIGGER IF EXISTS trg_audit_ins_servidors; DROP TRIGGER IF EXISTS trg_audit_upd_servidors; DROP TRIGGER IF EXISTS trg_audit_del_servidors;
+-- Usuaris Sistema
+DROP TRIGGER IF EXISTS trg_audit_ins_usuaris_sistema; DROP TRIGGER IF EXISTS trg_audit_upd_usuaris_sistema; DROP TRIGGER IF EXISTS trg_audit_del_usuaris_sistema;
+
+DELIMITER //
+
+-- ============================================================================
+-- 1. TAULA: cataleg_videos
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_cataleg_videos AFTER INSERT ON `cataleg_videos` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'cataleg_videos', 'INSERT', CONCAT('Vídeo añadido: ID ', NEW.id_video, ', Título: ', NEW.titol));
+END //
+CREATE TRIGGER trg_audit_upd_cataleg_videos AFTER UPDATE ON `cataleg_videos` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'cataleg_videos', 'UPDATE', CONCAT('Vídeo modificado: ID ', OLD.id_video, '. Título anterior: ', OLD.titol, ' -> Nuevo: ', NEW.titol));
+END //
+CREATE TRIGGER trg_audit_del_cataleg_videos AFTER DELETE ON `cataleg_videos` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'cataleg_videos', 'DELETE', CONCAT('Vídeo eliminado: ID ', OLD.id_video, ', Título: ', OLD.titol));
+END //
+
+-- ============================================================================
+-- 2. TAULA: cistell
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_cistell AFTER INSERT ON `cistell` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'cistell', 'INSERT', CONCAT('Añadido al carro: Comanda ', NEW.id_comanda, ', Producto ', NEW.id_producte, ', Cantidad: ', NEW.quantitat));
+END //
+CREATE TRIGGER trg_audit_upd_cistell AFTER UPDATE ON `cistell` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'cistell', 'UPDATE', CONCAT('Carro modificado: Comanda ', OLD.id_comanda, ', Prod ', OLD.id_producte, '. Cantidad anterior: ', OLD.quantitat, ' -> Nueva: ', NEW.quantitat));
+END //
+CREATE TRIGGER trg_audit_del_cistell AFTER DELETE ON `cistell` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'cistell', 'DELETE', CONCAT('Eliminado del carro: Comanda ', OLD.id_comanda, ', Producto ', OLD.id_producte));
+END //
+
+-- ============================================================================
+-- 3. TAULA: clients
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_clients AFTER INSERT ON `clients` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'clients', 'INSERT', CONCAT('Cliente registrado: ID ', NEW.id_client, ', Correo: ', NEW.correu_electronic));
+END //
+CREATE TRIGGER trg_audit_upd_clients AFTER UPDATE ON `clients` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'clients', 'UPDATE', CONCAT('Cliente modificado: ID ', OLD.id_client, '. Empresa anterior: ', IFNULL(OLD.empresa, 'Ninguna'), ' -> Nueva: ', IFNULL(NEW.empresa, 'Ninguna')));
+END //
+CREATE TRIGGER trg_audit_del_clients AFTER DELETE ON `clients` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'clients', 'DELETE', CONCAT('Cliente eliminado: ID ', OLD.id_client, ', Correo: ', OLD.correu_electronic));
+END //
+
+-- ============================================================================
+-- 4. TAULA: comandes
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_comandes AFTER INSERT ON `comandes` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'comandes', 'INSERT', CONCAT('Pedido creado: ID ', NEW.id_comanda, ' para Cliente ', NEW.id_client));
+END //
+CREATE TRIGGER trg_audit_upd_comandes AFTER UPDATE ON `comandes` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'comandes', 'UPDATE', CONCAT('Pedido modificado: ID ', OLD.id_comanda, '. Estado anterior: ', OLD.estat, ' -> Nuevo: ', NEW.estat));
+END //
+CREATE TRIGGER trg_audit_del_comandes AFTER DELETE ON `comandes` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'comandes', 'DELETE', CONCAT('Pedido eliminado: ID ', OLD.id_comanda));
+END //
+
+-- ============================================================================
+-- 5. TAULA: configuracio_qualitat
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_config_qualitat AFTER INSERT ON `configuracio_qualitat` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'configuracio_qualitat', 'INSERT', CONCAT('Perfil de calidad añadido: ', NEW.nom_perfil));
+END //
+CREATE TRIGGER trg_audit_upd_config_qualitat AFTER UPDATE ON `configuracio_qualitat` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'configuracio_qualitat', 'UPDATE', CONCAT('Perfil calidad cambiado: ID ', OLD.id_qualitat, ' (', OLD.nom_perfil, ')'));
+END //
+CREATE TRIGGER trg_audit_del_config_qualitat AFTER DELETE ON `configuracio_qualitat` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'configuracio_qualitat', 'DELETE', CONCAT('Perfil calidad eliminado: ID ', OLD.id_qualitat, ' (', OLD.nom_perfil, ')'));
+END //
+
+-- ============================================================================
+-- 6. TAULA: control_backups
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_control_backups AFTER INSERT ON `control_backups` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'control_backups', 'INSERT', CONCAT('Nuevo registro de backup. Resultado: ', NEW.resultat));
+END //
+CREATE TRIGGER trg_audit_upd_control_backups AFTER UPDATE ON `control_backups` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'control_backups', 'UPDATE', CONCAT('Registro de backup ID ', OLD.id_backup, ' modificado a: ', NEW.resultat));
+END //
+CREATE TRIGGER trg_audit_del_control_backups AFTER DELETE ON `control_backups` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'control_backups', 'DELETE', CONCAT('Alerta: Borrado registro de control de backup ID: ', OLD.id_backup));
+END //
+
+-- ============================================================================
+-- 7. TAULA: departaments
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_departaments AFTER INSERT ON `departaments` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'departaments', 'INSERT', CONCAT('Departamento creado: ', NEW.id_departament, ' - ', NEW.nom));
+END //
+CREATE TRIGGER trg_audit_upd_departaments AFTER UPDATE ON `departaments` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'departaments', 'UPDATE', CONCAT('Departamento ', OLD.id_departament, ' cambiado. Nombre: ', OLD.nom, ' -> ', NEW.nom));
+END //
+CREATE TRIGGER trg_audit_del_departaments AFTER DELETE ON `departaments` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'departaments', 'DELETE', CONCAT('Departamento eliminado: ', OLD.id_departament, ' (', OLD.nom, ')'));
+END //
+
+-- ============================================================================
+-- 8. TAULA: empleats
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_empleats AFTER INSERT ON `empleats` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'empleats', 'INSERT', CONCAT('Empleado contratado: DNI ', NEW.dni, ', Nombre: ', NEW.nom, ' ', NEW.cognoms));
+END //
+CREATE TRIGGER trg_audit_upd_empleats AFTER UPDATE ON `empleats` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'empleats', 'UPDATE', CONCAT('Empleado DNI ', OLD.dni, ' modificado. Dept anterior: ', OLD.id_departament, ' -> Nuevo: ', NEW.id_departament));
+END //
+CREATE TRIGGER trg_audit_del_empleats AFTER DELETE ON `empleats` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'empleats', 'DELETE', CONCAT('Empleado despedido/borrado: DNI ', OLD.dni, ', ', OLD.nom, ' ', OLD.cognoms));
+END //
+
+-- ============================================================================
+-- 9. TAULA: grup_nivell
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_grup_nivell AFTER INSERT ON `grup_nivell` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'grup_nivell', 'INSERT', CONCAT('Nivel laboral creado: ID ', NEW.id_nivell, ' (', NEW.descripcio, ')'));
+END //
+CREATE TRIGGER trg_audit_upd_grup_nivell AFTER UPDATE ON `grup_nivell` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'grup_nivell', 'UPDATE', CONCAT('Nivel laboral cambiado: ID ', OLD.id_nivell, '. Salario: ', OLD.salari_base, ' -> ', NEW.salari_base));
+END //
+CREATE TRIGGER trg_audit_del_grup_nivell AFTER DELETE ON `grup_nivell` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'grup_nivell', 'DELETE', CONCAT('Nivel laboral eliminado: ID ', OLD.id_nivell));
+END //
+
+-- ============================================================================
+-- 10. TAULA: mesures_amplada_banda
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_mesures_banda AFTER INSERT ON `mesures_amplada_banda` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'mesures_amplada_banda', 'INSERT', CONCAT('Test de velocidad ID ', NEW.id_mesura, ' para Usuario ', NEW.id_usuari_mesurat, '. Resultado: ', NEW.resultat));
+END //
+CREATE TRIGGER trg_audit_upd_mesures_banda AFTER UPDATE ON `mesures_amplada_banda` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'mesures_amplada_banda', 'UPDATE', CONCAT('Test modificado: ID ', OLD.id_mesura, '. Cambiado resultado a: ', NEW.resultat));
+END //
+CREATE TRIGGER trg_audit_del_mesures_banda AFTER DELETE ON `mesures_amplada_banda` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'mesures_amplada_banda', 'DELETE', CONCAT('Test de velocidad eliminado: ID ', OLD.id_mesura));
+END //
+
+-- ============================================================================
+-- 11. TAULA: nominas
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_nominas AFTER INSERT ON `nominas` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'nominas', 'INSERT', CONCAT('Nómina emitida: ID ', NEW.id_nomina, ' Empleado ', NEW.dni, ' Mes/Año: ', NEW.mes, '/', NEW.any));
+END //
+CREATE TRIGGER trg_audit_upd_nominas AFTER UPDATE ON `nominas` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'nominas', 'UPDATE', CONCAT('Nómina modificada: ID ', OLD.id_nomina, '. Importe anterior: ', OLD.import_total, ' -> Nuevo: ', NEW.import_total));
+END //
+CREATE TRIGGER trg_audit_del_nominas AFTER DELETE ON `nominas` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'nominas', 'DELETE', CONCAT('Alerta: Nómina eliminada: ID ', OLD.id_nomina, ' del DNI ', OLD.dni));
+END //
+
+-- ============================================================================
+-- 12. TAULA: productes
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_productes AFTER INSERT ON `productes` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'productes', 'INSERT', CONCAT('Producto añadido al inventario: ', NEW.nom, ' (Stock: ', NEW.stock, ')'));
+END //
+CREATE TRIGGER trg_audit_upd_productes AFTER UPDATE ON `productes` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'productes', 'UPDATE', CONCAT('Inventario modificado: ', OLD.nom, '. Stock anterior: ', OLD.stock, ' -> Nuevo: ', NEW.stock));
+END //
+CREATE TRIGGER trg_audit_del_productes AFTER DELETE ON `productes` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'productes', 'DELETE', CONCAT('Producto descatalogado/borrado: ID ', OLD.id_producte, ' (', OLD.nom, ')'));
+END //
+
+-- ============================================================================
+-- 13. TAULA: quotes_trucades
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_quotes AFTER INSERT ON `quotes_trucades` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'quotes_trucades', 'INSERT', CONCAT('Asignada cuota telefónica al usuario ID ', NEW.id_usuari));
+END //
+CREATE TRIGGER trg_audit_upd_quotes AFTER UPDATE ON `quotes_trucades` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'quotes_trucades', 'UPDATE', CONCAT('Uso de cuota cambiado para User ', OLD.id_usuari, '. Llamadas hoy: ', OLD.trucades_consumides_avui, ' -> ', NEW.trucades_consumides_avui));
+END //
+CREATE TRIGGER trg_audit_del_quotes AFTER DELETE ON `quotes_trucades` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'quotes_trucades', 'DELETE', CONCAT('Eliminado plan de cuota para usuario ID ', OLD.id_usuari));
+END //
+
+-- ============================================================================
+-- 14. TAULA: registre_trucades
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_registre_trucades AFTER INSERT ON `registre_trucades` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'registre_trucades', 'INSERT', CONCAT('Llamada guardada: ID ', NEW.id_trucada, ' de Origen ', NEW.id_usuari_origen, ' a Destino ', NEW.id_usuari_desti));
+END //
+CREATE TRIGGER trg_audit_upd_registre_trucades AFTER UPDATE ON `registre_trucades` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'registre_trucades', 'UPDATE', CONCAT('Llamada modificada: ID ', OLD.id_trucada, '. Duración anterior: ', OLD.durada_segons, 's -> Nueva: ', NEW.durada_segons, 's'));
+END //
+CREATE TRIGGER trg_audit_del_registre_trucades AFTER DELETE ON `registre_trucades` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'registre_trucades', 'DELETE', CONCAT('Borrado registro de llamada ID ', OLD.id_trucada, ' del usuario origen ', OLD.id_usuari_origen));
+END //
+
+-- ============================================================================
+-- 15. TAULA: rols_ldap
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_rols_ldap AFTER INSERT ON `rols_ldap` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'rols_ldap', 'INSERT', CONCAT('Nuevo Rol LDAP creado: GID ', NEW.gid, ', Nombre: ', NEW.nom_rol));
+END //
+CREATE TRIGGER trg_audit_upd_rols_ldap AFTER UPDATE ON `rols_ldap` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'rols_ldap', 'UPDATE', CONCAT('Rol LDAP modificado GID ', OLD.gid, '. Nombre anterior: ', OLD.nom_rol, ' -> Nuevo: ', NEW.nom_rol));
+END //
+CREATE TRIGGER trg_audit_del_rols_ldap AFTER DELETE ON `rols_ldap` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'rols_ldap', 'DELETE', CONCAT('Rol LDAP eliminado GID ', OLD.gid, ' (', OLD.nom_rol, ')'));
+END //
+
+-- ============================================================================
+-- 16. TAULA: servidors_videoconferencia
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_servidors AFTER INSERT ON `servidors_videoconferencia` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'servidors_videoconferencia', 'INSERT', CONCAT('Servidor Jitsi desplegado: IP ', NEW.ip_publica, ' Puerto: ', NEW.port));
+END //
+CREATE TRIGGER trg_audit_upd_servidors AFTER UPDATE ON `servidors_videoconferencia` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'servidors_videoconferencia', 'UPDATE', CONCAT('Servidor modificado: ID ', OLD.id_servidor, '. IP Pública cambió de ', OLD.ip_publica, ' a ', NEW.ip_publica));
+END //
+CREATE TRIGGER trg_audit_del_servidors AFTER DELETE ON `servidors_videoconferencia` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'servidors_videoconferencia', 'DELETE', CONCAT('Servidor apagado/borrado: ID ', OLD.id_servidor, ' IP: ', OLD.ip_publica));
+END //
+
+-- ============================================================================
+-- 17. TAULA: usuaris_sistema
+-- ============================================================================
+CREATE TRIGGER trg_audit_ins_usuaris_sistema AFTER INSERT ON `usuaris_sistema` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'usuaris_sistema', 'INSERT', CONCAT('Usuario dado de alta: ', NEW.nom_complet, ' (', NEW.correu_electronic, ')'));
+END //
+CREATE TRIGGER trg_audit_upd_usuaris_sistema AFTER UPDATE ON `usuaris_sistema` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'usuaris_sistema', 'UPDATE', CONCAT('Usuario modificado: ID ', OLD.id_usuari, '. Estado anterior: ', OLD.estat, ' -> Nuevo: ', NEW.estat));
+END //
+CREATE TRIGGER trg_audit_del_usuaris_sistema AFTER DELETE ON `usuaris_sistema` FOR EACH ROW BEGIN
+    INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+    VALUES (USER(), 'usuaris_sistema', 'DELETE', CONCAT('Usuario eliminado del sistema: ', OLD.nom_complet, ' (', OLD.correu_electronic, ')'));
+END //
+
+DELIMITER ;
