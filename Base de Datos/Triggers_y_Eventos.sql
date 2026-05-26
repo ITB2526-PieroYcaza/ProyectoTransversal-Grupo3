@@ -1,17 +1,12 @@
 -- ============================================================================
--- SCRIPT D'AUTOMATITZACIÓ REQUERIT EN LA PLANIFICACIÓ DE LA BD (InnovateTech)
+-- SCRIPT D'AUTOMATITZACIÓ DE LA BASE DE DADES (InnovateTech)
 -- ============================================================================
 USE innovate_tech_db;
 
--- Aseguramos la activación del planificador de tareas en el motor de MySQL
 SET GLOBAL event_scheduler = ON;
 
 -- ----------------------------------------------------------------------------
--- 1. TRIGGER: REGISTRE D'ERRORS D'INTEGRITAT EN HISTORIAL (taula_avisos)
--- ----------------------------------------------------------------------------
--- Enunciat de la imatge: Quan s'intenta introduir un registre on 'data_hora_fi'
--- és anterior a 'data_hora_inici', a més de llançar l'error reglamentari,
--- s'ha d'inserir de manera automàtica un avís informatiu a 'taula_avisos'.
+-- 1. TRIGGER: RESTRICCIÓ DE SEgURETAT I AUDITORIA EN DATES DE TRUCADES
 -- ----------------------------------------------------------------------------
 DROP TRIGGER IF EXISTS trg_auditoria_dates_trucada;
 
@@ -21,10 +16,8 @@ CREATE TRIGGER trg_auditoria_dates_trucada
 BEFORE INSERT ON `registre_trucades`
 FOR EACH ROW
 BEGIN
-    -- Comprovació de la incoherència de dates
     IF NEW.`data_hora_fi` < NEW.`data_hora_inici` THEN
         
-        -- Inserim el log detallat en la taula de seguretat del sistema
         INSERT INTO `taula_avisos` (
             `usuari_mysql`, 
             `taula_afectada`, 
@@ -34,12 +27,11 @@ BEGIN
             USER(), 
             'registre_trucades', 
             'INSERT', 
-            CONCAT('Intent d''inserció de trucada fallida. Data inici (', NEW.`data_hora_inici`, ') posterior a data fi (', NEW.`data_hora_fi`, '). Usuari origen: ', NEW.`id_usuari_origen`)
+            CONCAT('ERROR: Intent d''introduir data_hora_fi (', NEW.`data_hora_fi`, ') anterior a data_hora_inici (', NEW.`data_hora_inici`, ').')
         );
         
-        -- Bloquegem la transacció llançant l'error cap a l'aplicació web
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Error: La data de fi de la trucada no pot ser anterior a la d''inici. Avís registrat.';
+        SET MESSAGE_TEXT = 'Error: La data de fi no pot ser anterior a la data d''inici.';
         
     END IF;
 END //
@@ -48,10 +40,7 @@ DELIMITER ;
 
 
 -- ----------------------------------------------------------------------------
--- 2. TRIGGER: CONTROL AUTOMÀTIC DE LES QUOTES DE TRUCADES (Consum diari)
--- ----------------------------------------------------------------------------
--- Enunciat de la imatge: Cada vegada que es realitzi una trucada correctament, 
--- s'ha de sumar una unitat a 'trucades_consumides_avui' a la taula 'quotes_trucades'.
+-- 2. TRIGGER: CONTROL AUTOMÀTIC I ACUMULACIÓ DE QUOTES MENSUALS I DIÀRIES
 -- ----------------------------------------------------------------------------
 DROP TRIGGER IF EXISTS trg_incrementar_quota_diaria;
 
@@ -61,9 +50,10 @@ CREATE TRIGGER trg_incrementar_quota_diaria
 AFTER INSERT ON `registre_trucades`
 FOR EACH ROW
 BEGIN
-    -- Incrementem en 1 el comptador diari per a l'usuari que ha originat la trucada
+    -- Incrementa una trucada al comptador diari i calcula la durada en minuts per sumar-la al mensual
     UPDATE `quotes_trucades`
-    SET `trucades_consumides_avui` = `trucades_consumides_avui` + 1
+    SET `trucades_consumides_avui` = `trucades_consumides_avui` + 1,
+        `minuts_consumits_mes` = `minuts_consumits_mes` + TIMESTAMPDIFF(MINUTE, NEW.`data_hora_inici`, NEW.`data_hora_fi`)
     WHERE `id_usuari` = NEW.`id_usuari_origen`;
 END //
 
@@ -71,24 +61,66 @@ DELIMITER ;
 
 
 -- ----------------------------------------------------------------------------
--- 3. EVENT PROGRAMAT: RESET DIARI DE QUOTES DE VEUP
+-- 3. TRIGGER: BLOQUEIG AUTOMÀTIC D'USUARIS PER EXCÉS DE CONSUM DIARI
 -- ----------------------------------------------------------------------------
--- Enunciat de la imatge: Esdeveniment encarregat de posar a 0 de forma diària
--- la columna 'trucades_consumides_avui' de tots els usuaris de l'empresa.
--- ----------------------------------------------------------------------------
-DROP EVENT IF EXISTS evt_reset_diari_trucades;
+DROP TRIGGER IF EXISTS trg_bloqueig_exces_trucades;
 
 DELIMITER //
 
-CREATE EVENT evt_reset_diari_trucades
+CREATE TRIGGER trg_bloqueig_exces_trucades
+AFTER UPDATE ON `quotes_trucades`
+FOR EACH ROW
+BEGIN
+    IF NEW.`trucades_consumides_avui` >= NEW.`trucades_diaries_max` THEN
+        
+        UPDATE `usuaris_sistema`
+        SET `estat` = 'bloquejat'
+        WHERE `id_usuari` = NEW.`id_usuari`;
+        
+        INSERT INTO `taula_avisos` (
+            `usuari_mysql`, 
+            `taula_afectada`, 
+            `operacio_intentada`, 
+            `descripcio_error`
+        ) VALUES (
+            'SYSTEM_TRIGGER', 
+            'usuaris_sistema', 
+            'UPDATE', 
+            CONCAT('L''usuari amb ID ', NEW.`id_usuari`, ' ha estat bloquejat automàticament per superar el límit diari permès.')
+        );
+
+    END IF;
+END //
+
+DELIMITER ;
+
+
+-- ----------------------------------------------------------------------------
+-- 4. EVENT: COPIA DE SEGURETAT DIÀRIA DEL SISTEMA (02:00 AM)
+-- ----------------------------------------------------------------------------
+DROP EVENT IF EXISTS evt_backup_diari_sistema;
+
+DELIMITER //
+
+CREATE EVENT evt_backup_diari_sistema
 ON SCHEDULE EVERY 1 DAY
-STARTS CONCAT(CURDATE() + INTERVAL 1 DAY, ' 00:00:00')
+STARTS CONCAT(CURDATE() + INTERVAL 1 DAY, ' 02:00:00')
 ON COMPLETION PRESERVE
 DO
 BEGIN
-    -- Posem a zero la quota de trucades diàries de tota la plantilla
-    UPDATE `quotes_trucades`
-    SET `trucades_consumides_avui` = 0;
+    DECLARE ruta_fitxer VARCHAR(255);
+    SET ruta_fitxer = CONCAT('/var/backups/innovatetech/backup_trucades_', DATE_FORMAT(NOW(), '%Y%m%d_%H%i%s'), '.csv');
+
+    BEGIN
+        SET @sql = CONCAT('SELECT * FROM `registre_trucades` INTO OUTFILE ''', ruta_fitxer, ''' FIELDS TERMINATED BY '','' LINES TERMINATED BY ''\\n''');
+        PREPARE stmt FROM @sql;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+
+        INSERT INTO `control_backups` (`taules_incloses`, `resultat`)
+        VALUES ('registre_trucades', 'correcte');
+    END;
+
 END //
 
 DELIMITER ;
