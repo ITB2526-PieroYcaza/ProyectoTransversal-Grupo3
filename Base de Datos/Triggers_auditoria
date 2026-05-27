@@ -1,103 +1,185 @@
 -- ============================================================================
--- SCRIPT DE AUDITORÍA DE INTENTOS FALLIDOS POR PERMISOS (InnovateTech)
--- Basado en la matriz de roles y privilegios del sistema
+-- SCRIPT DEFINITIVO DE AUDITORÍA DE ACCESOS Y PRIVILEGIOS TOTAL
+-- Destino: Bloqueo de intrusos y registro persistente en 'taula_avisos'
 -- ============================================================================
 
-USE integrate_tech_db; -- Cambiar por tu base de datos si aplica
+USE innovate_tech_db;
 
--- Limpieza de triggers de seguridad previos
-DROP TRIGGER IF EXISTS trg_sec_empleats_ins;
-DROP TRIGGER IF EXISTS trg_sec_nominas_ins;
+-- ----------------------------------------------------------------------------
+-- LIMPIEZA DE TRIGGERS PREVIOS
+-- ----------------------------------------------------------------------------
+DROP TRIGGER IF EXISTS trg_sec_cataleg_videos_ins;
+DROP TRIGGER IF EXISTS trg_sec_cistell_ins;
 DROP TRIGGER IF EXISTS trg_sec_clients_ins;
 DROP TRIGGER IF EXISTS trg_sec_comandes_ins;
+DROP TRIGGER IF EXISTS trg_sec_config_qualitat_ins;
+DROP TRIGGER IF EXISTS trg_sec_control_backups_ins;
+DROP TRIGGER IF EXISTS trg_sec_departaments_ins;
+DROP TRIGGER IF EXISTS trg_sec_empleats_ins;
+DROP TRIGGER IF EXISTS trg_sec_grup_nivell_ins;
+DROP TRIGGER IF EXISTS trg_sec_mesures_banda_ins;
+DROP TRIGGER IF EXISTS trg_sec_nominas_ins;
+DROP TRIGGER IF EXISTS trg_sec_productes_ins;
+DROP TRIGGER IF EXISTS trg_sec_quotes_ins;
+DROP TRIGGER IF EXISTS trg_sec_registre_trucades_ins;
+DROP TRIGGER IF EXISTS trg_sec_rols_ldap_ins;
 DROP TRIGGER IF EXISTS trg_sec_servidors_ins;
+DROP TRIGGER IF EXISTS trg_sec_usuaris_sistema_ins;
 
 DELIMITER //
 
 -- ============================================================================
--- 1. CONTROL DE RECURSOS HUMANOS (Solo permitido para 'cap_departament' o 'admin')
+-- BLOQUE 1: RECURSOS HUMANOS (Solo 'cap_departament', 'admin' o 'root')
 -- ============================================================================
 
-CREATE TRIGGER trg_sec_empleats_ins
-BEFORE INSERT ON `empleats`
-FOR EACH ROW
-BEGIN
-    -- Si el usuario NO contiene 'cap_departament' ni 'admin' ni 'root' en su nombre de cuenta MySQL
-    IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        
-        -- 1. Registramos de forma persistente el intento fallido por falta de privilegios
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'empleats', 'INSERT', 'ERROR: Intent d\'inserció no autoritzat per rols de recursos humans.');
-        
-        -- 2. Cancelamos la ejecución de la consulta para proteger la tabla
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Accés denegat: No tens permisos de Cap de Departament per modificar dades d\'empleats.';
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_nominas_ins
-BEFORE INSERT ON `nominas`
-FOR EACH ROW
-BEGIN
+CREATE TRIGGER trg_sec_empleats_ins BEFORE INSERT ON `empleats` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'nominas', 'INSERT', 'ERROR: Intent de generació de nòmina rebutjat per falta de permisos.');
-        
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Accés denegat: Gestió de nòmines restringida a Caps de Departament.';
+        VALUES (CURRENT_USER(), 'empleats', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'inserció sense rol de Cap de Departament.');
+        SET NEW.dni = NULL; -- Provoca fallo "Column cannot be null" salvando la auditoría
     END IF;
 END //
 
-
--- ============================================================================
--- 2. CONTROL DE NEGOCIO Y VENTAS (Solo permitido para 'administratiu' o 'admin')
--- ============================================================================
-
-CREATE TRIGGER trg_sec_clients_ins
-BEFORE INSERT ON `clients`
-FOR EACH ROW
-BEGIN
-    -- Si el usuario NO contiene 'administratiu' ni es administrador del motor
-    IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        
+CREATE TRIGGER trg_sec_nominas_ins BEFORE INSERT ON `nominas` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'clients', 'INSERT', 'ERROR: Intent de creació de client bloquejat per violació de rols de negoci.');
-        
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Accés denegat: Només el personal Administratiu pot gestionar la cartera de clients.';
+        VALUES (CURRENT_USER(), 'nominas', 'INSERT', 'ERROR PRIVILEGIS: Intent de generació de nòmina no autoritzat.');
+        SET NEW.dni = NULL;
     END IF;
 END //
 
-CREATE TRIGGER trg_sec_comandes_ins
-BEFORE INSERT ON `comandes`
-FOR EACH ROW
-BEGIN
+CREATE TRIGGER trg_sec_departaments_ins BEFORE INSERT ON `departaments` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'departaments', 'INSERT', 'ERROR PRIVILEGIS: Intent de modificació d\'estructura organitzativa.');
+        SET NEW.nom = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_grup_nivell_ins BEFORE INSERT ON `grup_nivell` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'grup_nivell', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'alteració de barems salarials.');
+        SET NEW.descripcio = NULL;
+    END IF;
+END //
+
+
+-- ============================================================================
+-- BLOQUE 2: NEGOCIO, VENTAS Y CATÁLOGO (Solo 'administratiu', 'admin' o 'root')
+-- ============================================================================
+
+CREATE TRIGGER trg_sec_clients_ins BEFORE INSERT ON `clients` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'comandes', 'INSERT', 'ERROR: Creació de comanda interceptada. Usuari no autoritzat.');
-        
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Accés denegat: La facturació i creació de comandes requereix rol Administratiu.';
+        VALUES (CURRENT_USER(), 'clients', 'INSERT', 'ERROR PRIVILEGIS: Intent de creació de client sense rol Administratiu.');
+        SET NEW.nom = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_comandes_ins BEFORE INSERT ON `comandes` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'comandes', 'INSERT', 'ERROR PRIVILEGIS: Intent de generació de comanda comercial.');
+        SET NEW.id_client = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_cistell_ins BEFORE INSERT ON `cistell` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'cistell', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'alteració de línies de cistell/comanda.');
+        SET NEW.quantitat = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_productes_ins BEFORE INSERT ON `productes` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'productes', 'INSERT', 'ERROR PRIVILEGIS: Intent de modificació de catàleg de productes.');
+        SET NEW.nom = NULL;
     END IF;
 END //
 
 
 -- ============================================================================
--- 3. CONTROL DE INFRAESTRUCTURA TÉCNICA (Solo permitido para 'tecnic' o 'admin')
+-- BLOQUE 3: ÁREA TÉCNICA Y SISTEMAS (Solo 'tecnic', 'admin' o 'root')
 -- ============================================================================
 
-CREATE TRIGGER trg_sec_servidors_ins
-BEFORE INSERT ON `servidors_videoconferencia`
-FOR EACH ROW
-BEGIN
-    -- Si el usuario NO contiene 'tecnic' en su cuenta ni privilegios globales
+CREATE TRIGGER trg_sec_servidors_ins BEFORE INSERT ON `servidors_videoconferencia` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%tecnic%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'servidors_videoconferencia', 'INSERT', 'ERROR: Intent d\'alteració de la infraestructura de servidors Jitsi.');
-        
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Accés denegat: Modificació de sistemes restringida exclusivament a Tècnics de xarxa.';
+        VALUES (CURRENT_USER(), 'servidors_videoconferencia', 'INSERT', 'ERROR PRIVILEGIS: Intent de modificació d\'infraestructura de xarxa.');
+        SET NEW.ip_publica = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_config_qualitat_ins BEFORE INSERT ON `configuracio_qualitat` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%tecnic%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'configuracio_qualitat', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'alteració de perfils de streaming Jitsi.');
+        SET NEW.nom_perfil = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_mesures_banda_ins BEFORE INSERT ON `mesures_amplada_banda` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%tecnic%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'mesures_amplada_banda', 'INSERT', 'ERROR PRIVILEGIS: Intent de falsificació de mètriques d\'ample de banda.');
+        SET NEW.resultat = NULL;
+    END IF;
+END //
+
+
+-- ============================================================================
+-- BLOQUE 4: INFRAESTRUCTURA CORE Y OPERACIONES (Solo 'admin' o 'root')
+-- ============================================================================
+
+CREATE TRIGGER trg_sec_usuaris_sistema_ins BEFORE INSERT ON `usuaris_sistema` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'usuaris_sistema', 'INSERT', 'ERROR PRIVILEGIS: Intent de creació d\'usuari core del sistema.');
+        SET NEW.nom_complet = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_registre_trucades_ins BEFORE INSERT ON `registre_trucades` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'registre_trucades', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'inserció manual al registre de trucades.');
+        SET NEW.data_hora_inici = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_cataleg_videos_ins BEFORE INSERT ON `cataleg_videos` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'cataleg_videos', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'alteració de catàleg multimèdia global.');
+        SET NEW.titol = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_quotes_ins BEFORE INSERT ON `quotes_trucades` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'quotes_trucades', 'INSERT', 'ERROR PRIVILEGIS: Intent de manipulació d\'assignació de quotes.');
+        SET NEW.id_usuari = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_control_backups_ins BEFORE INSERT ON `control_backups` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'control_backups', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'alteració del registre de còpies de seguretat.');
+        SET NEW.taules_incloses = NULL;
+    END IF;
+END //
+
+CREATE TRIGGER trg_sec_rols_ldap_ins BEFORE INSERT ON `rols_ldap` FOR EACH ROW BEGIN
+    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (CURRENT_USER(), 'rols_ldap', 'INSERT', 'ERROR PRIVILEGIS: Intent de manipulació d\'estructures de rols LDAP.');
+        SET NEW.nom_rol = NULL;
     END IF;
 END //
 
