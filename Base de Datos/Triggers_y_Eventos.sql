@@ -11,40 +11,24 @@ USE `innovate_tech_db`;
 ALTER TABLE `taula_avisos` ENGINE = MyISAM;
 
 -- ----------------------------------------------------------------------------
--- 2. ASIGNACIÓN DE PERMISOS NATIVOS GLOBALES (El truco que funciona)
+-- 2. ASIGNACIÓN DE PERMISOS PARA PERMITIR DENEGACIÓN POR TRIGGER
 -- ----------------------------------------------------------------------------
--- Primero limpiamos cualquier residuo anterior del host localhost que creé mal
-DROP USER IF EXISTS 'vendes'@'localhost', 'administracio'@'localhost', 'treballador'@'localhost';
+-- 
+USE innovate_tech_db;
 
--- Reseteamos los usuarios reales de '%'
-REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'vendes'@'%', 'administracio'@'%', 'treballador'@'%';
+-- 1. Permisos para cuando conecte en remoto (%)
+GRANT SELECT, INSERT, UPDATE, DELETE ON innovate_tech_db.* TO 'vendes'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON innovate_tech_db.* TO 'administracio'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON innovate_tech_db.* TO 'treballador'@'%';
 
--- Otorgamos acceso de lectura a sus tablas correspondientes
-GRANT SELECT ON `innovate_tech_db`.`clients` TO 'vendes'@'%';
-GRANT SELECT ON `innovate_tech_db`.`comandes` TO 'vendes'@'%';
-GRANT SELECT ON `innovate_tech_db`.`productes` TO 'vendes'@'%';
-GRANT SELECT ON `innovate_tech_db`.`cistell` TO 'vendes'@'%';
-GRANT SELECT ON `innovate_tech_db`.`registre_trucades` TO 'vendes'@'%';
+-- 2. Permisos para cuando conecte en local (localhost)
+GRANT SELECT, INSERT, UPDATE, DELETE ON innovate_tech_db.* TO 'vendes'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON innovate_tech_db.* TO 'administracio'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON innovate_tech_db.* TO 'treballador'@'localhost';
 
-GRANT SELECT ON `innovate_tech_db`.`empleats` TO 'administracio'@'%';
-GRANT SELECT ON `innovate_tech_db`.`nominas` TO 'administracio'@'%';
-GRANT SELECT ON `innovate_tech_db`.`departaments` TO 'administracio'@'%';
-GRANT SELECT ON `innovate_tech_db`.`grup_nivell` TO 'administracio'@'%';
-
-GRANT SELECT ON `innovate_tech_db`.`productes` TO 'treballador'@'%';
-GRANT SELECT ON `innovate_tech_db`.`cataleg_videos` TO 'treballador'@'%';
-GRANT SELECT ON `innovate_tech_db`.`configuracio_qualitat` TO 'treballador'@'%';
-GRANT SELECT ON `innovate_tech_db`.`quotes_trucades` TO 'treballador'@'%';
-GRANT SELECT ON `innovate_tech_db`.`registre_trucades` TO 'treballador'@'%';
-
--- Permiso crucial: Permitir escribir en la tabla de avisos
-GRANT INSERT ON `innovate_tech_db`.`taula_avisos` TO 'vendes'@'%', 'administracio'@'%', 'treballador'@'%';
-
--- EL TRUCO MAESTRO: Les damos permiso total de escritura nativo en la BD.
--- Esto hace que MySQL NUNCA devuelva el Error 1142 y deje que el TRIGGER tome el control.
-GRANT INSERT, UPDATE, DELETE ON `innovate_tech_db`.* TO 'vendes'@'%', 'administracio'@'%', 'treballador'@'%';
-
+-- 3. Limpiar caché de privilegios
 FLUSH PRIVILEGES;
+
 
 -- ----------------------------------------------------------------------------
 -- 3. TRIGGERS DE CONTROL DE ACCESO (54 TRIGGERS EN TOTAL)
