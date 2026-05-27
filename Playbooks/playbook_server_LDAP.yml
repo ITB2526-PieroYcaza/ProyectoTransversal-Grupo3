@@ -259,6 +259,7 @@
         url: https://downloads.sourceforge.net/project/lam/LAM/7.7/ldap-account-manager_7.7-1_all.deb
         dest: /tmp/ldap-account-manager_7.7-1_all.deb
         mode: '0644'
+        timeout: 60
 
     - name: Instalar el paquete deb de LDAP Account Manager (LAM) version 7.7
       apt:
