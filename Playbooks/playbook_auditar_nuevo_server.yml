@@ -1,0 +1,97 @@
+---
+# Auditar automaticamente nuevas instancias
+- name: Instalar y conectar Auditbeat de forma automática en nuevos servidores
+  hosts: nuevos_servidores
+  become: true
+  # Usamos las credenciales por defecto .pem de AWS para la instalación inicial
+  vars:
+    ansible_user: "{{ ansible_user_inicial }}"
+    ansible_ssh_private_key_file: "{{ ansible_ssh_private_key_file_inicial }}"
+    # Extraemos la IP del servidor de logs del inventario
+    elasticsearch_server_ip: "{{ hostvars['servidor_logs']['ansible_host'] }}"
+    elastic_exact_version: "8.17.4"
+    elastic_password_client: "pirineus"
+
+  tasks:
+    - name: 1. Instalar utilidades del sistema y motor de auditoría base (auditd)
+      apt:
+        name: [apt-transport-https, gpg, wget, auditd]
+        state: present
+        update_cache: yes
+
+    - name: 2. Descargar clave GPG oficial de Elastic
+      get_url:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        dest: /usr/share/keyrings/elasticsearch-keyring.asc
+
+    - name: 3. Convertir formato de clave GPG a binario compatible
+      command: gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg /usr/share/keyrings/elasticsearch-keyring.asc
+      args:
+        creates: /usr/share/keyrings/elasticsearch-keyring.gpg
+
+    - name: 4. Vincular repositorio oficial de Elastic de forma segura
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main"
+        state: present
+        filename: elastic-8.x
+
+    - name: 5. Instalar el agente Auditbeat en su versión exacta 8.17.4
+      apt:
+        name: "auditbeat={{ elastic_exact_version }}"
+        state: present
+        force: yes
+
+    - name: 6. Configurar módulos de espionaje y apuntar al Elasticsearch Central
+      copy:
+        dest: /etc/auditbeat/auditbeat.yml
+        owner: root
+        group: root
+        mode: '0600'
+        content: |
+          auditbeat.modules:
+            - module: auditd
+              audit_rules: |
+                -a always,exit -F arch=b64 -S execve,execveat -k exec
+            - module: file_integrity
+              paths:
+                - /bin
+                - /sbin
+                - /usr/bin
+                - /usr/sbin
+                - /etc
+            - module: system
+              datasets:
+                - host
+                - login
+                - package
+                - process
+                - socket
+                - user
+
+          output.elasticsearch:
+            hosts: ["http://{{ elasticsearch_server_ip }}:9200"]
+            username: "elastic"
+            password: "{{ elastic_password_client }}"
+
+          setup.kibana:
+            host: "http://{{ elasticsearch_server_ip }}:5601"
+
+    - name: 7. Asegurar que el demonio de auditoría del kernel está encendido
+      systemd:
+        name: auditd
+        state: started
+        enabled: yes
+      failed_when: false
+
+    - name: 8. Recargar los daemons del sistema operativo
+      systemd:
+        daemon_reload: yes
+
+    - name: 9. Cargar los Dashboards automáticamente en el Kibana Central
+      command: auditbeat setup
+
+    - name: 10. Arrancar el servicio Auditbeat para empezar a transmitir logs
+      systemd:
+        name: auditbeat
+        state: restarted
+        enabled: yes
