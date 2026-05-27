@@ -1,137 +1,56 @@
 -- ============================================================================
--- SCRIPT DEFINITIVO DE AUDITORÍA SIN TRANSACCIONES COMPROMETIDAS (No Rollback)
+-- SCRIPT DE AUDITORÍA NATIVA MEDIANTE GENERAL_LOG (Sin Plugins Externos)
 -- ============================================================================
 
 USE innovate_tech_db;
 
--- ----------------------------------------------------------------------------
--- LIMPIEZA DE TRIGGERS PREVIOS
--- ----------------------------------------------------------------------------
-DROP TRIGGER IF EXISTS trg_sec_cataleg_videos_ins;
-DROP TRIGGER IF EXISTS trg_sec_cistell_ins;
-DROP TRIGGER IF EXISTS trg_sec_clients_ins;
-DROP TRIGGER IF EXISTS trg_sec_comandes_ins;
-DROP TRIGGER IF EXISTS trg_sec_config_qualitat_ins;
-DROP TRIGGER IF EXISTS trg_sec_control_backups_ins;
-DROP TRIGGER IF EXISTS trg_sec_departaments_ins;
-DROP TRIGGER IF EXISTS trg_sec_empleats_ins;
-DROP TRIGGER IF EXISTS trg_sec_grup_nivell_ins;
-DROP TRIGGER IF EXISTS trg_sec_mesures_banda_ins;
-DROP TRIGGER IF EXISTS trg_sec_nominas_ins;
-DROP TRIGGER IF EXISTS trg_sec_productes_ins;
-DROP TRIGGER IF EXISTS trg_sec_quotes_ins;
-DROP TRIGGER IF EXISTS trg_sec_registre_trucades_ins;
-DROP TRIGGER IF EXISTS trg_sec_rols_ldap_ins;
-DROP TRIGGER IF EXISTS trg_sec_servidors_ins;
-DROP TRIGGER IF EXISTS trg_sec_usuaris_sistema_ins;
+-- 1. Activamos el log general nativo de MySQL y le decimos que guarde en TABLA
+SET GLOBAL general_log = 'ON';
+SET GLOBAL log_output = 'TABLE';
+
+-- 2. Limpiamos por si acaso
+DROP TRIGGER IF EXISTS trg_capturar_intrusos_nativo;
 
 DELIMITER //
 
--- ============================================================================
--- BLOQUE 1: RECURSOS HUMANOS (Solo 'cap_departament', 'admin' o 'root')
--- ============================================================================
-
-CREATE TRIGGER trg_sec_empleats_ins BEFORE INSERT ON `empleats` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        -- 1. Grabamos la auditoría de forma segura
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'empleats', 'INSERT', CONCAT('BLOQUEJAT: l\'usuari intentava afegir DNI ', NEW.dni));
+-- 3. Creamos el TRIGGER sobre la tabla nativa de logs de MySQL
+CREATE TRIGGER trg_capturar_intrusos_nativo
+AFTER INSERT ON mysql.general_log
+FOR EACH ROW
+BEGIN
+    -- Filtramos: si la query contiene un intento de alteración de datos (INSERT/UPDATE)
+    -- y viene de uno de tus usuarios controlados (ej: vendes, tecnic, etc.)
+    IF (NEW.argument LIKE '%INSERT INTO%' OR NEW.argument LIKE '%UPDATE%') 
+       AND (NEW.user_host LIKE '%vendes%' OR NEW.user_host LIKE '%tecnic%' OR NEW.user_host LIKE '%administratiu%') THEN
         
-        -- 2. Neutralizamos los datos sustituyéndolos por un texto de aviso de fraude
-        SET NEW.nom = 'INTENT ACCES';
-        SET NEW.cognoms = 'DENEGAT';
-        SET NEW.adreça = 'AUDITORIA SEGURETAT';
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_nominas_ins BEFORE INSERT ON `nominas` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'nominas', 'INSERT', 'BLOQUEJAT: intent de creació de nòmina.');
-        SET NEW.import_total = 0.01; -- Forzamos el mínimo para que no salte el CHECK, pero neutralizado
-    END IF;
-END //
-
-
--- ============================================================================
--- BLOQUE 2: NEGOCIO, VENTAS Y CATÁLOGO (Solo 'administratiu', 'admin' o 'root')
--- ============================================================================
-
-CREATE TRIGGER trg_sec_clients_ins BEFORE INSERT ON `clients` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'clients', 'INSERT', 'BLOQUEJAT: comercial intentant crear client.');
-        SET NEW.nom = 'BLOQUEJAT';
-        SET NEW.empresa = 'SENSE PERMIS';
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_comandes_ins BEFORE INSERT ON `comandes` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'comandes', 'INSERT', 'BLOQUEJAT: intent de comanda fraudulenta.');
-        SET NEW.estat = 'cancelat'; -- La marcamos automáticamente como cancelada por seguridad
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_productes_ins BEFORE INSERT ON `productes` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'productes', 'INSERT', 'BLOQUEJAT: alteració del catàleg de preus.');
-        SET NEW.nom = 'PROD_FRAU';
-        SET NEW.preu = 999999.99;
-    END IF;
-END //
-
-
--- ============================================================================
--- BLOQUE 3: ÁREA TÉCNICA Y SISTEMAS (Solo 'tecnic', 'admin' o 'root')
--- ============================================================================
-
-CREATE TRIGGER trg_sec_servidors_ins BEFORE INSERT ON `servidors_videoconferencia` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%tecnic%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'servidors_videoconferencia', 'INSERT', 'BLOQUEJAT: manipulació de servidors Jitsi.');
-        SET NEW.ip_publica = '0.0.0.0';
-        SET NEW.ip_privada = '0.0.0.0';
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_config_qualitat_ins BEFORE INSERT ON `configuracio_qualitat` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%tecnic%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'configuracio_qualitat', 'INSERT', 'BLOQUEJAT: canvi en perfils de qualitat.');
-        SET NEW.nom_perfil = 'BLOQUEJAT';
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_mesures_banda_ins BEFORE INSERT ON `mesures_amplada_banda` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%tecnic%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'mesures_amplada_banda', 'INSERT', 'BLOQUEJAT: inserció de mètrica falsa.');
-        SET NEW.resultat = 'no acceptable';
-    END IF;
-END //
-
-
--- ============================================================================
--- BLOQUE 4: INFRAESTRUCTURA CORE (Solo 'admin' o 'root')
--- ============================================================================
-
-CREATE TRIGGER trg_sec_usuaris_sistema_ins BEFORE INSERT ON `usuaris_sistema` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'usuaris_sistema', 'INSERT', 'BLOQUEJAT: intent de creació d\'usuari core.');
-        SET NEW.nom_complet = 'INTRUS';
-        SET NEW.estat = 'bloquejat'; -- Queda bloqueado al nacer
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_registre_trucades_ins BEFORE INSERT ON `registre_trucades` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'registre_trucades', 'INSERT', 'BLOQUEJAT: intent d\'inserció manual de trucades.');
-        SET NEW.comentari_servei = 'INTRUSISME DETECTAT';
+        -- OJO: Como el general_log guarda la query antes de verificar si ha fallado o no,
+        -- hacemos un truco de guardado selectivo para capturar el intento.
+        INSERT INTO `innovate_tech_db`.`taula_avisos` 
+        (
+            `usuari_mysql`, 
+            `taula_afectada`, 
+            `operacio_intentada`, 
+            `descripcio_error`
+        )
+        VALUES 
+        (
+            SUBSTRING_INDEX(NEW.user_host, '[', 1), -- Limpia el usuario para quitar la IP
+            
+            -- Detectamos la tabla que querían atacar
+            CASE 
+                WHEN NEW.argument LIKE '%empleats%' THEN 'empleats'
+                WHEN NEW.argument LIKE '%nominas%' THEN 'nominas'
+                WHEN NEW.argument LIKE '%clients%' THEN 'clients'
+                WHEN NEW.argument LIKE '%servidors%' THEN 'servidors_videoconferencia'
+                ELSE 'desconeguda'
+            END,
+            
+            'INSERT',
+            
+            -- Guardamos la traza del delito
+            CONCAT('AVÍS DE SEGURETAT: Intent d\'accés interceptat a la capa de xarxa per la query: ', NEW.argument)
+        );
+        
     END IF;
 END //
 
