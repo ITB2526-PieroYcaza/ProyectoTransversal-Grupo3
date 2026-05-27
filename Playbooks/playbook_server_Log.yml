@@ -1,0 +1,169 @@
+---
+# FASE 1: Preparamos el servidor de logs, creando el usuario admin_logs y acceso sin contraseña
+- name: Crear usuario administrador para el servidor de logs
+  hosts: servidor_logs
+  become: true
+  gather_facts: false
+  vars:
+    ansible_user: "{{ ansible_user_inicial }}" #Utiliza el usuario de predeterminado 
+    ansible_ssh_private_key_file: "{{ ansible_ssh_private_key_file_inicial }}" #Descarga la llave .pem para entrar al servidor.
+
+  tasks:
+    - name: Asegurar que el grupo del nuevo administrador existe
+      group:
+        name: "{{ nuevo_usuario_admin }}"
+        state: present
+
+    - name: Crear el usuario admin_Logs
+      user:
+        name: "{{ nuevo_usuario_admin }}"
+        group: "{{ nuevo_usuario_admin }}"
+        shell: /bin/bash
+        state: present
+
+    - name: Configurar SUDO sin contraseña para admin_Logs
+      copy: #Escribe la regla dentro del fichero /etc/sudoers.d/admin_logs
+        dest: "/etc/sudoers.d/{{ nuevo_usuario_admin }}"
+        content: "{{ nuevo_usuario_admin }} ALL=(ALL) NOPASSWD:ALL" #No pedira contraseña por pantalla
+        validate: '/usr/sbin/visudo -cf %s' #Comprueba por si hay un espacio o sinatix mal.
+        owner: root
+        group: root
+        mode: '0440'
+
+    - name: Leer la clave pública original de AWS desde el usuario ubuntu
+      command: cat /home/ubuntu/.ssh/authorized_keys
+      register: aws_pem_key
+      changed_when: false
+
+    - name: Autorizar tanto la clave de Ansible como tu ServidorWeb.pem de AWS
+      authorized_key:
+        user: "{{ nuevo_usuario_admin }}"
+        state: present
+        key: "{{ item }}"
+      loop:
+        - "{{ lookup('file', clave_publica_nueva) }}"
+        - "{{ aws_pem_key.stdout }}"
+
+# FASE 2: Instalación de elastich en el servidor de logs
+- name: Configurar Servidor Central con Elasticsearch y Kibana 8.17.4
+  hosts: servidor_logs
+  become: true
+  vars:
+    ansible_user: "{{ nuevo_usuario_admin }}"
+    ansible_ssh_private_key_file: "{{ clave_privada_nueva }}"
+    elastic_version: "8.x"
+    elastic_exact_version: "8.17.4"
+    elastic_jvm_memory: "256m" #Limite de consumo de memoria RAM 
+    elastic_entorno_password: "pirineus"
+
+  tasks:
+    - name: Actualizar caché de apt e instalar dependencias de Elastic
+      apt:
+        update_cache: yes
+        name:
+          - apt-transport-https
+          - gnupg
+          - wget
+        state: present
+
+    - name: Descargar clave GPG de Elastic
+      get_url:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        dest: /usr/share/keyrings/elasticsearch-keyring.asc
+        mode: '0644'
+
+    - name: Convertir clave GPG al formato de keyring de Ubuntu
+      command: gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg /usr/share/keyrings/elasticsearch-keyring.asc
+      args:
+        creates: /usr/share/keyrings/elasticsearch-keyring.gpg
+
+    - name: Añadir repositorio oficial de Elastic
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/{{ elastic_version }}/apt stable main"
+        state: present
+        filename: elastic-8.x
+
+    - name: Ajustar vm.max_map_count de forma inmediata antes de instalar el paquete
+      sysctl:
+        name: vm.max_map_count #Subimos el limite de regiones de meoria virtual por proceso
+        value: '262144' #numero recomendado para elastic
+        state: present
+        reload: yes
+
+    - name: Instalar exactamente Elasticsearch y Kibana 8.17.4
+      apt:
+        update_cache: yes
+        name:
+          - "elasticsearch={{ elastic_exact_version }}"
+          - "kibana={{ elastic_exact_version }}"
+        state: present
+        force: yes
+
+    - name: Limitar la memoria JVM de Elasticsearch para evitar caídas por falta de memoria.
+      copy:
+        dest: /etc/elasticsearch/jvm.options.d/memory.options
+        content: |
+          -Xms{{ elastic_jvm_memory }}
+          -Xmx{{ elastic_jvm_memory }}
+        owner: root
+        group: elasticsearch
+        mode: '0644'
+
+    - name: Configurar Elasticsearch para escuchar en toda la red y desactivar SSL
+      blockinfile:
+        path: /etc/elasticsearch/elasticsearch.yml
+        marker: "# {mark} ANSIBLE NO-SSL BLOCK"
+        block: |
+          network.host: 0.0.0.0
+          xpack.security.http.ssl.enabled: false
+
+    - name: Recargar systemd y arrancar Elasticsearch
+      systemd:
+        daemon_reload: yes
+        name: elasticsearch
+        enabled: yes
+        state: started
+
+    - name: Esperar a que Elasticsearch esté listo (puerto 9200)
+      wait_for:
+        port: 9200
+        timeout: 60
+
+    - name: Establecer la contraseña fija del usuario 'elastic'
+      command: "/usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic -b -i"
+      args:
+        stdin: "{{ elastic_entorno_password }}\n{{ elastic_entorno_password }}"
+
+    - name: Forzar la configuración directa en kibana.yml usando HTTP sin certificados
+      blockinfile:
+        path: /etc/kibana/kibana.yml
+        marker: "# {mark} ANSIBLE CONFIG DIRECTA"
+        block: |
+          server.host: "0.0.0.0"
+          elasticsearch.hosts: ["http://localhost:9200"]
+          elasticsearch.username: "kibana_system"
+
+    - name: Generar contraseña fija para el usuario interno kibana_system
+      command: "/usr/share/elasticsearch/bin/elasticsearch-reset-password -u kibana_system -b -i"
+      args:
+        stdin: "{{ elastic_entorno_password }}\n{{ elastic_entorno_password }}"
+
+    - name: Inyectar la contraseña de kibana_system en el keystore seguro de Kibana
+      shell: |
+        echo "{{ elastic_entorno_password }}" | /usr/share/kibana/bin/kibana-keystore add elasticsearch.password --force --stdin
+      no_log: true
+
+    - name: Reiniciar el servicio de Kibana para aplicar la configuración directa
+      systemd:
+        name: kibana
+        enabled: yes
+        state: restarted
+
+    - name: Esperar activamente a que la API interna de Kibana responda con éxito
+      uri:
+        url: "http://localhost:5601/api/status"
+        status_code: 200
+      register: kibana_api_check
+      until: kibana_api_check.status == 200
+      retries: 30
+      delay: 5
