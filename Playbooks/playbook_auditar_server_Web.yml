@@ -1,0 +1,67 @@
+---
+# FASE 1: Instalamos el auditbeat en el servidor web, en el que estamos ahora
+- name: Configurar Servidor Web Local con Auditbeat 8.17.4
+  hosts: servidor_web_sftp
+  become: true
+  vars:
+    elasticsearch_server_ip: "{{ hostvars['servidor_logs']['ansible_host'] }}"
+    elastic_exact_version: "8.17.4"
+    elastic_password_client: "pirineus"
+
+  tasks:
+    - name: Instalar dependencias previas localmente
+      apt:
+        update_cache: yes
+        name: [apt-transport-https, gnupg, wget]
+        state: present
+
+    - name: Asegurar clave GPG de Elastic local
+      get_url:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        dest: /usr/share/keyrings/elasticsearch-keyring.asc
+
+    - name: Convertir GPG local
+      command: gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg /usr/share/keyrings/elasticsearch-keyring.asc
+      args:
+        creates: /usr/share/keyrings/elasticsearch-keyring.gpg
+
+    - name: Añadir repositorio local
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main"
+        state: present
+        filename: elastic-8.x
+
+    - name: Instalar Auditbeat local
+      apt:
+        name: "auditbeat={{ elastic_exact_version }}"
+        state: present
+        force: yes
+
+    - name: Asegurar que el directorio de datos de Auditbeat existe de forma limpia
+      file:
+        path: /var/lib/auditbeat
+        state: directory
+        owner: root
+        group: root
+        mode: '0750'
+
+    - name: Configurar salida ordenada de Auditbeat hacia el Elasticsearch Central por HTTP
+      blockinfile:
+        path: /etc/auditbeat/auditbeat.yml
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        block: |
+          output.elasticsearch:
+            hosts: ["http://{{ elasticsearch_server_ip }}:9200"]
+            username: "elastic"
+            password: "{{ elastic_password_client }}"
+          setup.kibana:
+            host: "http://{{ elasticsearch_server_ip }}:5601"
+
+    - name: "Cargar Data Views y Dashboards ANTES de iniciar el servicio daemon"
+      command: auditbeat setup
+
+    - name: Habilitar y arrancar Auditbeat local (Fase Final)
+      systemd:
+        name: auditbeat
+        enabled: yes
+        state: restarted
