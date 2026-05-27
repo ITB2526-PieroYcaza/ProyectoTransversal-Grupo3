@@ -1,0 +1,24 @@
+---
+- name: Crear dos instancias EC2
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Crear la instancia para el Directorio Activo (LDAP)
+      amazon.aws.ec2_instance:
+        name: "Servidor-Directorio-Activo"
+        key_name: "ServidorWeb"
+        instance_type: t3.micro
+        image_id: "ami-05cf1e9f73fbad2e2"
+        region: us-east-1
+        security_groups: default
+        wait: true
+
+    - name: Crear la instancia para el Servidor de Logs
+      amazon.aws.ec2_instance:
+        name: "Servidor-Logs"
+        key_name: "ServidorWeb"
+        instance_type: t3a.large
+        image_id: "ami-05cf1e9f73fbad2e2"
+        region: us-east-1
+        security_groups: default
+        wait: true
