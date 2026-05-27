@@ -1,6 +1,5 @@
 -- ============================================================================
--- SCRIPT DEFINITIVO DE AUDITORÍA DE ACCESOS Y PRIVILEGIOS TOTAL
--- Destino: Bloqueo de intrusos y registro persistente en 'taula_avisos'
+-- SCRIPT DEFINITIVO DE AUDITORÍA SIN TRANSACCIONES COMPROMETIDAS (No Rollback)
 -- ============================================================================
 
 USE innovate_tech_db;
@@ -34,33 +33,22 @@ DELIMITER //
 
 CREATE TRIGGER trg_sec_empleats_ins BEFORE INSERT ON `empleats` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
+        -- 1. Grabamos la auditoría de forma segura
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'empleats', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'inserció sense rol de Cap de Departament.');
-        SET NEW.dni = NULL; -- Provoca fallo "Column cannot be null" salvando la auditoría
+        VALUES (CURRENT_USER(), 'empleats', 'INSERT', CONCAT('BLOQUEJAT: l\'usuari intentava afegir DNI ', NEW.dni));
+        
+        -- 2. Neutralizamos los datos sustituyéndolos por un texto de aviso de fraude
+        SET NEW.nom = 'INTENT ACCES';
+        SET NEW.cognoms = 'DENEGAT';
+        SET NEW.adreça = 'AUDITORIA SEGURETAT';
     END IF;
 END //
 
 CREATE TRIGGER trg_sec_nominas_ins BEFORE INSERT ON `nominas` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'nominas', 'INSERT', 'ERROR PRIVILEGIS: Intent de generació de nòmina no autoritzat.');
-        SET NEW.dni = NULL;
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_departaments_ins BEFORE INSERT ON `departaments` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'departaments', 'INSERT', 'ERROR PRIVILEGIS: Intent de modificació d\'estructura organitzativa.');
-        SET NEW.nom = NULL;
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_grup_nivell_ins BEFORE INSERT ON `grup_nivell` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%cap_departament%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'grup_nivell', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'alteració de barems salarials.');
-        SET NEW.descripcio = NULL;
+        VALUES (CURRENT_USER(), 'nominas', 'INSERT', 'BLOQUEJAT: intent de creació de nòmina.');
+        SET NEW.import_total = 0.01; -- Forzamos el mínimo para que no salte el CHECK, pero neutralizado
     END IF;
 END //
 
@@ -72,32 +60,26 @@ END //
 CREATE TRIGGER trg_sec_clients_ins BEFORE INSERT ON `clients` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'clients', 'INSERT', 'ERROR PRIVILEGIS: Intent de creació de client sense rol Administratiu.');
-        SET NEW.nom = NULL;
+        VALUES (CURRENT_USER(), 'clients', 'INSERT', 'BLOQUEJAT: comercial intentant crear client.');
+        SET NEW.nom = 'BLOQUEJAT';
+        SET NEW.empresa = 'SENSE PERMIS';
     END IF;
 END //
 
 CREATE TRIGGER trg_sec_comandes_ins BEFORE INSERT ON `comandes` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'comandes', 'INSERT', 'ERROR PRIVILEGIS: Intent de generació de comanda comercial.');
-        SET NEW.id_client = NULL;
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_cistell_ins BEFORE INSERT ON `cistell` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'cistell', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'alteració de línies de cistell/comanda.');
-        SET NEW.quantitat = NULL;
+        VALUES (CURRENT_USER(), 'comandes', 'INSERT', 'BLOQUEJAT: intent de comanda fraudulenta.');
+        SET NEW.estat = 'cancelat'; -- La marcamos automáticamente como cancelada por seguridad
     END IF;
 END //
 
 CREATE TRIGGER trg_sec_productes_ins BEFORE INSERT ON `productes` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%administratiu%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'productes', 'INSERT', 'ERROR PRIVILEGIS: Intent de modificació de catàleg de productes.');
-        SET NEW.nom = NULL;
+        VALUES (CURRENT_USER(), 'productes', 'INSERT', 'BLOQUEJAT: alteració del catàleg de preus.');
+        SET NEW.nom = 'PROD_FRAU';
+        SET NEW.preu = 999999.99;
     END IF;
 END //
 
@@ -109,77 +91,47 @@ END //
 CREATE TRIGGER trg_sec_servidors_ins BEFORE INSERT ON `servidors_videoconferencia` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%tecnic%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'servidors_videoconferencia', 'INSERT', 'ERROR PRIVILEGIS: Intent de modificació d\'infraestructura de xarxa.');
-        SET NEW.ip_publica = NULL;
+        VALUES (CURRENT_USER(), 'servidors_videoconferencia', 'INSERT', 'BLOQUEJAT: manipulació de servidors Jitsi.');
+        SET NEW.ip_publica = '0.0.0.0';
+        SET NEW.ip_privada = '0.0.0.0';
     END IF;
 END //
 
 CREATE TRIGGER trg_sec_config_qualitat_ins BEFORE INSERT ON `configuracio_qualitat` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%tecnic%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'configuracio_qualitat', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'alteració de perfils de streaming Jitsi.');
-        SET NEW.nom_perfil = NULL;
+        VALUES (CURRENT_USER(), 'configuracio_qualitat', 'INSERT', 'BLOQUEJAT: canvi en perfils de qualitat.');
+        SET NEW.nom_perfil = 'BLOQUEJAT';
     END IF;
 END //
 
 CREATE TRIGGER trg_sec_mesures_banda_ins BEFORE INSERT ON `mesures_amplada_banda` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%tecnic%' AND CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'mesures_amplada_banda', 'INSERT', 'ERROR PRIVILEGIS: Intent de falsificació de mètriques d\'ample de banda.');
-        SET NEW.resultat = NULL;
+        VALUES (CURRENT_USER(), 'mesures_amplada_banda', 'INSERT', 'BLOQUEJAT: inserció de mètrica falsa.');
+        SET NEW.resultat = 'no acceptable';
     END IF;
 END //
 
 
 -- ============================================================================
--- BLOQUE 4: INFRAESTRUCTURA CORE Y OPERACIONES (Solo 'admin' o 'root')
+-- BLOQUE 4: INFRAESTRUCTURA CORE (Solo 'admin' o 'root')
 -- ============================================================================
 
 CREATE TRIGGER trg_sec_usuaris_sistema_ins BEFORE INSERT ON `usuaris_sistema` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'usuaris_sistema', 'INSERT', 'ERROR PRIVILEGIS: Intent de creació d\'usuari core del sistema.');
-        SET NEW.nom_complet = NULL;
+        VALUES (CURRENT_USER(), 'usuaris_sistema', 'INSERT', 'BLOQUEJAT: intent de creació d\'usuari core.');
+        SET NEW.nom_complet = 'INTRUS';
+        SET NEW.estat = 'bloquejat'; -- Queda bloqueado al nacer
     END IF;
 END //
 
 CREATE TRIGGER trg_sec_registre_trucades_ins BEFORE INSERT ON `registre_trucades` FOR EACH ROW BEGIN
     IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
         INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'registre_trucades', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'inserció manual al registre de trucades.');
-        SET NEW.data_hora_inici = NULL;
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_cataleg_videos_ins BEFORE INSERT ON `cataleg_videos` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'cataleg_videos', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'alteració de catàleg multimèdia global.');
-        SET NEW.titol = NULL;
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_quotes_ins BEFORE INSERT ON `quotes_trucades` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'quotes_trucades', 'INSERT', 'ERROR PRIVILEGIS: Intent de manipulació d\'assignació de quotes.');
-        SET NEW.id_usuari = NULL;
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_control_backups_ins BEFORE INSERT ON `control_backups` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'control_backups', 'INSERT', 'ERROR PRIVILEGIS: Intent d\'alteració del registre de còpies de seguretat.');
-        SET NEW.taules_incloses = NULL;
-    END IF;
-END //
-
-CREATE TRIGGER trg_sec_rols_ldap_ins BEFORE INSERT ON `rols_ldap` FOR EACH ROW BEGIN
-    IF (CURRENT_USER() NOT LIKE '%admin%' AND CURRENT_USER() NOT LIKE '%root%') THEN
-        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
-        VALUES (CURRENT_USER(), 'rols_ldap', 'INSERT', 'ERROR PRIVILEGIS: Intent de manipulació d\'estructures de rols LDAP.');
-        SET NEW.nom_rol = NULL;
+        VALUES (CURRENT_USER(), 'registre_trucades', 'INSERT', 'BLOQUEJAT: intent d\'inserció manual de trucades.');
+        SET NEW.comentari_servei = 'INTRUSISME DETECTAT';
     END IF;
 END //
 
