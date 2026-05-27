@@ -1,261 +1,752 @@
 -- ============================================================================
--- SCRIPT DE CREACIÓ DE LA BASE DE DADES I TAULES (InnovateTech)
--- Basat en l'estructura oficial de producció del servidor
+-- SCRIPT FINAL TODO-EN-UNO: SEGURIDAD, PERMISOS NATIVOS Y AUDITORÍA
+-- Base de datos: innovate_tech_db | Host de usuarios: '%'
 -- ============================================================================
 
-DROP DATABASE IF EXISTS innovate_tech_db;
-CREATE DATABASE innovate_tech_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE innovate_tech_db;
+USE `innovate_tech_db`;
 
 -- ----------------------------------------------------------------------------
--- 1. TAULES MESTRES I D'ESTRUCTURA ORGANITZATIVA
+-- 1. CONFIGURACIÓN ESTRUCTURAL DE SEGURIDAD
 -- ----------------------------------------------------------------------------
-
-CREATE TABLE `rols_ldap` (
-  `gid` int NOT NULL,
-  `nom_rol` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`gid`),
-  UNIQUE KEY `nom_rol` (`nom_rol`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE `departaments` (
-  `id_departament` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `telefon` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id_departament`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE `grup_nivell` (
-  `id_nivell` int NOT NULL AUTO_INCREMENT,
-  `descripcio` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `salari_base` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id_nivell`),
-  CONSTRAINT `grup_nivell_chk_1` CHECK ((`salari_base` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE `empleats` (
-  `dni` varchar(9) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cognoms` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `adreça` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `telefon` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `id_departament` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `id_nivell` int NOT NULL,
-  PRIMARY KEY (`dni`),
-  KEY `fk_empleats_dept` (`id_departament`),
-  KEY `fk_empleats_nivell` (`id_nivell`),
-  CONSTRAINT `fk_empleats_dept` FOREIGN KEY (`id_departament`) REFERENCES `departaments` (`id_departament`),
-  CONSTRAINT `fk_empleats_nivell` FOREIGN KEY (`id_nivell`) REFERENCES `grup_nivell` (`id_nivell`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE `nominas` (
-  `id_nomina` int NOT NULL AUTO_INCREMENT,
-  `dni` varchar(9) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mes` int NOT NULL,
-  `any` int NOT NULL,
-  `import_total` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id_nomina`),
-  KEY `fk_nominas_empleat` (`dni`),
-  CONSTRAINT `fk_nominas_empleat` FOREIGN KEY (`dni`) REFERENCES `empleats` (`dni`),
-  CONSTRAINT `nominas_chk_1` CHECK ((`mes` between 1 and 12)),
-  CONSTRAINT `nominas_chk_2` CHECK ((`any` >= 2020)),
-  CONSTRAINT `nominas_chk_3` CHECK ((`import_total` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Forzamos MyISAM en la tabla de avisos para evitar que los ROLLBACK de InnoDB
+-- borren los registros de auditoría cuando salta un SIGNAL 45000.
+ALTER TABLE `taula_avisos` ENGINE = MyISAM;
 
 -- ----------------------------------------------------------------------------
--- 2. TAULES DE NEGOCI I COMERÇ
+-- 2. LIMPIEZA Y ASIGNACIÓN DE PERMISOS NATIVOS (SGBD)
 -- ----------------------------------------------------------------------------
+-- Revocamos privilegios previos para asegurar un despliegue limpio
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'vendes'@'%', 'administracio'@'%', 'treballador'@'%';
 
-CREATE TABLE `clients` (
-  `id_client` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cognoms` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `empresa` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `correu_electronic` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `telefon` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `adreça` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id_client`),
-  UNIQUE KEY `correu_electronic` (`correu_electronic`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- --- PERMISOS PARA EL ROL: 'vendes' ---
+-- SELECTs estrictos según matriz de lectura
+GRANT SELECT ON `innovate_tech_db`.`clients` TO 'vendes'@'%';
+GRANT SELECT ON `innovate_tech_db`.`comandes` TO 'vendes'@'%';
+GRANT SELECT ON `innovate_tech_db`.`productes` TO 'vendes'@'%';
+GRANT SELECT ON `innovate_tech_db`.`cistell` TO 'vendes'@'%';
+GRANT SELECT ON `innovate_tech_db`.`registre_trucades` TO 'vendes'@'%';
+-- 'vendes' necesita poder hacer INSERT en taula_avisos para dejar log
+GRANT INSERT ON `innovate_tech_db`.`taula_avisos` TO 'vendes'@'%';
+-- Truco de Auditoría: Permitimos escrituras globales para que la consulta pase la 
+-- capa nativa del SGBD y llegue al TRIGGER antes de ser bloqueada.
+GRANT INSERT, UPDATE, DELETE ON `innovate_tech_db`.* TO 'vendes'@'%';
 
-CREATE TABLE `productes` (
-  `id_producte` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcio` text COLLATE utf8mb4_unicode_ci,
-  `preu` decimal(10,2) NOT NULL,
-  `stock` int NOT NULL,
-  PRIMARY KEY (`id_producte`),
-  CONSTRAINT `productes_chk_1` CHECK ((`preu` > 0)),
-  CONSTRAINT `productes_chk_2` CHECK ((`stock` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- --- PERMISOS PARA EL ROL: 'administracio' ---
+GRANT SELECT ON `innovate_tech_db`.`empleats` TO 'administracio'@'%';
+GRANT SELECT ON `innovate_tech_db`.`nominas` TO 'administracio'@'%';
+GRANT SELECT ON `innovate_tech_db`.`departaments` TO 'administracio'@'%';
+GRANT SELECT ON `innovate_tech_db`.`grup_nivell` TO 'administracio'@'%';
+GRANT INSERT ON `innovate_tech_db`.`taula_avisos` TO 'administracio'@'%';
+GRANT INSERT, UPDATE, DELETE ON `innovate_tech_db`.* TO 'administracio'@'%';
 
-CREATE TABLE `comandes` (
-  `id_comanda` int NOT NULL AUTO_INCREMENT,
-  `id_client` int NOT NULL,
-  `data_comanda` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `estat` enum('pendent','enviat','entregat','cancelat') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pendent',
-  PRIMARY KEY (`id_comanda`),
-  KEY `fk_comandes_client` (`id_client`),
-  CONSTRAINT `fk_comandes_client` FOREIGN KEY (`id_client`) REFERENCES `clients` (`id_client`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- --- PERMISOS PARA EL ROL: 'treballador' ---
+GRANT SELECT ON `innovate_tech_db`.`productes` TO 'treballador'@'%';
+GRANT SELECT ON `innovate_tech_db`.`cataleg_videos` TO 'treballador'@'%';
+GRANT SELECT ON `innovate_tech_db`.`registre_trucades` TO 'treballador'@'%';
+GRANT INSERT ON `innovate_tech_db`.`taula_avisos` TO 'treballador'@'%';
+GRANT INSERT, UPDATE, DELETE ON `innovate_tech_db`.* TO 'treballador'@'%';
 
-CREATE TABLE `cistell` (
-  `id_comanda` int NOT NULL,
-  `id_producte` int NOT NULL,
-  `quantitat` int NOT NULL,
-  `preu_unitari` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id_comanda`,`id_producte`),
-  KEY `fk_cistell_producte` (`id_producte`),
-  CONSTRAINT `fk_cistell_comanda` FOREIGN KEY (`id_comanda`) REFERENCES `comandes` (`id_comanda`) ON DELETE CASCADE,
-  CONSTRAINT `fk_cistell_producte` FOREIGN KEY (`id_producte`) REFERENCES `productes` (`id_producte`),
-  CONSTRAINT `cistell_chk_1` CHECK ((`quantitat` > 0)),
-  CONSTRAINT `cistell_chk_2` CHECK ((`preu_unitari` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+FLUSH PRIVILEGES;
 
 -- ----------------------------------------------------------------------------
--- 3. TAULES DE COMUNICACIÓ (JITSI / ICECAST)
+-- 3. DESPLIEGUE DE TRIGGERS DE CONTROL Y AUDITORÍA PERSONALIZADA
 -- ----------------------------------------------------------------------------
+DELIMITER $$
 
-CREATE TABLE `configuracio_qualitat` (
-  `id_qualitat` int NOT NULL AUTO_INCREMENT,
-  `nom_perfil` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `resolucio` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bitrate_max` int NOT NULL,
-  `limitacio_banda` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_qualitat`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `rols_ldap`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_rols_ldap`;$$
+CREATE TRIGGER `tg_b_insert_rols_ldap` BEFORE INSERT ON `rols_ldap` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'rols_ldap', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en rols_ldap.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
-CREATE TABLE `usuaris_sistema` (
-  `id_usuari` int NOT NULL AUTO_INCREMENT,
-  `nom_complet` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `correu_electronic` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `extensio_trucades` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `estat` enum('actiu','bloquejat') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actiu',
-  `tipus_usuari` enum('intern','extern') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `gid_rol` int NOT NULL,
-  `id_qualitat` int NOT NULL,
-  `dni_empleat` varchar(9) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `url_videotrucada` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id_usuari`),
-  UNIQUE KEY `correu_electronic` (`correu_electronic`),
-  UNIQUE KEY `extensio_trucades` (`extensio_trucades`),
-  KEY `fk_usuaris_rol` (`gid_rol`),
-  KEY `fk_usuaris_qualitat` (`id_qualitat`),
-  KEY `fk_usuaris_empleat` (`dni_empleat`),
-  CONSTRAINT `fk_usuaris_empleat` FOREIGN KEY (`dni_empleat`) REFERENCES `empleats` (`dni`) ON DELETE SET NULL,
-  CONSTRAINT `fk_usuaris_qualitat` FOREIGN KEY (`id_qualitat`) REFERENCES `configuracio_qualitat` (`id_qualitat`),
-  CONSTRAINT `fk_usuaris_rol` FOREIGN KEY (`gid_rol`) REFERENCES `rols_ldap` (`gid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TRIGGER IF EXISTS `tg_b_update_rols_ldap`;$$
+CREATE TRIGGER `tg_b_update_rols_ldap` BEFORE UPDATE ON `rols_ldap` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'rols_ldap', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en rols_ldap.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
-CREATE TABLE `servidors_videoconferencia` (
-  `id_servidor` int NOT NULL AUTO_INCREMENT,
-  `ip_publica` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ip_privada` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `port` int NOT NULL,
-  `protocol` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id_servidor`),
-  CONSTRAINT `servidors_videoconferencia_chk_1` CHECK ((`port` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TRIGGER IF EXISTS `tg_b_delete_rols_ldap`;$$
+CREATE TRIGGER `tg_b_delete_rols_ldap` BEFORE DELETE ON `rols_ldap` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'rols_ldap', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en rols_ldap.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
-CREATE TABLE `registre_trucades` (
-  `id_trucada` int NOT NULL AUTO_INCREMENT,
-  `id_usuari_origen` int NOT NULL,
-  `id_usuari_desti` int NOT NULL,
-  `data_hora_inici` datetime NOT NULL,
-  `data_hora_fi` datetime NOT NULL,
-  `durada_segons` int NOT NULL,
-  `id_qualitat_usada` int NOT NULL,
-  `puntuacio_servei` int DEFAULT NULL,
-  `comentari_servei` text COLLATE utf8mb4_unicode_ci,
-  PRIMARY KEY (`id_trucada`),
-  KEY `fk_trucades_origen` (`id_usuari_origen`),
-  KEY `fk_trucades_desti` (`id_usuari_desti`),
-  KEY `fk_trucades_qualitat` (`id_qualitat_usada`),
-  CONSTRAINT `fk_trucades_desti` FOREIGN KEY (`id_usuari_desti`) REFERENCES `usuaris_sistema` (`id_usuari`),
-  CONSTRAINT `fk_trucades_origen` FOREIGN KEY (`id_usuari_origen`) REFERENCES `usuaris_sistema` (`id_usuari`),
-  CONSTRAINT `fk_trucades_qualitat` FOREIGN KEY (`id_qualitat_usada`) REFERENCES `configuracio_qualitat` (`id_qualitat`),
-  CONSTRAINT `chk_dates_trucada` CHECK ((`data_hora_fi` >= `data_hora_inici`)),
-  CONSTRAINT `registre_trucades_chk_1` CHECK ((`durada_segons` >= 0)),
-  CONSTRAINT `registre_trucades_chk_2` CHECK ((`puntuacio_servei` between 1 and 5))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `departaments`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_departaments`;$$
+CREATE TRIGGER `tg_b_insert_departaments` BEFORE INSERT ON `departaments` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('administracio') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'departaments', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en departaments.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
-CREATE TABLE `cataleg_videos` (
-  `id_video` int NOT NULL AUTO_INCREMENT,
-  `titol` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcio` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `categoria` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `durada_segons` int NOT NULL,
-  `data_publicacio` date NOT NULL,
-  `enllaç_streaming` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id_video`),
-  CONSTRAINT `cataleg_videos_chk_1` CHECK ((`durada_segons` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TRIGGER IF EXISTS `tg_b_update_departaments`;$$
+CREATE TRIGGER `tg_b_update_departaments` BEFORE UPDATE ON `departaments` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('administracio') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'departaments', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en departaments.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
--- ----------------------------------------------------------------------------
--- 4. SEGURETAT, MANTENIMENT I MONITORATGE
--- ----------------------------------------------------------------------------
+DROP TRIGGER IF EXISTS `tg_b_delete_departaments`;$$
+CREATE TRIGGER `tg_b_delete_departaments` BEFORE DELETE ON `departaments` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'departaments', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en departaments.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
-CREATE TABLE `mesures_amplada_banda` (
-  `id_mesura` int NOT NULL AUTO_INCREMENT,
-  `data_hora` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `id_usuari_mesurat` int NOT NULL,
-  `velocitat_baixada_mbps` decimal(6,2) NOT NULL,
-  `velocitat_pujada_mbps` decimal(6,2) NOT NULL,
-  `latencia_ms` int NOT NULL,
-  `resultat` enum('acceptable','no acceptable') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `dni_operari` varchar(9) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `observacions` text COLLATE utf8mb4_unicode_ci,
-  PRIMARY KEY (`id_mesura`),
-  KEY `fk_mesures_usuari` (`id_usuari_mesurat`),
-  KEY `fk_mesures_operari` (`dni_operari`),
-  CONSTRAINT `fk_mesures_operari` FOREIGN KEY (`dni_operari`) REFERENCES `empleats` (`dni`),
-  CONSTRAINT `fk_mesures_usuari` FOREIGN KEY (`id_usuari_mesurat`) REFERENCES `usuaris_sistema` (`id_usuari`),
-  CONSTRAINT `mesures_amplada_banda_chk_1` CHECK ((`velocitat_baixada_mbps` >= 0)),
-  CONSTRAINT `mesures_amplada_banda_chk_2` CHECK ((`velocitat_pujada_mbps` >= 0)),
-  CONSTRAINT `mesures_amplada_banda_chk_3` CHECK ((`latencia_ms` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `grup_nivell`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_grup_nivell`;$$
+CREATE TRIGGER `tg_b_insert_grup_nivell` BEFORE INSERT ON `grup_nivell` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('administracio') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'grup_nivell', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en grup_nivell.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
-CREATE TABLE `taula_avisos` (
-  `id_avis` int NOT NULL AUTO_INCREMENT,
-  `usuari_mysql` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `taula_afectada` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `operacio_intentada` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `data_hora` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `descripcio_error` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id_avis`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TRIGGER IF EXISTS `tg_b_update_grup_nivell`;$$
+CREATE TRIGGER `tg_b_update_grup_nivell` BEFORE UPDATE ON `grup_nivell` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('administracio') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'grup_nivell', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en grup_nivell.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
-CREATE TABLE `quotes_trucades` (
-  `id_quota` int NOT NULL AUTO_INCREMENT,
-  `id_usuari` int NOT NULL,
-  `minuts_mensuals_max` int NOT NULL DEFAULT '600',
-  `trucades_diaries_max` int NOT NULL DEFAULT '50',
-  `minuts_consumits_mes` int NOT NULL DEFAULT '0',
-  `trucades_consumides_avui` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_quota`),
-  UNIQUE KEY `id_usuari` (`id_usuari`),
-  CONSTRAINT `fk_quotes_usuari` FOREIGN KEY (`id_usuari`) REFERENCES `usuaris_sistema` (`id_usuari`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TRIGGER IF EXISTS `tg_b_delete_grup_nivell`;$$
+CREATE TRIGGER `tg_b_delete_grup_nivell` BEFORE DELETE ON `grup_nivell` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'grup_nivell', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en grup_nivell.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
-CREATE TABLE `control_backups` (
-  `id_backup` int NOT NULL AUTO_INCREMENT,
-  `data_hora` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `taules_incloses` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `resultat` enum('correcte','error') COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id_backup`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `empleats`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_empleats`;$$
+CREATE TRIGGER `tg_b_insert_empleats` BEFORE INSERT ON `empleats` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('administracio') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'empleats', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en empleats.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
--- ----------------------------------------------------------------------------
--- 5. INSERCIÓ DE VALORS MESTRES OBLIGATORIS
--- ----------------------------------------------------------------------------
+DROP TRIGGER IF EXISTS `tg_b_update_empleats`;$$
+CREATE TRIGGER `tg_b_update_empleats` BEFORE UPDATE ON `empleats` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('administracio') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'empleats', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en empleats.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
-INSERT INTO `rols_ldap` (`gid`, `nom_rol`) VALUES 
-(3001, 'admin'),
-(3002, 'vendes'),
-(3003, 'administracio'),
-(3004, 'treballador');
+DROP TRIGGER IF EXISTS `tg_b_delete_empleats`;$$
+CREATE TRIGGER `tg_b_delete_empleats` BEFORE DELETE ON `empleats` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'empleats', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en empleats.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
 
-INSERT INTO `configuracio_qualitat` (`nom_perfil`, `resolucio`, `bitrate_max`, `limitacio_banda`) VALUES
-('alta', '1080p', 4000, 0),
-('mitja', '720p', 2000, 0),
-('baixa', '480p', 800, 1);
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `nominas`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_nominas`;$$
+CREATE TRIGGER `tg_b_insert_nominas` BEFORE INSERT ON `nominas` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('administracio') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'nominas', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en nominas.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_nominas`;$$
+CREATE TRIGGER `tg_b_update_nominas` BEFORE UPDATE ON `nominas` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('administracio') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'nominas', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en nominas.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_nominas`;$$
+CREATE TRIGGER `tg_b_delete_nominas` BEFORE DELETE ON `nominas` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'nominas', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en nominas.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `clients`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_clients`;$$
+CREATE TRIGGER `tg_b_insert_clients` BEFORE INSERT ON `clients` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'clients', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en clients.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_clients`;$$
+CREATE TRIGGER `tg_b_update_clients` BEFORE UPDATE ON `clients` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'clients', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en clients.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_clients`;$$
+CREATE TRIGGER `tg_b_delete_clients` BEFORE DELETE ON `clients` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'clients', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en clients.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `productes`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_productes`;$$
+CREATE TRIGGER `tg_b_insert_productes` BEFORE INSERT ON `productes` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'productes', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en productes.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_productes`;$$
+CREATE TRIGGER `tg_b_update_productes` BEFORE UPDATE ON `productes` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'productes', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en productes.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_productes`;$$
+CREATE TRIGGER `tg_b_delete_productes` BEFORE DELETE ON `productes` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'productes', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en productes.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `comandes`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_comandes`;$$
+CREATE TRIGGER `tg_b_insert_comandes` BEFORE INSERT ON `comandes` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'comandes', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en comandes.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_comandes`;$$
+CREATE TRIGGER `tg_b_update_comandes` BEFORE UPDATE ON `comandes` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'comandes', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en comandes.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_comandes`;$$
+CREATE TRIGGER `tg_b_delete_comandes` BEFORE DELETE ON `comandes` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'comandes', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en comandes.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `cistell`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_cistell`;$$
+CREATE TRIGGER `tg_b_insert_cistell` BEFORE INSERT ON `cistell` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'cistell', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en cistell.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_cistell`;$$
+CREATE TRIGGER `tg_b_update_cistell` BEFORE UPDATE ON `cistell` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'cistell', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en cistell.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_cistell`;$$
+CREATE TRIGGER `tg_b_delete_cistell` BEFORE DELETE ON `cistell` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'cistell', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en cistell.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `configuracio_qualitat`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_configuracio_qualitat`;$$
+CREATE TRIGGER `tg_b_insert_configuracio_qualitat` BEFORE INSERT ON `configuracio_qualitat` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'configuracio_qualitat', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en configuracio_qualitat.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_configuracio_qualitat`;$$
+CREATE TRIGGER `tg_b_update_configuracio_qualitat` BEFORE UPDATE ON `configuracio_qualitat` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'configuracio_qualitat', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en configuracio_qualitat.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_configuracio_qualitat`;$$
+CREATE TRIGGER `tg_b_delete_configuracio_qualitat` BEFORE DELETE ON `configuracio_qualitat` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'configuracio_qualitat', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en configuracio_qualitat.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `usuaris_sistema`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_usuaris_sistema`;$$
+CREATE TRIGGER `tg_b_insert_usuaris_sistema` BEFORE INSERT ON `usuaris_sistema` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'usuaris_sistema', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en usuaris_sistema.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_usuaris_sistema`;$$
+CREATE TRIGGER `tg_b_update_usuaris_sistema` BEFORE UPDATE ON `usuaris_sistema` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'usuaris_sistema', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en usuaris_sistema.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_usuaris_sistema`;$$
+CREATE TRIGGER `tg_b_delete_usuaris_sistema` BEFORE DELETE ON `usuaris_sistema` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'usuaris_sistema', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en usuaris_sistema.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `servidors_videoconferencia`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_servidors_videoconferencia`;$$
+CREATE TRIGGER `tg_b_insert_servidors_videoconferencia` BEFORE INSERT ON `servidors_videoconferencia` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'servidors_videoconferencia', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en servidors_videoconferencia.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_servidors_videoconferencia`;$$
+CREATE TRIGGER `tg_b_update_servidors_videoconferencia` BEFORE UPDATE ON `servidors_videoconferencia` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'servidors_videoconferencia', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en servidors_videoconferencia.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_servidors_videoconferencia`;$$
+CREATE TRIGGER `tg_b_delete_servidors_videoconferencia` BEFORE DELETE ON `servidors_videoconferencia` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'servidors_videoconferencia', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en servidors_videoconferencia.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `registre_trucades`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_registre_trucades`;$$
+CREATE TRIGGER `tg_b_insert_registre_trucades` BEFORE INSERT ON `registre_trucades` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'registre_trucades', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en registre_trucades.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_registre_trucades`;$$
+CREATE TRIGGER `tg_b_update_registre_trucades` BEFORE UPDATE ON `registre_trucades` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'registre_trucades', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en registre_trucades.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_registre_trucades`;$$
+CREATE TRIGGER `tg_b_delete_registre_trucades` BEFORE DELETE ON `registre_trucades` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'registre_trucades', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en registre_trucades.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `cataleg_videos`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_cataleg_videos`;$$
+CREATE TRIGGER `tg_b_insert_cataleg_videos` BEFORE INSERT ON `cataleg_videos` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'cataleg_videos', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en cataleg_videos.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_cataleg_videos`;$$
+CREATE TRIGGER `tg_b_update_cataleg_videos` BEFORE UPDATE ON `cataleg_videos` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'cataleg_videos', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en cataleg_videos.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_cataleg_videos`;$$
+CREATE TRIGGER `tg_b_delete_cataleg_videos` BEFORE DELETE ON `cataleg_videos` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'cataleg_videos', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en cataleg_videos.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `mesures_amplada_banda`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_mesures_amplada_banda`;$$
+CREATE TRIGGER `tg_b_insert_mesures_amplada_banda` BEFORE INSERT ON `mesures_amplada_banda` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'mesures_amplada_banda', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en mesures_amplada_banda.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_mesures_amplada_banda`;$$
+CREATE TRIGGER `tg_b_update_mesures_amplada_banda` BEFORE UPDATE ON `mesures_amplada_banda` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'mesures_amplada_banda', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en mesures_amplada_banda.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_mesures_amplada_banda`;$$
+CREATE TRIGGER `tg_b_delete_mesures_amplada_banda` BEFORE DELETE ON `mesures_amplada_banda` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'mesures_amplada_banda', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en mesures_amplada_banda.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `taula_avisos`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_taula_avisos`;$$
+CREATE TRIGGER `tg_b_insert_taula_avisos` BEFORE INSERT ON `taula_avisos` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') AND v_role NOT IN ('vendes', 'administracio', 'treballador') THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_taula_avisos`;$$
+CREATE TRIGGER `tg_b_update_taula_avisos` BEFORE UPDATE ON `taula_avisos` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_taula_avisos`;$$
+CREATE TRIGGER `tg_b_delete_taula_avisos` BEFORE DELETE ON `taula_avisos` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `quotes_trucades`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_quotes_trucades`;$$
+CREATE TRIGGER `tg_b_insert_quotes_trucades` BEFORE INSERT ON `quotes_trucades` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'quotes_trucades', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en quotes_trucades.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_quotes_trucades`;$$
+CREATE TRIGGER `tg_b_update_quotes_trucades` BEFORE UPDATE ON `quotes_trucades` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'quotes_trucades', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en quotes_trucades.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_quotes_trucades`;$$
+CREATE TRIGGER `tg_b_delete_quotes_trucades` BEFORE DELETE ON `quotes_trucades` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'quotes_trucades', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en quotes_trucades.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+-- ============================================================================
+-- TRIGGERS DE SEGURIDAD PARA LA TABLA: `control_backups`
+-- ============================================================================
+DROP TRIGGER IF EXISTS `tg_b_insert_control_backups`;$$
+CREATE TRIGGER `tg_b_insert_control_backups` BEFORE INSERT ON `control_backups` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'control_backups', 'INSERT', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de INSERT en control_backups.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_update_control_backups`;$$
+CREATE TRIGGER `tg_b_update_control_backups` BEFORE UPDATE ON `control_backups` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'control_backups', 'UPDATE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de UPDATE en control_backups.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DROP TRIGGER IF EXISTS `tg_b_delete_control_backups`;$$
+CREATE TRIGGER `tg_b_delete_control_backups` BEFORE DELETE ON `control_backups` FOR EACH ROW
+BEGIN
+    DECLARE v_role VARCHAR(50);
+    SET v_role = SUBSTRING_INDEX(USER(), '@', 1);
+    IF v_role IN ('vendes', 'administracio', 'treballador') THEN
+        INSERT INTO `taula_avisos` (`usuari_mysql`, `taula_afectada`, `operacio_intentada`, `descripcio_error`)
+        VALUES (USER(), 'control_backups', 'DELETE', CONCAT('Accés denegat: El rol \'', v_role, '\' no té permisos de DELETE en control_backups.'));
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error de Seguretat: Permisos insuficients per a realitzar aquesta operació.';
+    END IF;
+END;$$
+
+DELIMITER ;
