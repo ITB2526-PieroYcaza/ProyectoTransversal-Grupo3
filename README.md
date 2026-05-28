@@ -219,6 +219,12 @@ La infraestructura se divide en tres zonas lógicas de comunicación claramente 
 
 </div>
 
+<p align="center">
+  <img src="images/img_4.png" alt="Imagen 4" />
+</p>
+
+
+
 <a name="115-directivas-generales-de-seguridad-logica"></a>
 #### <a href="#115-directivas-generales-de-seguridad-logica">1.1.5. Directivas Generales de Seguridad Lógica:</a>
 [↑ Volver al índice](#indice)
@@ -246,7 +252,7 @@ En un <strong>CPD convencional abierto,</strong> el aire frío se mezcla rápida
 </div>
 
 <p align="center">
-  <img src="images/img_4.png" alt="Imagen 4" />
+  <img src="images/img_5.png" alt="Imagen 5" />
 </p>
 
 
@@ -272,7 +278,7 @@ Por precaución a cualquier tipo de <strong>incidente ajeno a nuestro departamen
 </div>
 
 <p align="center">
-  <img src="images/img_5.png" alt="Imagen 5" />
+  <img src="images/img_6.png" alt="Imagen 6" />
 </p>
 
 <div align="justify">
@@ -300,7 +306,7 @@ Para reforzar esta discreción, la <strong>perfilería de la cristalera será id
 </div>
 
 <p align="center">
-  <img src="images/img_6.png" alt="Imagen 6" />
+  <img src="images/img_7.png" alt="Imagen 7" />
 </p>
 
 
@@ -369,7 +375,7 @@ Un punto crítico de este diseño es que tanto el suelo como el techo técnico e
 </div>
 
 <p align="center">
-  <img src="images/img_7.png" alt="Imagen 7" />
+  <img src="images/img_8.png" alt="Imagen 8" />
 </p>
 
 
@@ -698,7 +704,7 @@ Dependiendo de la criticidad, la carga de trabajo (I/O) y el rol de cada nodo, s
 </div>
 
 <p align="center">
-  <img src="images/img_8.png" alt="Imagen 8" />
+  <img src="images/img_9.png" alt="Imagen 9" />
 </p>
 
 <div align="justify">
@@ -748,7 +754,7 @@ Para comenzar con el despliegue de la infraestructura, en primer lugar lanzaremo
 </div>
 
 <p align="center">
-  <img src="images/img_9.png" alt="Imagen 9" />
+  <img src="images/img_10.png" alt="Imagen 10" />
 </p>
 
 <div align="justify">
@@ -756,7 +762,7 @@ Seguidamente, creamos un grupo de seguridad específico para el servidor <strong
 </div>
 
 <p align="center">
-  <img src="images/img_10.png" alt="Imagen 10" />
+  <img src="images/img_11.png" alt="Imagen 11" />
 </p>
 
 
@@ -791,13 +797,13 @@ Para habilitar este acceso, entramos al servidor con el usuario por defecto, eje
 </div>
 
 <p align="center">
-  <img src="images/img_11.png" alt="Imagen 11" />
+  <img src="images/img_12.png" alt="Imagen 12" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_12.png" alt="Imagen 12" />
+  <img src="images/img_13.png" alt="Imagen 13" />
 </p>
 
 <div align="justify">
@@ -807,7 +813,7 @@ Si la respuesta es correcta, el servidor valida la identidad del usuario y abre 
 </div>
 
 <p align="center">
-  <img src="images/img_13.png" alt="Imagen 13" />
+  <img src="images/img_14.png" alt="Imagen 14" />
 </p>
 
 
@@ -822,7 +828,7 @@ Para poder crear instancias nuevas desde Ansible, tenemos que crear una carpeta 
 </div>
 
 <p align="center">
-  <img src="images/img_14.png" alt="Imagen 14" />
+  <img src="images/img_15.png" alt="Imagen 15" />
 </p>
 
 <div align="justify">
@@ -835,7 +841,7 @@ Para poder crear instancias nuevas desde Ansible, tenemos que crear una carpeta 
 </div>
 
 <p align="center">
-  <img src="images/img_15.png" alt="Imagen 15" />
+  <img src="images/img_16.png" alt="Imagen 16" />
 </p>
 
 
@@ -852,7 +858,7 @@ A continuación, indicamos el ID de la <strong>AMI (Amazon Machine Image)</stron
 </div>
 
 <p align="center">
-  <img src="images/img_16.png" alt="Imagen 16" />
+  <img src="images/img_17.png" alt="Imagen 17" />
 </p>
 
 <div align="justify">
@@ -861,7 +867,7 @@ A continuación, indicamos el ID de la <strong>AMI (Amazon Machine Image)</stron
 </div>
 
 <p align="center">
-  <img src="images/img_17.png" alt="Imagen 17" />
+  <img src="images/img_18.png" alt="Imagen 18" />
 </p>
 
 <div align="justify">
@@ -870,7 +876,7 @@ A continuación, indicamos el ID de la <strong>AMI (Amazon Machine Image)</stron
 </div>
 
 <p align="center">
-  <img src="images/img_18.png" alt="Imagen 18" />
+  <img src="images/img_19.png" alt="Imagen 19" />
 </p>
 
 
@@ -886,13 +892,13 @@ A continuación, indicamos el ID de la <strong>AMI (Amazon Machine Image)</stron
 </div>
 
 <p align="center">
-  <img src="images/img_19.png" alt="Imagen 19" />
+  <img src="images/img_20.png" alt="Imagen 20" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_20.png" alt="Imagen 20" />
+  <img src="images/img_21.png" alt="Imagen 21" />
 </p>
 
 <div align="justify">
@@ -903,7 +909,7 @@ A continuación, indicamos el ID de la <strong>AMI (Amazon Machine Image)</stron
 </div>
 
 <p align="center">
-  <img src="images/img_21.png" alt="Imagen 21" />
+  <img src="images/img_22.png" alt="Imagen 22" />
 </p>
 
 <div align="justify">
@@ -914,7 +920,7 @@ A continuación, indicamos el ID de la <strong>AMI (Amazon Machine Image)</stron
 </div>
 
 <p align="center">
-  <img src="images/img_22.png" alt="Imagen 22" />
+  <img src="images/img_23.png" alt="Imagen 23" />
 </p>
 
 <div align="justify">
@@ -923,7 +929,7 @@ A continuación, indicamos el ID de la <strong>AMI (Amazon Machine Image)</stron
 </div>
 
 <p align="center">
-  <img src="images/img_23.png" alt="Imagen 23" />
+  <img src="images/img_24.png" alt="Imagen 24" />
 </p>
 
 <div align="justify">
@@ -932,7 +938,7 @@ A continuación, indicamos el ID de la <strong>AMI (Amazon Machine Image)</stron
 </div>
 
 <p align="center">
-  <img src="images/img_24.png" alt="Imagen 24" />
+  <img src="images/img_25.png" alt="Imagen 25" />
 </p>
 
 <div align="justify">
@@ -941,7 +947,7 @@ A continuación, indicamos el ID de la <strong>AMI (Amazon Machine Image)</stron
 </div>
 
 <p align="center">
-  <img src="images/img_25.png" alt="Imagen 25" />
+  <img src="images/img_26.png" alt="Imagen 26" />
 </p>
 
 
@@ -959,7 +965,7 @@ En este primer bloque, la ejecución se realiza utilizando las credenciales inic
 </div>
 
 <p align="center">
-  <img src="images/img_26.png" alt="Imagen 26" />
+  <img src="images/img_27.png" alt="Imagen 27" />
 </p>
 
 <div align="justify">
@@ -970,7 +976,7 @@ En este primer bloque, la ejecución se realiza utilizando las credenciales inic
 </div>
 
 <p align="center">
-  <img src="images/img_27.png" alt="Imagen 27" />
+  <img src="images/img_28.png" alt="Imagen 28" />
 </p>
 
 <div align="justify">
@@ -980,7 +986,7 @@ Una vez que ya tenemos al usuario administrador, sin necesidad de pedir contrase
 </div>
 
 <p align="center">
-  <img src="images/img_28.png" alt="Imagen 28" />
+  <img src="images/img_29.png" alt="Imagen 29" />
 </p>
 
 <div align="justify">
@@ -991,7 +997,7 @@ Por último, configuramos la cantidad de memoria virtual que usará <strong>Elas
 </div>
 
 <p align="center">
-  <img src="images/img_29.png" alt="Imagen 29" />
+  <img src="images/img_30.png" alt="Imagen 30" />
 </p>
 
 <div align="justify">
@@ -1003,7 +1009,7 @@ Por último, recargamos el demonio <strong>systemd</strong> y habilitamos el ini
 </div>
 
 <p align="center">
-  <img src="images/img_30.png" alt="Imagen 30" />
+  <img src="images/img_31.png" alt="Imagen 31" />
 </p>
 
 <div align="justify">
@@ -1014,7 +1020,7 @@ Por último, recargamos el demonio <strong>systemd</strong> y habilitamos el ini
 </div>
 
 <p align="center">
-  <img src="images/img_31.png" alt="Imagen 31" />
+  <img src="images/img_32.png" alt="Imagen 32" />
 </p>
 
 <div align="justify">
@@ -1022,7 +1028,7 @@ Para finalizar el <strong>primer playbook</strong>, lo lanzamos con <strong>éxi
 </div>
 
 <p align="center">
-  <img src="images/img_32.png" alt="Imagen 32" />
+  <img src="images/img_33.png" alt="Imagen 33" />
 </p>
 
 <div align="justify">
@@ -1030,7 +1036,7 @@ Prueba del funcionamiento: <br><br>
 </div>
 
 <p align="center">
-  <img src="images/img_33.png" alt="Imagen 33" />
+  <img src="images/img_34.png" alt="Imagen 34" />
 </p>
 
 
@@ -1049,7 +1055,7 @@ El segundo playbook que configuraremos <strong>será</strong> para la <strong>co
 </div>
 
 <p align="center">
-  <img src="images/img_34.png" alt="Imagen 34" />
+  <img src="images/img_35.png" alt="Imagen 35" />
 </p>
 
 <div align="justify">
@@ -1058,7 +1064,7 @@ El segundo playbook que configuraremos <strong>será</strong> para la <strong>co
 </div>
 
 <p align="center">
-  <img src="images/img_35.png" alt="Imagen 35" />
+  <img src="images/img_36.png" alt="Imagen 36" />
 </p>
 
 <div align="justify">
@@ -1067,7 +1073,7 @@ El segundo playbook que configuraremos <strong>será</strong> para la <strong>co
 </div>
 
 <p align="center">
-  <img src="images/img_36.png" alt="Imagen 36" />
+  <img src="images/img_37.png" alt="Imagen 37" />
 </p>
 
 <div align="justify">
@@ -1076,7 +1082,7 @@ El segundo playbook que configuraremos <strong>será</strong> para la <strong>co
 </div>
 
 <p align="center">
-  <img src="images/img_37.png" alt="Imagen 37" />
+  <img src="images/img_38.png" alt="Imagen 38" />
 </p>
 
 <div align="justify">
@@ -1085,7 +1091,7 @@ El segundo playbook que configuraremos <strong>será</strong> para la <strong>co
 </div>
 
 <p align="center">
-  <img src="images/img_38.png" alt="Imagen 38" />
+  <img src="images/img_39.png" alt="Imagen 39" />
 </p>
 
 <div align="justify">
@@ -1096,7 +1102,7 @@ El segundo playbook que configuraremos <strong>será</strong> para la <strong>co
 </div>
 
 <p align="center">
-  <img src="images/img_39.png" alt="Imagen 39" />
+  <img src="images/img_40.png" alt="Imagen 40" />
 </p>
 
 <div align="justify">
@@ -1105,7 +1111,7 @@ El segundo playbook que configuraremos <strong>será</strong> para la <strong>co
 </div>
 
 <p align="center">
-  <img src="images/img_40.png" alt="Imagen 40" />
+  <img src="images/img_41.png" alt="Imagen 41" />
 </p>
 
 <div align="justify">
@@ -1114,7 +1120,7 @@ El segundo playbook que configuraremos <strong>será</strong> para la <strong>co
 </div>
 
 <p align="center">
-  <img src="images/img_41.png" alt="Imagen 41" />
+  <img src="images/img_42.png" alt="Imagen 42" />
 </p>
 
 <div align="justify">
@@ -1125,7 +1131,7 @@ El segundo playbook que configuraremos <strong>será</strong> para la <strong>co
 </div>
 
 <p align="center">
-  <img src="images/img_42.png" alt="Imagen 42" />
+  <img src="images/img_43.png" alt="Imagen 43" />
 </p>
 
 <div align="justify">
@@ -1138,7 +1144,7 @@ El segundo playbook que configuraremos <strong>será</strong> para la <strong>co
 </div>
 
 <p align="center">
-  <img src="images/img_43.png" alt="Imagen 43" />
+  <img src="images/img_44.png" alt="Imagen 44" />
 </p>
 
 <div align="justify">
@@ -1149,7 +1155,7 @@ Al dar de alta el repositorio oficial de Elastic se inyecta de forma <strong>exp
 </div>
 
 <p align="center">
-  <img src="images/img_44.png" alt="Imagen 44" />
+  <img src="images/img_45.png" alt="Imagen 45" />
 </p>
 
 <div align="justify">
@@ -1166,7 +1172,7 @@ Por <strong>último</strong>, se enruta <strong>dinámicamente</strong> y se par
 </div>
 
 <p align="center">
-  <img src="images/img_45.png" alt="Imagen 45" />
+  <img src="images/img_46.png" alt="Imagen 46" />
 </p>
 
 <div align="justify">
@@ -1183,7 +1189,7 @@ Por <strong>último</strong>, se enruta <strong>dinámicamente</strong> y se par
 </div>
 
 <p align="center">
-  <img src="images/img_46.png" alt="Imagen 46" />
+  <img src="images/img_47.png" alt="Imagen 47" />
 </p>
 
 <div align="justify">
@@ -1191,13 +1197,13 @@ Ejecutamos el <strong>playbook de LDAP</strong> para aplicar toda la <strong>con
 </div>
 
 <p align="center">
-  <img src="images/img_47.png" alt="Imagen 47" />
+  <img src="images/img_48.png" alt="Imagen 48" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_48.png" alt="Imagen 48" />
+  <img src="images/img_49.png" alt="Imagen 49" />
 </p>
 
 
@@ -1214,7 +1220,7 @@ Para integrar el <strong>Servidor Web/SFTP</strong> en el ecosistema de monitori
 </div>
 
 <p align="center">
-  <img src="images/img_49.png" alt="Imagen 49" />
+  <img src="images/img_50.png" alt="Imagen 50" />
 </p>
 
 <div align="justify">
@@ -1224,7 +1230,7 @@ A diferencia del servidor LDAP (donde sobreescribimos el archivo de configuraci�
 </div>
 
 <p align="center">
-  <img src="images/img_50.png" alt="Imagen 50" />
+  <img src="images/img_51.png" alt="Imagen 51" />
 </p>
 
 <div align="justify">
@@ -1233,7 +1239,7 @@ A diferencia del servidor LDAP (donde sobreescribimos el archivo de configuraci�
 </div>
 
 <p align="center">
-  <img src="images/img_51.png" alt="Imagen 51" />
+  <img src="images/img_52.png" alt="Imagen 52" />
 </p>
 
 
@@ -1251,7 +1257,7 @@ A partir de ahí, se realiza la instalación de <strong>auditd</strong>, la <str
 </div>
 
 <p align="center">
-  <img src="images/img_52.png" alt="Imagen 52" />
+  <img src="images/img_53.png" alt="Imagen 53" />
 </p>
 
 <div align="justify">
@@ -1259,7 +1265,7 @@ Por <strong>último</strong>, se aplica la <strong>monitorización estándar</st
 </div>
 
 <p align="center">
-  <img src="images/img_53.png" alt="Imagen 53" />
+  <img src="images/img_54.png" alt="Imagen 54" />
 </p>
 
 <div align="justify">
@@ -1268,7 +1274,7 @@ Una vez actualizado el inventario, ejecutamos el <strong>playbook diseñado para
 </div>
 
 <p align="center">
-  <img src="images/img_54.png" alt="Imagen 54" />
+  <img src="images/img_55.png" alt="Imagen 55" />
 </p>
 
 
@@ -1283,7 +1289,7 @@ Nos conectamos sftp para hacer una prueba que aparece en los logs.<br><br>
 </div>
 
 <p align="center">
-  <img src="images/img_55.png" alt="Imagen 55" />
+  <img src="images/img_56.png" alt="Imagen 56" />
 </p>
 
 <div align="justify">
@@ -1294,12 +1300,6 @@ Nos conectamos sftp para hacer una prueba que aparece en los logs.<br><br>
 <strong>auditd.result–  success</strong>El resultado de la autenticación ha sido un éxito rotundo. Si hubiera fallado la contraseña, aquí pondría <em>failed</em>.<br><br>
 <strong>auditd.summary.how – /usr/sbin/sshd</strong>Muestra exactamente qué binario del sistema operativo ha procesado la solicitud (el servicio de SSH).<br><br>
 </div>
-
-<p align="center">
-  <img src="images/img_56.png" alt="Imagen 56" />
-</p>
-
-
 
 <p align="center">
   <img src="images/img_57.png" alt="Imagen 57" />
@@ -1323,18 +1323,18 @@ Nos conectamos sftp para hacer una prueba que aparece en los logs.<br><br>
   <img src="images/img_60.png" alt="Imagen 60" />
 </p>
 
+
+
+<p align="center">
+  <img src="images/img_61.png" alt="Imagen 61" />
+</p>
+
 <div align="justify">
 Para comprobar el correcto funcionamiento del módulo FIM (File Integrity Monitoring) configurado en Auditbeat, realizamos una prueba de concepto simulando una intrusión o alteración de archivos del sistema en el directorio /etc. Como se observa en los logs centralizados de Kibana, el agente interceptó en tiempo real tanto la modificación de atributos de un fichero en /etc/mtab como la creación de un nuevo archivo de texto (.txt) modificado por el usuario root, capturando de forma automática su hash criptográfico SHA-1. <br><br>
 <strong>event.module</strong><strong> — </strong><strong>file_integrity</strong><strong>:</strong> El encargado de avisar ha sido el módulo de integridad.<br><br>
 <strong>event.action</strong><strong> — </strong><strong>attributes_modified</strong><strong>:</strong> Indica que se han modificado los atributos o permisos de un archivo.<br><br>
 <strong>event.action</strong><strong> / </strong><strong>event.type</strong><strong> — </strong><strong>created</strong><strong> / </strong><strong>creation</strong><strong>:</strong> Avisa de que se ha creado un archivo que antes no existía.<br><br>
 </div>
-
-<p align="center">
-  <img src="images/img_61.png" alt="Imagen 61" />
-</p>
-
-
 
 <p align="center">
   <img src="images/img_62.png" alt="Imagen 62" />
@@ -1346,13 +1346,19 @@ Para comprobar el correcto funcionamiento del módulo FIM (File Integrity Monito
   <img src="images/img_63.png" alt="Imagen 63" />
 </p>
 
+
+
+<p align="center">
+  <img src="images/img_64.png" alt="Imagen 64" />
+</p>
+
 <div align="justify">
 Por <strong>último</strong>, comprobamos que todos los logs de los servidores que hemos configurado <strong>funcionan</strong> correctamente. Mediante su <strong>IP privada</strong>, filtramos y localizamos los diferentes servidores dentro de Kibana para verificar la correcta recepción de los datos de auditoría.<br><br>
 <strong>Servidor Web:</strong><br><br>
 </div>
 
 <p align="center">
-  <img src="images/img_64.png" alt="Imagen 64" />
+  <img src="images/img_65.png" alt="Imagen 65" />
 </p>
 
 <div align="justify">
@@ -1360,7 +1366,7 @@ Por <strong>último</strong>, comprobamos que todos los logs de los servidores q
 </div>
 
 <p align="center">
-  <img src="images/img_65.png" alt="Imagen 65" />
+  <img src="images/img_66.png" alt="Imagen 66" />
 </p>
 
 <div align="justify">
@@ -1369,7 +1375,7 @@ Por <strong>último</strong>, comprobamos que todos los logs de los servidores q
 </div>
 
 <p align="center">
-  <img src="images/img_66.png" alt="Imagen 66" />
+  <img src="images/img_67.png" alt="Imagen 67" />
 </p>
 
 <div align="justify">
@@ -1377,7 +1383,7 @@ Por <strong>último</strong>, comprobamos que todos los logs de los servidores q
 </div>
 
 <p align="center">
-  <img src="images/img_67.png" alt="Imagen 67" />
+  <img src="images/img_68.png" alt="Imagen 68" />
 </p>
 
 <div align="justify">
@@ -1385,7 +1391,7 @@ Por <strong>último</strong>, comprobamos que todos los logs de los servidores q
 </div>
 
 <p align="center">
-  <img src="images/img_68.png" alt="Imagen 68" />
+  <img src="images/img_69.png" alt="Imagen 69" />
 </p>
 
 
@@ -1423,7 +1429,7 @@ Hemos escogido <strong>Icecast2</strong>. Es un servidor de streaming de medios 
 </div>
 
 <p align="center">
-  <img src="images/img_69.png" alt="Imagen 69" />
+  <img src="images/img_70.png" alt="Imagen 70" />
 </p>
 
 <div align="justify">
@@ -1435,7 +1441,7 @@ Hemos escogido <strong>Icecast2</strong>. Es un servidor de streaming de medios 
 </div>
 
 <p align="center">
-  <img src="images/img_70.png" alt="Imagen 70" />
+  <img src="images/img_71.png" alt="Imagen 71" />
 </p>
 
 
@@ -1452,7 +1458,7 @@ Hemos escogido <strong>Icecast2</strong>. Es un servidor de streaming de medios 
 </div>
 
 <p align="center">
-  <img src="images/img_71.png" alt="Imagen 71" />
+  <img src="images/img_72.png" alt="Imagen 72" />
 </p>
 
 <div align="justify">
@@ -1466,7 +1472,7 @@ Hemos escogido <strong>Icecast2</strong>. Es un servidor de streaming de medios 
 </div>
 
 <p align="center">
-  <img src="images/img_72.png" alt="Imagen 72" />
+  <img src="images/img_73.png" alt="Imagen 73" />
 </p>
 
 
@@ -1481,7 +1487,7 @@ Utilizaremos los formatos <strong>MP3</strong> ya que nos ofrece una compresión
 </div>
 
 <p align="center">
-  <img src="images/img_73.png" alt="Imagen 73" />
+  <img src="images/img_74.png" alt="Imagen 74" />
 </p>
 
 
@@ -1497,7 +1503,7 @@ Utilizaremos los formatos <strong>MP3</strong> ya que nos ofrece una compresión
 </div>
 
 <p align="center">
-  <img src="images/img_74.png" alt="Imagen 74" />
+  <img src="images/img_75.png" alt="Imagen 75" />
 </p>
 
 <div align="justify">
@@ -1507,7 +1513,7 @@ Utilizaremos los formatos <strong>MP3</strong> ya que nos ofrece una compresión
 </div>
 
 <p align="center">
-  <img src="images/img_75.png" alt="Imagen 75" />
+  <img src="images/img_76.png" alt="Imagen 76" />
 </p>
 
 <div align="justify">
@@ -1525,7 +1531,7 @@ Uno de nuestros objetivos principales consiste en la <strong>implementación de 
 </div>
 
 <p align="center">
-  <img src="images/img_76.png" alt="Imagen 76" />
+  <img src="images/img_77.png" alt="Imagen 77" />
 </p>
 
 
@@ -1540,7 +1546,7 @@ Para conseguir que nuestra radio emita la playlist o la canción que queramos de
 </div>
 
 <p align="center">
-  <img src="images/img_77.png" alt="Imagen 77" />
+  <img src="images/img_78.png" alt="Imagen 78" />
 </p>
 
 <div align="justify">
@@ -1548,7 +1554,7 @@ Nuestro objetivo principal es que este servicio no solo envíe el sonido, sino q
 </div>
 
 <p align="center">
-  <img src="images/img_78.png" alt="Imagen 78" />
+  <img src="images/img_79.png" alt="Imagen 79" />
 </p>
 
 <div align="justify">
@@ -1558,7 +1564,7 @@ Para configurar Snip, tuvimos que hacer clic derecho sobre su icono en la barra 
 </div>
 
 <p align="center">
-  <img src="images/img_79.png" alt="Imagen 79" />
+  <img src="images/img_80.png" alt="Imagen 80" />
 </p>
 
 <div align="justify">
@@ -1567,7 +1573,7 @@ Para configurar Snip, tuvimos que hacer clic derecho sobre su icono en la barra 
 </div>
 
 <p align="center">
-  <img src="images/img_80.png" alt="Imagen 80" />
+  <img src="images/img_81.png" alt="Imagen 81" />
 </p>
 
 <div align="justify">
@@ -1576,7 +1582,7 @@ Para configurar Snip, tuvimos que hacer clic derecho sobre su icono en la barra 
 </div>
 
 <p align="center">
-  <img src="images/img_81.png" alt="Imagen 81" />
+  <img src="images/img_82.png" alt="Imagen 82" />
 </p>
 
 <div align="justify">
@@ -1586,7 +1592,7 @@ Por último, tuvimos que <strong>marcar las casillas de 'Activate' y 'Read last 
 </div>
 
 <p align="center">
-  <img src="images/img_82.png" alt="Imagen 82" />
+  <img src="images/img_83.png" alt="Imagen 83" />
 </p>
 
 
@@ -1601,7 +1607,7 @@ Para verificar que todo funciona a la perfección, lo primero que hacemos es abr
 </div>
 
 <p align="center">
-  <img src="images/img_83.png" alt="Imagen 83" />
+  <img src="images/img_84.png" alt="Imagen 84" />
 </p>
 
 <div align="justify">
@@ -1609,7 +1615,7 @@ Una vez que la música está sonando, nos vamos directos a la <strong>página we
 </div>
 
 <p align="center">
-  <img src="images/img_84.png" alt="Imagen 84" />
+  <img src="images/img_85.png" alt="Imagen 85" />
 </p>
 
 
@@ -1634,7 +1640,7 @@ Para la implementación del servicio de vídeo en streaming hemos elegido el ser
 </div>
 
 <p align="center">
-  <img src="images/img_85.png" alt="Imagen 85" />
+  <img src="images/img_86.png" alt="Imagen 86" />
 </p>
 
 <div align="justify">
@@ -1642,7 +1648,7 @@ Para la implementación del servicio de vídeo en streaming hemos elegido el ser
 </div>
 
 <p align="center">
-  <img src="images/img_86.png" alt="Imagen 86" />
+  <img src="images/img_87.png" alt="Imagen 87" />
 </p>
 
 <div align="justify">
@@ -1650,13 +1656,13 @@ Para la implementación del servicio de vídeo en streaming hemos elegido el ser
 </div>
 
 <p align="center">
-  <img src="images/img_87.png" alt="Imagen 87" />
+  <img src="images/img_88.png" alt="Imagen 88" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_88.png" alt="Imagen 88" />
+  <img src="images/img_89.png" alt="Imagen 89" />
 </p>
 
 <div align="justify">
@@ -1668,7 +1674,7 @@ Para la implementación del servicio de vídeo en streaming hemos elegido el ser
 </div>
 
 <p align="center">
-  <img src="images/img_89.png" alt="Imagen 89" />
+  <img src="images/img_90.png" alt="Imagen 90" />
 </p>
 
 <div align="justify">
@@ -1676,7 +1682,7 @@ Para la implementación del servicio de vídeo en streaming hemos elegido el ser
 </div>
 
 <p align="center">
-  <img src="images/img_90.png" alt="Imagen 90" />
+  <img src="images/img_91.png" alt="Imagen 91" />
 </p>
 
 
@@ -1725,7 +1731,7 @@ Como el servidor no cuenta con las herramientas de contenedores, procedemos a in
 </div>
 
 <p align="center">
-  <img src="images/img_91.png" alt="Imagen 91" />
+  <img src="images/img_92.png" alt="Imagen 92" />
 </p>
 
 <div align="justify">
@@ -1734,7 +1740,7 @@ Como el servidor no cuenta con las herramientas de contenedores, procedemos a in
 </div>
 
 <p align="center">
-  <img src="images/img_92.png" alt="Imagen 92" />
+  <img src="images/img_93.png" alt="Imagen 93" />
 </p>
 
 <div align="justify">
@@ -1743,7 +1749,7 @@ Como el servidor no cuenta con las herramientas de contenedores, procedemos a in
 </div>
 
 <p align="center">
-  <img src="images/img_93.png" alt="Imagen 93" />
+  <img src="images/img_94.png" alt="Imagen 94" />
 </p>
 
 <div align="justify">
@@ -1752,7 +1758,7 @@ Como el servidor no cuenta con las herramientas de contenedores, procedemos a in
 </div>
 
 <p align="center">
-  <img src="images/img_94.png" alt="Imagen 94" />
+  <img src="images/img_95.png" alt="Imagen 95" />
 </p>
 
 <div align="justify">
@@ -1761,7 +1767,7 @@ Como el servidor no cuenta con las herramientas de contenedores, procedemos a in
 </div>
 
 <p align="center">
-  <img src="images/img_95.png" alt="Imagen 95" />
+  <img src="images/img_96.png" alt="Imagen 96" />
 </p>
 
 <div align="justify">
@@ -1771,7 +1777,7 @@ Jitsi provee una plantilla oficial con la arquitectura de contenedores ya unific
 </div>
 
 <p align="center">
-  <img src="images/img_96.png" alt="Imagen 96" />
+  <img src="images/img_97.png" alt="Imagen 97" />
 </p>
 
 <div align="justify">
@@ -1786,7 +1792,7 @@ Por defecto, el archivo de ejemplo viene con contraseñas en blanco. Jitsi inclu
 </div>
 
 <p align="center">
-  <img src="images/img_97.png" alt="Imagen 97" />
+  <img src="images/img_98.png" alt="Imagen 98" />
 </p>
 
 <div align="justify">
@@ -1799,7 +1805,7 @@ Por defecto, el archivo de ejemplo viene con contraseñas en blanco. Jitsi inclu
 </div>
 
 <p align="center">
-  <img src="images/img_98.png" alt="Imagen 98" />
+  <img src="images/img_99.png" alt="Imagen 99" />
 </p>
 
 <div align="justify">
@@ -1808,7 +1814,7 @@ Por defecto, el archivo de ejemplo viene con contraseñas en blanco. Jitsi inclu
 </div>
 
 <p align="center">
-  <img src="images/img_99.png" alt="Imagen 99" />
+  <img src="images/img_100.png" alt="Imagen 100" />
 </p>
 
 <div align="justify">
@@ -1818,7 +1824,7 @@ Con toda la arquitectura definida y configurada, procedemos a iniciar el ecosist
 </div>
 
 <p align="center">
-  <img src="images/img_100.png" alt="Imagen 100" />
+  <img src="images/img_101.png" alt="Imagen 101" />
 </p>
 
 <div align="justify">
@@ -1827,7 +1833,7 @@ Con toda la arquitectura definida y configurada, procedemos a iniciar el ecosist
 </div>
 
 <p align="center">
-  <img src="images/img_101.png" alt="Imagen 101" />
+  <img src="images/img_102.png" alt="Imagen 102" />
 </p>
 
 <div align="justify">
@@ -1836,7 +1842,7 @@ Con toda la arquitectura definida y configurada, procedemos a iniciar el ecosist
 </div>
 
 <p align="center">
-  <img src="images/img_102.png" alt="Imagen 102" />
+  <img src="images/img_103.png" alt="Imagen 103" />
 </p>
 
 <div align="justify">
@@ -1845,7 +1851,7 @@ Con toda la arquitectura definida y configurada, procedemos a iniciar el ecosist
 </div>
 
 <p align="center">
-  <img src="images/img_103.png" alt="Imagen 103" />
+  <img src="images/img_104.png" alt="Imagen 104" />
 </p>
 
 
@@ -1861,7 +1867,7 @@ Para registrar un escenario de carga real en las gráficas de <strong>`nload`</s
 </div>
 
 <p align="center">
-  <img src="images/img_104.png" alt="Imagen 104" />
+  <img src="images/img_105.png" alt="Imagen 105" />
 </p>
 
 <div align="justify">
@@ -1879,7 +1885,7 @@ Durante la sesión multimedia interactiva, la pantalla de <strong>`nload`</stron
 </div>
 
 <p align="center">
-  <img src="images/img_105.png" alt="Imagen 105" />
+  <img src="images/img_106.png" alt="Imagen 106" />
 </p>
 
 <div align="justify">
@@ -1937,7 +1943,7 @@ Basándonos en las métricas de rendimiento extraídas de la captura de <strong>
 </div>
 
 <p align="center">
-  <img src="images/img_106.png" alt="Imagen 106" />
+  <img src="images/img_107.png" alt="Imagen 107" />
 </p>
 
 
@@ -1991,7 +1997,7 @@ El proceso de aprovisionamiento del esquema de datos en el servidor de producci�
 </div>
 
 <p align="center">
-  <img src="images/img_107.png" alt="Imagen 107" />
+  <img src="images/img_108.png" alt="Imagen 108" />
 </p>
 
 <div align="justify">
@@ -2000,7 +2006,7 @@ El proceso de aprovisionamiento del esquema de datos en el servidor de producci�
 </div>
 
 <p align="center">
-  <img src="images/img_108.png" alt="Imagen 108" />
+  <img src="images/img_109.png" alt="Imagen 109" />
 </p>
 
 <div align="justify">
@@ -2009,7 +2015,7 @@ El proceso de aprovisionamiento del esquema de datos en el servidor de producci�
 </div>
 
 <p align="center">
-  <img src="images/img_109.png" alt="Imagen 109" />
+  <img src="images/img_110.png" alt="Imagen 110" />
 </p>
 
 <div align="justify">
@@ -2018,7 +2024,7 @@ El proceso de aprovisionamiento del esquema de datos en el servidor de producci�
 </div>
 
 <p align="center">
-  <img src="images/img_110.png" alt="Imagen 110" />
+  <img src="images/img_111.png" alt="Imagen 111" />
 </p>
 
 
@@ -2036,7 +2042,7 @@ El código fuente del script de automatización se encuentra auditado en el repo
 </div>
 
 <p align="center">
-  <img src="images/img_111.png" alt="Imagen 111" />
+  <img src="images/img_112.png" alt="Imagen 112" />
 </p>
 
 
@@ -2066,7 +2072,7 @@ Para certificar la fiabilidad del script en un entorno de pruebas idéntico al d
 </div>
 
 <p align="center">
-  <img src="images/img_112.png" alt="Imagen 112" />
+  <img src="images/img_113.png" alt="Imagen 113" />
 </p>
 
 <div align="justify">
@@ -2075,7 +2081,7 @@ Para certificar la fiabilidad del script en un entorno de pruebas idéntico al d
 </div>
 
 <p align="center">
-  <img src="images/img_113.png" alt="Imagen 113" />
+  <img src="images/img_114.png" alt="Imagen 114" />
 </p>
 
 
@@ -2094,7 +2100,7 @@ El <strong>evento periódico</strong> realiza un <strong>backup automático diar
 </div>
 
 <p align="center">
-  <img src="images/img_114.png" alt="Imagen 114" />
+  <img src="images/img_115.png" alt="Imagen 115" />
 </p>
 
 <div align="justify">
@@ -2103,7 +2109,7 @@ El <strong>evento periódico</strong> realiza un <strong>backup automático diar
 </div>
 
 <p align="center">
-  <img src="images/img_115.png" alt="Imagen 115" />
+  <img src="images/img_116.png" alt="Imagen 116" />
 </p>
 
 <div align="justify">
@@ -2112,7 +2118,7 @@ El <strong>evento periódico</strong> realiza un <strong>backup automático diar
 </div>
 
 <p align="center">
-  <img src="images/img_116.png" alt="Imagen 116" />
+  <img src="images/img_117.png" alt="Imagen 117" />
 </p>
 
 <div align="justify">
@@ -2121,7 +2127,7 @@ El <strong>evento periódico</strong> realiza un <strong>backup automático diar
 </div>
 
 <p align="center">
-  <img src="images/img_117.png" alt="Imagen 117" />
+  <img src="images/img_118.png" alt="Imagen 118" />
 </p>
 
 <div align="justify">
@@ -2130,7 +2136,7 @@ El <strong>evento periódico</strong> realiza un <strong>backup automático diar
 </div>
 
 <p align="center">
-  <img src="images/img_118.png" alt="Imagen 118" />
+  <img src="images/img_119.png" alt="Imagen 119" />
 </p>
 
 <div align="justify">
@@ -2139,7 +2145,7 @@ El <strong>evento periódico</strong> realiza un <strong>backup automático diar
 </div>
 
 <p align="center">
-  <img src="images/img_119.png" alt="Imagen 119" />
+  <img src="images/img_120.png" alt="Imagen 120" />
 </p>
 
 <div align="justify">
@@ -2148,7 +2154,7 @@ El <strong>evento periódico</strong> realiza un <strong>backup automático diar
 </div>
 
 <p align="center">
-  <img src="images/img_120.png" alt="Imagen 120" />
+  <img src="images/img_121.png" alt="Imagen 121" />
 </p>
 
 <div align="justify">
@@ -2157,7 +2163,7 @@ El <strong>evento periódico</strong> realiza un <strong>backup automático diar
 </div>
 
 <p align="center">
-  <img src="images/img_121.png" alt="Imagen 121" />
+  <img src="images/img_122.png" alt="Imagen 122" />
 </p>
 
 
@@ -2174,7 +2180,7 @@ Creamos un registro de llamada para probar que se sumen los 10 minutos a la quot
 </div>
 
 <p align="center">
-  <img src="images/img_122.png" alt="Imagen 122" />
+  <img src="images/img_123.png" alt="Imagen 123" />
 </p>
 
 <div align="justify">
@@ -2182,7 +2188,7 @@ Y vemos como se ha sumado automáticamente la cuota al usuario 1:<br><br>
 </div>
 
 <p align="center">
-  <img src="images/img_123.png" alt="Imagen 123" />
+  <img src="images/img_124.png" alt="Imagen 124" />
 </p>
 
 <div align="justify">
@@ -2190,13 +2196,13 @@ Ahora vamos a modificar las llamadas del dia para que superen las 50 máximas, d
 </div>
 
 <p align="center">
-  <img src="images/img_124.png" alt="Imagen 124" />
+  <img src="images/img_125.png" alt="Imagen 125" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_125.png" alt="Imagen 125" />
+  <img src="images/img_126.png" alt="Imagen 126" />
 </p>
 
 <div align="justify">
@@ -2206,7 +2212,7 @@ Podemos observar, que con los días se han ido guardando las copias de seguridad
 </div>
 
 <p align="center">
-  <img src="images/img_126.png" alt="Imagen 126" />
+  <img src="images/img_127.png" alt="Imagen 127" />
 </p>
 
 <div align="justify">
@@ -2216,13 +2222,13 @@ Hacemos un intento de INSERT, UPDATE y DELETE con el usuario vendes en diferente
 </div>
 
 <p align="center">
-  <img src="images/img_127.png" alt="Imagen 127" />
+  <img src="images/img_128.png" alt="Imagen 128" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_128.png" alt="Imagen 128" />
+  <img src="images/img_129.png" alt="Imagen 129" />
 </p>
 
 <div align="justify">
@@ -2230,7 +2236,7 @@ Comprovamos los registros de estas acciones sobre la tabla “taula_avisos”.<b
 </div>
 
 <p align="center">
-  <img src="images/img_129.png" alt="Imagen 129" />
+  <img src="images/img_130.png" alt="Imagen 130" />
 </p>
 
 
@@ -2247,7 +2253,7 @@ Para una mayor visibilidad revisar las <u>`imágenes en el repositorio de github
 </div>
 
 <p align="center">
-  <img src="images/img_130.png" alt="Imagen 130" />
+  <img src="images/img_131.png" alt="Imagen 131" />
 </p>
 
 <div align="justify">
@@ -2256,7 +2262,7 @@ Para una mayor visibilidad revisar las <u>`imágenes en el repositorio de github
 </div>
 
 <p align="center">
-  <img src="images/img_131.png" alt="Imagen 131" />
+  <img src="images/img_132.png" alt="Imagen 132" />
 </p>
 
 
@@ -2277,7 +2283,7 @@ Verificamos la instalación:<br><br>
 </div>
 
 <p align="center">
-  <img src="images/img_132.png" alt="Imagen 132" />
+  <img src="images/img_133.png" alt="Imagen 133" />
 </p>
 
 
@@ -2293,7 +2299,7 @@ La generación de la clave privada y del certificado se realiza mediante el sigu
 </div>
 
 <p align="center">
-  <img src="images/img_133.png" alt="Imagen 133" />
+  <img src="images/img_134.png" alt="Imagen 134" />
 </p>
 
 <div align="justify">
@@ -2317,13 +2323,13 @@ Instalamos y verificamos la versión de php, paquete necesario para procesar nue
 </div>
 
 <p align="center">
-  <img src="images/img_134.png" alt="Imagen 134" />
+  <img src="images/img_135.png" alt="Imagen 135" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_135.png" alt="Imagen 135" />
+  <img src="images/img_136.png" alt="Imagen 136" />
 </p>
 
 <div align="justify">
@@ -2336,7 +2342,7 @@ Hacemos las configuraciones necesarias para el funcionamiento de la página con 
 </div>
 
 <p align="center">
-  <img src="images/img_136.png" alt="Imagen 136" />
+  <img src="images/img_137.png" alt="Imagen 137" />
 </p>
 
 
@@ -2352,7 +2358,7 @@ Esto funciona con las siguientes líneas de código al principio de cada página
 </div>
 
 <p align="center">
-  <img src="images/img_137.png" alt="Imagen 137" />
+  <img src="images/img_138.png" alt="Imagen 138" />
 </p>
 
 <div align="justify">
@@ -2360,7 +2366,7 @@ Ponemos aquí un esquema gráfico para ver cómo funciona esta estructura y que 
 </div>
 
 <p align="center">
-  <img src="images/img_138.png" alt="Imagen 138" />
+  <img src="images/img_139.png" alt="Imagen 139" />
 </p>
 
 <div align="justify">
@@ -2387,7 +2393,7 @@ Para que nuestro servidor <strong>SFTP</strong> pueda autenticar a los usuarios,
 </div>
 
 <p align="center">
-  <img src="images/img_139.png" alt="Imagen 139" />
+  <img src="images/img_140.png" alt="Imagen 140" />
 </p>
 
 <div align="justify">
@@ -2395,7 +2401,7 @@ Durante el proceso de instalación, el asistente nos irá pidiendo que configure
 </div>
 
 <p align="center">
-  <img src="images/img_140.png" alt="Imagen 140" />
+  <img src="images/img_141.png" alt="Imagen 141" />
 </p>
 
 <div align="justify">
@@ -2403,7 +2409,7 @@ En la siguiente pantalla, se nos solicita la <strong>base de búsqueda (Base DN)
 </div>
 
 <p align="center">
-  <img src="images/img_141.png" alt="Imagen 141" />
+  <img src="images/img_142.png" alt="Imagen 142" />
 </p>
 
 <div align="justify">
@@ -2411,7 +2417,7 @@ Aquí configuramos automáticamente el archivo <strong>/etc/nsswitch.conf</stron
 </div>
 
 <p align="center">
-  <img src="images/img_142.png" alt="Imagen 142" />
+  <img src="images/img_143.png" alt="Imagen 143" />
 </p>
 
 <div align="justify">
@@ -2419,7 +2425,7 @@ A continuación, confirmamos que los cambios indicados durante el proceso de ins
 </div>
 
 <p align="center">
-  <img src="images/img_143.png" alt="Imagen 143" />
+  <img src="images/img_144.png" alt="Imagen 144" />
 </p>
 
 <div align="justify">
@@ -2429,13 +2435,13 @@ Por defecto, al desplegar instancias en AWS, el proveedor restringe el acceso ex
 </div>
 
 <p align="center">
-  <img src="images/img_144.png" alt="Imagen 144" />
+  <img src="images/img_145.png" alt="Imagen 145" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_145.png" alt="Imagen 145" />
+  <img src="images/img_146.png" alt="Imagen 146" />
 </p>
 
 <div align="justify">
@@ -2446,7 +2452,7 @@ Lo siguiente es que aplicamos las reglas específicas y restrictivas para asegur
 </div>
 
 <p align="center">
-  <img src="images/img_146.png" alt="Imagen 146" />
+  <img src="images/img_147.png" alt="Imagen 147" />
 </p>
 
 <div align="justify">
@@ -2454,13 +2460,13 @@ Por último aplicamos el comando chmod 700 /home/* , logrando que a partir de ah
 </div>
 
 <p align="center">
-  <img src="images/img_147.png" alt="Imagen 147" />
+  <img src="images/img_148.png" alt="Imagen 148" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_148.png" alt="Imagen 148" />
+  <img src="images/img_149.png" alt="Imagen 149" />
 </p>
 
 <div align="justify">
@@ -2468,7 +2474,7 @@ Por último aplicamos el comando chmod 700 /home/* , logrando que a partir de ah
 </div>
 
 <p align="center">
-  <img src="images/img_149.png" alt="Imagen 149" />
+  <img src="images/img_150.png" alt="Imagen 150" />
 </p>
 
 
@@ -2483,7 +2489,7 @@ En primer lugar, realizamos la prueba de acceso utilizando un usuario registrado
 </div>
 
 <p align="center">
-  <img src="images/img_150.png" alt="Imagen 150" />
+  <img src="images/img_151.png" alt="Imagen 151" />
 </p>
 
 <div align="justify">
@@ -2491,7 +2497,7 @@ Por el contrario, al intentar acceder al servidor empleando una cuenta que no se
 </div>
 
 <p align="center">
-  <img src="images/img_151.png" alt="Imagen 151" />
+  <img src="images/img_152.png" alt="Imagen 152" />
 </p>
 
 <div align="justify">
@@ -2499,13 +2505,13 @@ Tal y como se detalló en la configuración del servicio OpenSSH, en el momento 
 </div>
 
 <p align="center">
-  <img src="images/img_152.png" alt="Imagen 152" />
+  <img src="images/img_153.png" alt="Imagen 153" />
 </p>
 
 
 
 <p align="center">
-  <img src="images/img_153.png" alt="Imagen 153" />
+  <img src="images/img_154.png" alt="Imagen 154" />
 </p>
 
 <div align="justify">
@@ -2513,7 +2519,7 @@ Finalmente, comprobamos que las restricciones de la jaula no afectan al flujo de
 </div>
 
 <p align="center">
-  <img src="images/img_154.png" alt="Imagen 154" />
+  <img src="images/img_155.png" alt="Imagen 155" />
 </p>
 
 
