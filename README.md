@@ -65,7 +65,7 @@
 </div>
 
 <a name="1-plano-general-de-las-instalaciones-innocatetech"></a>
-## <a href="#1-plano-general-de-las-instalaciones-innocatetech">1. Plano general de las instalaciones INNOCATETECH:</a>
+## <a href="#1-plano-general-de-las-instalaciones-innocatetech">1. Plano general de las instalaciones INNOVATETECH:</a>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
