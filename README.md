@@ -16,8 +16,8 @@
       * [1.3.2. Seguridad de Rutas y Suministros:](#132-seguridad-de-rutas-y-suministros)
       * [1.3.3. Camuflaje Arquitectónico y Estético:](#133-camuflaje-arquitectonico-y-estetico)
     * [1.4. Distribución y gestión del cableado:](#14-distribucion-y-gestion-del-cableado)
-    * [1.5. Terra Tècnic (Suelo Técnico Elevado):](#15-terra-tecnic-suelo-tecnico-elevado)
-      * [1.5.1. Sostre Tècnic (Falso Techo Registrable):](#151-sostre-tecnic-falso-techo-registrable)
+    * [1.5. Suelo Técnico Elevado:](#15-terra-tecnic-suelo-tecnico-elevado)
+      * [1.5.1. Falso Techo Registrable:](#151-sostre-tecnic-falso-techo-registrable)
       * [1.5.2. Estanqueidad con la Cristalera:](#152-estanqueidad-con-la-cristalera)
   * [2. Infraestructura Eléctrica:](#2-infraestructura-electrica)
     * [2.1. Sistemas de Alimentación Redundante:](#21-sistemas-de-alimentacion-redundante)
@@ -174,11 +174,13 @@ Respetando<strong> la separación física por criticidad de servicios</strong>, 
 <div align='justify'>
 
 A excepción de los servidores específicos, cada rack contará con los siguientes elementos de infraestructura interna:<br><br>
-<strong>Sistema de Alimentación Ininterrumpida (SAI/UPS) y Redundancia Eléctrica (BoR):</strong> Ubicado en la zona inferior para maximizar la <strong>estabilidad física</strong>, posicionando el módulo principal en la unidad <strong>U02</strong> y la <strong>Barra de Tierra</strong> en la <strong>U01</strong>. Se implementará un <strong>SAI Online de Doble Conversión de 3000VA (3kVA) / 2700W</strong> en formato rackeable, potencia que cubre holgadamente el consumo del hardware y ofrece un <strong>margen de crecimiento del 40%</strong>. Incluye tarjeta de red <strong>SNMP</strong> para monitorización remota.Para garantizar la <strong>alta disponibilidad</strong> y la tolerancia a fallos (arquitectura tipo <strong>Tier II/III</strong>), cada rack contará con una topología de <strong>doble acometida eléctrica</strong>:<br><br>
+<strong>Sistema de Alimentación Ininterrumpida (SAI/UPS) y Redundancia Eléctrica (BoR):</strong> Ubicado en la zona inferior para maximizar la <strong>estabilidad física</strong>, posicionando el módulo principal en la unidad <strong>U02</strong> y la <strong>Barra de Tierra</strong> en la <strong>U01</strong>. Se implementará un <strong>SAI Online de Doble Conversión de 3000VA (3kVA) / 2700W</strong> en formato rackeable, potencia que cubre holgadamente el consumo del hardware y ofrece un <strong>margen de crecimiento del 40%</strong>. Incluye tarjeta de red <strong>SNMP</strong> para monitorización remota.
+Para garantizar la <strong>alta disponibilidad</strong> y la tolerancia a fallos (arquitectura tipo <strong>Tier II/III</strong>), cada rack contará con una topología de <strong>doble acometida eléctrica</strong>:<br><br>
 * Línea A (Protegida): Alimentada continuamente por el SAI local del rack para absorber cortes, microcortes e irregularidades del suministro.
 * Línea B (Redundante): Conectada a un circuito eléctrico independiente (como un bypass filtrado o un sistema de respaldo general del edificio). Esto asegura que, ante un fallo catastrófico del SAI, los equipos con fuentes de alimentación redundantes sigan operando sin interrupción.
 
-<strong>Unidades de Distribución de Energía (PDU) Inteligentes:</strong> Para la distribución eléctrica interna se instalarán <strong>dos PDU conmutadas de factor de forma Zero-U</strong> por rack, fijadas verticalmente en la parte posterior del chasis sin ocupar espacio útil frontal.Cada una se asociará a una línea eléctrica distinta: la <strong>PDU-A</strong> se conectará a la <strong>Línea A (SAI)</strong> y la <strong>PDU-B</strong> a la <strong>Línea B (Redundante)</strong>. Cuentan con conexiones de entrada <strong>IEC 320 C20</strong>, salidas bloqueables <strong>IEC C13 y C19</strong> para evitar desconexiones accidentales, capacidad de <strong>apagado/encendido remo</strong><br><br>
+<strong>Unidades de Distribución de Energía (PDU) Inteligentes:</strong> Para la distribución eléctrica interna se instalarán <strong>dos PDU conmutadas de factor de forma Zero-U</strong> por rack, fijadas verticalmente en la parte posterior del chasis sin ocupar espacio útil frontal.
+Cada una se asociará a una línea eléctrica distinta: la <strong>PDU-A</strong> se conectará a la <strong>Línea A (SAI)</strong> y la <strong>PDU-B</strong> a la <strong>Línea B (Redundante)</strong>. Cuentan con conexiones de entrada <strong>IEC 320 C20</strong>, salidas bloqueables <strong>IEC C13 y C19</strong> para evitar desconexiones accidentales, capacidad de <strong>apagado/encendido remo</strong><br><br>
 <strong>Paneles de Parcheo y Electrónica de Red en la Parte Superior (ToR):</strong> La conectividad se centraliza en el bloque superior para minimizar la longitud de los latiguillos. Las unidades <strong>U42 y U41</strong> alojan la <strong>Bandeja de Fibra Óptica (FOBOT)</strong> con hasta 24 acopladores LC-Duplex para uplinks de alta velocidad y el <strong>Patch Panel de Cobre Cat 6A FTP</strong> de 24 puertos. Inmediatamente debajo, en la <strong>U40</strong>, se sitúa la electrónica de red principal (<strong>Switches Core/Acceso y Firewalls</strong>), optimizando el peinado de cables.<br><br>
 <strong>Gestión de Cableado y Accesorios:</strong> Para garantizar un <strong>flujo de aire óptimo y un mantenimiento limpio</strong>, se instalarán <strong>dos organizadores de cable horizontales de 1U</strong> con pasacables de escobilla situados estratégicamente entre el switch y los patch panels. Adicionalmente, cada rack incluirá una <strong>bandeja fija ventilada de 1U</strong> para dar soporte a herramientas o dispositivos sin formato nativo rackeable, así como un <strong>kit de monitorización ambiental</strong> compuesto por <strong>sondas de temperatura y humedad</strong> conectadas directamente a la PDU o al SAI para alertar sobre cualquier anomalía térmica interna. <br><br>
 </div>
@@ -337,7 +339,7 @@ La gestión se dividirá en dos niveles físicos totalmente segregados para evit
 </div>
 
 <a name="15-terra-tecnic-suelo-tecnico-elevado"></a>
-### <a href="#15-terra-tecnic-suelo-tecnico-elevado">1.5. Terra Tècnic (Suelo Técnico Elevado):</a>
+### <a href="#15-terra-tecnic-suelo-tecnico-elevado">1.5. Suelo Técnico Elevado:</a>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -350,7 +352,7 @@ Se instalará un sistema de pavimento elevado a <strong>50 cm</strong> de altura
 </div>
 
 <a name="151-sostre-tecnic-falso-techo-registrable"></a>
-#### <a href="#151-sostre-tecnic-falso-techo-registrable">1.5.1. Sostre Tècnic (Falso Techo Registrable):</a>
+#### <a href="#151-sostre-tecnic-falso-techo-registrable">1.5.1. Falso Techo Registrable:</a>
 [↑ Volver al índice](#indice)
 
 <div align='justify'>
@@ -1293,12 +1295,18 @@ Nos conectamos sftp para hacer una prueba que aparece en los logs.<br><br>
 </p>
 
 <div align="justify">
-<strong>auditd.data.acct – iker</strong>Indica el usuario del sistema que ha iniciado la sesión.<br><br>
-<strong>auditd.data.hostname – 79.117.182.87</strong>Es la dirección IP pública del cliente desde la que se ha realizado la conexión remota.<br><br>
-<strong>auditd.data.op – PAM:session_open</strong>La operación que se ha registrado en el Kernel: el módulo de seguridad PAM ha abierto una sesión en el sistema.<br><br>
-<strong>auditd.data.terminal –  ssh</strong>El canal de comunicación. Al ser una conexión SFTP, viaja cifrada a través del demonio de SSH.<br><br>
-<strong>auditd.result–  success</strong>El resultado de la autenticación ha sido un éxito rotundo. Si hubiera fallado la contraseña, aquí pondría <em>failed</em>.<br><br>
-<strong>auditd.summary.how – /usr/sbin/sshd</strong>Muestra exactamente qué binario del sistema operativo ha procesado la solicitud (el servicio de SSH).<br><br>
+<strong>auditd.data.acct – iker
+</strong>Indica el usuario del sistema que ha iniciado la sesión.<br><br>
+<strong>auditd.data.hostname – 79.117.182.87
+</strong>Es la dirección IP pública del cliente desde la que se ha realizado la conexión remota.<br><br>
+<strong>auditd.data.op – PAM:session_open
+</strong>La operación que se ha registrado en el Kernel: el módulo de seguridad PAM ha abierto una sesión en el sistema.<br><br>
+<strong>auditd.data.terminal –  ssh
+</strong>El canal de comunicación. Al ser una conexión SFTP, viaja cifrada a través del demonio de SSH.<br><br>
+<strong>auditd.result–  success
+</strong>El resultado de la autenticación ha sido un éxito rotundo. Si hubiera fallado la contraseña, aquí pondría <em>failed</em>.<br><br>
+<strong>auditd.summary.how – /usr/sbin/sshd
+</strong>Muestra exactamente qué binario del sistema operativo ha procesado la solicitud (el servicio de SSH).<br><br>
 </div>
 
 <p align="center">
@@ -1370,7 +1378,8 @@ Por <strong>último</strong>, comprobamos que todos los logs de los servidores q
 </p>
 
 <div align="justify">
-<strong></strong><br><br>
+<strong>
+</strong><br><br>
 <strong>Servidor videollamada:</strong><br><br>
 </div>
 
@@ -2158,7 +2167,9 @@ El <strong>evento periódico</strong> realiza un <strong>backup automático diar
 </p>
 
 <div align="justify">
-* Ahora creamos y ejecutamos los triggers de auditoría:PROBLEMA: No se puede crear un trigger que registre cada vez que a un usuario le salta el error de permiso denegado, ya que cuando este sucede, mysql “mata” el proceso sin oportunidad de ejecutar el trigger.SOLUCION: Le damos permisos a los usuarios, incluso fuera de sus campos, luego un trigger denegará las operaciones y creará el registro en taula_avisos.
+* Ahora creamos y ejecutamos los triggers de auditoría:
+PROBLEMA: No se puede crear un trigger que registre cada vez que a un usuario le salta el error de permiso denegado, ya que cuando este sucede, mysql “mata” el proceso sin oportunidad de ejecutar el trigger.
+SOLUCION: Le damos permisos a los usuarios, incluso fuera de sus campos, luego un trigger denegará las operaciones y creará el registro en taula_avisos.
 
 </div>
 
@@ -2176,7 +2187,8 @@ El <strong>evento periódico</strong> realiza un <strong>backup automático diar
 
 * PRUEBA DE TRIGGER (cuota de llamada y bloqueo de usuarios por exceso)
 
-Creamos un registro de llamada para probar que se sumen los 10 minutos a la quota del usuario:<br><br>
+Creamos un registro de llamada para probar que se sumen los 10 minutos a la quota del usuario:
+<br><br>
 </div>
 
 <p align="center">
