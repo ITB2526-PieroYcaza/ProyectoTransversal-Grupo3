@@ -1928,7 +1928,7 @@ Para contrastar los datos experimentales obtenidos en el monitor, realizamos el 
 * Carga Total Teórica Estimada: 9.6 Mbps + 60 Mbps + 7.54 Mbps = 77.14 Mbps.
 
 Al comparar la carga total requerida en el escenario de máxima concurrencia (<strong>77.14 Mbps</strong>) con el ancho de banda disponible verificado en los tests de nuestras instancias de AWS, demostramos que la infraestructura dispone de un amplio margen de seguridad (<strong>headroom</strong>), garantizando que las transmisiones de <strong>Jitsi Meet</strong> en la IP <strong>32.199.24.67</strong>, <strong>Icecast2</strong> y el resto de servicios operarán holgadamente sin llegar nunca a la saturación de los enlaces de red.<br><br>
-seguridad (<strong>headroom</strong>), garantizando que las transmisiones de <strong>Icecast2</strong> y el resto de servicios operarán holgadamente sin llegar nunca a la saturación de los enlaces de red.<br><br>
+
 </div>
 
 <a name="833-classification-del-sistema-y-propuestas-de-optimizacion"></a>
